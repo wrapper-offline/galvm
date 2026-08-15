@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark">
+
+	<fx:Metadata>
+		[HostComponent("anifire.component.ColorInputPanel")]
+	</fx:Metadata>
+
+	<s:Group>
+		<s:RectangularDropShadow
+			width="100%"
+			height="100%"
+			mouseEnabled="false"
+			mouseChildren="false"
+			angle="90"
+			distance="0"
+			color="0x666666"
+			tlRadius="10"
+			trRadius="10"
+			blRadius="10"
+			brRadius="10"/>
+		<s:Rect width="100%" height="100%" radiusX="5" radiusY="5">
+			<s:fill>
+				<s:SolidColor color="0xFFFFFF" alpha="0.8"/>
+			</s:fill>
+		</s:Rect>
+		<s:VGroup paddingTop="4" paddingBottom="8" paddingLeft="8" paddingRight="4" gap="4">
+			<s:HGroup id="colorSelectionGroup" height="208" verticalAlign="middle" gap="3">
+				<s:Group id="colorFieldGroup" width="200" height="200">
+					<s:Rect left="0" right="0" top="0" bottom="0" radiusX="7" radiusY="7">
+						<s:fill>
+							<s:SolidColor id="colorFieldBaseColor"/>
+						</s:fill>
+					</s:Rect>
+					<s:Group left="0" right="0" top="0" bottom="0" mask="{ maskGroup }">
+						<s:Image
+							source="@Embed(source='../styles/images/colorpalette/color_input_panel_gradient.png')"
+							fillMode="scale"
+							scaleMode="stretch"
+							left="0" right="0" top="0" bottom="0"/>
+					</s:Group> <!--group3-->
+					<s:Group id="maskGroup" left="0" right="0" top="0" bottom="0">
+						<s:Rect left="0" right="0" top="0" bottom="0">
+							<s:fill>
+								<s:SolidColor/>
+							</s:fill>
+						</s:Rect>
+					</s:Group>
+					<s:Group id="colorFieldCursor" width="0" height="0">
+						<s:BitmapImage
+							id="colorFieldCursorImage"
+							source="@Embed(source='../styles/images/colorpalette/slider_control.png')"
+							verticalCenter="-2"
+							horizontalCenter="0"/>
+					</s:Group>
+				</s:Group>
+				<s:VSlider
+					id="hueSlider"
+					height="100%"
+					minimum="0"
+					maximum="359"
+					stepSize="1"
+					liveDragging="true"
+					slideDuration="0"
+					skinClass="anifire.skins.ColorInputPanelHueSliderSkin"/>
+			</s:HGroup>
+			<s:Group id="colorSpaceGroup" width="100%">
+				<s:HGroup width="200" gap="4">
+					<s:DropDownList id="colorSpaceTypeDropDownList" width="65"/>
+					<s:HGroup id="hexInputArea" width="100%">
+						<s:TextInput id="hexInput" width="100%" maxChars="6" restrict="A-F a-f 0-9"/>
+					</s:HGroup>
+					<s:HGroup id="rgbInputArea" width="100%" visible="false" includeInLayout="false">
+						<s:TextInput id="redInput" width="100%" restrict="0-9" text="0"/>
+						<s:TextInput id="greenInput" width="100%" restrict="0-9" text="0"/>
+						<s:TextInput id="blueInput" width="100%" restrict="0-9" text="0"/>
+					</s:HGroup>
+					<s:HGroup id="hsbInputArea" width="100%" visible="false" includeInLayout="false">
+						<s:TextInput id="hueInput" width="100%" restrict="0-9" text="0"/>
+						<s:TextInput id="saturationInput" width="100%" restrict="0-9" text="0"/>
+						<s:TextInput id="brightnessInput" width="100%" restrict="0-9" text="0"/>
+					</s:HGroup>
+				</s:HGroup>
+				<s:Button
+					id="eyeDropperButton"
+					right="4"
+					width="21"
+					height="100%"
+					buttonMode="true"
+					skinClass="anifire.skins.EyeDropperButtonSkin"/>
+			</s:Group>
+		</s:VGroup>
+	</s:Group>
+
+</s:Skin>

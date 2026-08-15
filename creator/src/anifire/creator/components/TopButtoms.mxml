@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	width="300"
+	height="68">
+
+	<fx:Script>
+		<![CDATA[
+			protected function createMenuModel() : void
+			{
+				var collection:ArrayCollection = new ArrayCollection();
+				if(CcLibConstant.RANDOM_CHAR)
+				{
+					var _loc3_:MenuItemModel = new MenuItemModel(UtilDict.toDisplay("go","Randomize character"),"random");
+					collection.addItem(_loc3_);
+				}
+				var _loc2_:MenuItemModel = new MenuItemModel(UtilDict.toDisplay("go","Reset character"),"reset");
+				collection.addItem(_loc2_);
+				if(CcLibConstant.CHANGE_CHAR_SCALE)
+				{
+					var _loc4_:MenuItemModel = new MenuItemModel(UtilDict.toDisplay("go","Scaling tool"),"scale");
+					collection.addItem(_loc4_);
+				}
+				this.extraMenu.dataProvider = collection;
+				this.refreshRole();
+			}
+
+			public function refreshRole() : void
+			{
+				var _loc1_:String = null;
+				var _loc2_:TextFlow = null;
+				var _loc3_:Array = null;
+				var _loc4_:ParagraphElement = null;
+				var _loc5_:SpanElement = null;
+				var _loc6_:LinkElement = null;
+				var _loc7_:SpanElement = null;
+				var _loc8_:SpanElement = null;
+				this.btnSave.visible = true;
+				this.btnSaveDisabled.visible = false;
+				if(CcLibConstant.IS_BUSINESS_THEME && !UtilUser.hasBusinessFeatures)
+				{
+				this.btnSave.visible = false;
+				this.btnSaveDisabled.visible = true;
+				_loc1_ = UtilDict.toDisplay("go","To save this character, please {0} to a business plan.");
+				}
+				else if(UtilUser.userType == UtilUser.BASIC_USER)
+				{
+				this.btnSave.visible = false;
+				this.btnSaveDisabled.visible = true;
+				_loc1_ = UtilDict.toDisplay("go","To save this character, please {0} now.");
+				}
+				if(this.btnSaveDisabled.visible)
+				{
+				_loc2_ = new TextFlow();
+				_loc3_ = _loc1_.split("{0}");
+				_loc4_ = new ParagraphElement();
+				_loc5_ = new SpanElement();
+				_loc5_.text = _loc3_[0];
+				_loc4_.addChild(_loc5_);
+				_loc6_ = new LinkElement();
+				_loc7_ = new SpanElement();
+				_loc7_.text = UtilDict.toDisplay("go","subscribe");
+				_loc7_.fontFamily = "StudioSparkMain";
+				_loc7_.fontWeight = "bold";
+				_loc7_.color = 1808298;
+				_loc6_.addChild(_loc7_);
+				_loc6_.addEventListener(FlowElementMouseEvent.CLICK,this.onUpgradeLinkClick);
+				_loc4_.addChild(_loc6_);
+				if(_loc3_.length > 1)
+				{
+					_loc8_ = new SpanElement();
+					_loc8_.text = _loc3_[1];
+					_loc4_.addChild(_loc8_);
+				}
+				_loc2_.addChild(_loc4_);
+				this.warnLabel.textFlow = _loc2_;
+				this.warnLabel.textFlow.fontFamily = "StudioSparkMain";
+				this.btnSaveDisabled.addEventListener(MouseEvent.MOUSE_OVER,this.displaySubscribe);
+				}
+				else
+				{
+				this.warnLabel.textFlow = null;
+				this.btnSaveDisabled.removeEventListener(MouseEvent.MOUSE_OVER,this.displaySubscribe);
+				}
+			}
+
+			override public function set currentState(param1:String) : void
+			{
+				if(CcLibConstant.IS_BUSINESS_THEME && !UtilUser.hasBusinessFeatures || UtilUser.userType == UtilUser.BASIC_USER)
+				{
+				if(param1 == "preview")
+				{
+					this.subscribeDisplay.displayPopUp = true;
+				}
+				}
+				if(param1 == "editor")
+				{
+					this.subscribeDisplay.displayPopUp = false;
+				}
+				super.currentState = param1;
+			}
+
+			protected function onUpgradeLinkClick(param1:FlowElementMouseEvent) : void
+			{
+				ExternalLinkManager.instance.navigateWithSession(ServerConstants.BUSINESS_PLAN_PAGE_PATH,"wndbizplan");
+				ServerConnector.instance.onUpsellUpgradePending();
+			}
+
+			protected function displaySubscribe(param1:Event) : void
+			{
+				this.subscribeDisplay.displayPopUp = true;
+			}
+
+			protected function displayMenu() : void
+			{
+				this.extraMenuDisplay.displayPopUp = true;
+			}
+
+			protected function onExtraMenuButtonClick(param1:MouseEvent) : void
+			{
+				this.displayMenu();
+			}
+
+			protected function onMenuItemClick(param1:MenuItemEvent) : void
+			{
+				var _loc2_:String = param1.item.value;
+				switch(_loc2_)
+				{
+				case "random":
+					this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.RANDOMIZE_BUTTON_CLICK,this));
+					break;
+				case "reset":
+					this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.RESET_BUTTON_CLICK,this));
+					break;
+				case "scale":
+					this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.SCALE_BUTTON_CLICK,this));
+				}
+			}
+		]]>
+	</fx:Script>
+
+	<s:states>
+		<s:State name="editor"/>
+		<s:State name="preview"/>
+	</s:states>
+
+	<fx:Declarations>
+		<s:Fade id="fadeIn" alphaFrom="0" alphaTo="1" duration="300"/>
+	</fx:Declarations>
+
+</s:Group>

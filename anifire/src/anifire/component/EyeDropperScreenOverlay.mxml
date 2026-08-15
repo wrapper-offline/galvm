@@ -1,0 +1,166 @@
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	autoLayout="false"
+	mouseEnabled="true"
+	mouseChildren="false"
+	mouseEnabledWhereTransparent="true"
+	width="100%"
+	height="100%"
+	creationComplete="this.init()"
+	resize="this.resizeHandler(event)"
+	mouseUp="this.mouseUpHandler(event)"
+	mouseDown="this.mouseDownHandler(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import anifire.event.EyeDropperEvent;
+			import mx.events.ResizeEvent;
+
+			public static var instance:EyeDropperScreenOverlay;
+			protected static const CURSOR_REFRESH_INTERVAL:int = 50;
+			public static const MAGNIFICATION_RATE:Number = 10;
+			public static const MAGNIFIED_SIZE:Number = 90;
+			public static const MAGNIFIED_OFFSET:Number = MAGNIFIED_SIZE * 0.5;
+			public static const DRAW_AREA_OFFSET:Number = 4;
+			protected var _requiresUpdate:Boolean;
+			protected var _screenBitmapData:BitmapData;
+			protected var _magnifiedBitmapData:BitmapData;
+			protected var _magnifiedMatrix:Matrix;
+			public var isPickingColor:Boolean = false;
+			protected var _timer:uint;
+			private var _excludedDisplayObject:DisplayObject;
+
+			protected function init() : void
+			{
+				instance = this;
+				visible = false;
+				this._requiresUpdate = true;
+				this._magnifiedBitmapData = new BitmapData(MAGNIFIED_SIZE, MAGNIFIED_SIZE);
+				this._magnifiedMatrix = new Matrix();
+				this.magnifiedImage.source = this._magnifiedBitmapData;
+			}
+
+			protected function clearScreenImage() : void
+			{
+				if(this._screenBitmapData)
+				{
+					this._screenBitmapData.dispose();
+					this._screenBitmapData = null;
+				}
+			}
+
+			protected function createScreenImage() : void
+			{
+				this.clearScreenImage();
+				this._screenBitmapData = new BitmapData(getLayoutBoundsWidth(), getLayoutBoundsHeight(), false);
+				this._screenBitmapData.draw(FlexGlobals.topLevelApplication as DisplayObject);
+				this._requiresUpdate = false;
+			}
+
+			public function createScreenshotOverlay() : void
+			{
+				if (this._excludedDisplayObject) {
+					this._excludedDisplayObject.visible = false;
+				}
+				this.createScreenImage();
+				visible = true;
+				this.eyeDropperCursor.visible = true;
+				Mouse.hide();
+				this.isPickingColor = true;
+				stage.addEventListener(KeyboardEvent.KEY_DOWN,this.stage_keyDownHandler);
+				this._timer = setInterval(this.updateCursor,CURSOR_REFRESH_INTERVAL);
+			}
+
+			protected function mouseUpHandler(event:MouseEvent) : void
+			{
+				event.stopImmediatePropagation();
+				if (this.isPickingColor) {
+					var newEvent:EyeDropperEvent = new EyeDropperEvent(EyeDropperEvent.EYE_DROPPER_COMPLETE);
+					newEvent.color = this.getCurrentColor();
+					this.closeScreenshotOverlay();
+					dispatchEvent(newEvent);
+				}
+			}
+
+			protected function mouseDownHandler(event:MouseEvent) : void
+			{
+				event.stopImmediatePropagation();
+			}
+
+			protected function updateCursor() : void
+			{
+				if (this.isPickingColor) {
+					this.eyeDropperCursor.x = mouseX;
+					this.eyeDropperCursor.y = mouseY;
+					this._magnifiedMatrix.identity();
+					this._magnifiedMatrix.translate(DRAW_AREA_OFFSET - int(mouseX),DRAW_AREA_OFFSET - int(mouseY));
+					this._magnifiedMatrix.scale(MAGNIFICATION_RATE, MAGNIFICATION_RATE);
+					this._magnifiedBitmapData.draw(this._screenBitmapData, this._magnifiedMatrix);
+					this.currentColorDisplay.color = this.getCurrentColor();
+				}
+			}
+
+			protected function getCurrentColor() : uint
+			{
+				if (this._requiresUpdate) {
+					this.createScreenImage();
+				}
+				return this._screenBitmapData.getPixel(mouseX, mouseY);
+			}
+
+			protected function stage_keyDownHandler(event:KeyboardEvent) : void
+			{
+				if (event.keyCode == Keyboard.ESCAPE) {
+					stage.removeEventListener(KeyboardEvent.KEY_DOWN, this.stage_keyDownHandler);
+					var newEvent:EyeDropperEvent = new EyeDropperEvent(EyeDropperEvent.EYE_DROPPER_CANCEL);
+					this.dispatchEvent(newEvent);
+					this.closeScreenshotOverlay();
+				}
+			}
+
+			protected function closeScreenshotOverlay() : void
+			{
+				this.isPickingColor = false;
+				this.clearScreenImage();
+				this.eyeDropperCursor.visible = false;
+				visible = false;
+				clearInterval(this._timer);
+				Mouse.show();
+				if (this._excludedDisplayObject) {
+					this._excludedDisplayObject.visible = true;
+				}
+			}
+
+			public function excludedFromCapture(obj:DisplayObject) : void
+			{
+				this._excludedDisplayObject = obj;
+			}
+
+			protected function resizeHandler(event:ResizeEvent) : void
+			{
+				this._requiresUpdate = true;
+			}
+		]]>
+	</fx:Script>
+
+	<s:Group id="eyeDropperCursor" visible="false">
+		<s:Ellipse width="90" height="90" x="-45" y="-45">
+			<s:fill>
+				<s:BitmapFill id="magnifiedImage"/>
+			</s:fill>
+			<s:stroke>
+				<s:SolidColorStroke color="13421772" weight="2"/>
+			</s:stroke>
+		</s:Ellipse>
+		<s:Rect width="16" height="16" x="-8" y="-8">
+			<s:stroke>
+				<s:SolidColorStroke color="13421772" weight="2"/>
+			</s:stroke>
+			<s:fill>
+				<s:SolidColor id="currentColorDisplay"/>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	
+</s:Group>

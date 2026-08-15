@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:component="anifire.component.*"
+				xmlns:components="anifire.creator.components.*"
+				width="960" preinitialize="initApp()" applicationComplete="onApplicationComplete()"
+				backgroundAlpha="0" creationPolicy="auto"
+				implements="anifire.creator.interfaces.ICharacterCreator"
+				preloader="anifire.creator.components.CCPreloader"
+				usePreloader="true"
+				>
+
+<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace components "anifire.components.*";
+		@namespace cComponents "anifire.creator.components.*";
+
+	global {
+			layoutDirection: "ltr";
+		}
+		s|Application {
+			font-size: 13;
+		}
+		s|HScrollBar {
+			skinClass: ClassReference("anifire.creator.skins.DefaultHScrollBarSkin");
+		}
+		s|VScrollBar {
+			skinClass: ClassReference("anifire.creator.skins.DefaultVScrollBarSkin");
+		}
+		s|List {
+			skinClass: ClassReference("anifire.skins.ListSkin");
+		}
+		s|TextBase,
+		s|SkinnableTextBase,
+		s|RichEditableText {
+			color: #515969;
+			fontStyle: normal;
+			fontFamily: "StudioSparkMain";
+		}
+		s|Label#promptDisplay {
+			color: #CCCCCC;
+			fontStyle: "normal";
+		}
+		s|RichText#errorTextDisplay {
+			fontSize: 11;
+		}
+		s|TextInput {
+			borderColor: #CACAD4;
+			skinClass: ClassReference("anifire.creator.skins.DefaultTextInputSkin");
+		}
+		s|Button.primary {
+			skinClass: ClassReference("anifire.creator.skins.PrimaryButtonSkin");
+		}
+		s|Button.default {
+			skinClass: ClassReference("anifire.creator.skins.DefaultButtonSkin");
+		}
+		cComponents|IconButton {
+			skinClass: ClassReference("anifire.creator.skins.IconButtonSkin");
+		}
+		components|IconButton.topToolBar {
+			skinClass: ClassReference("anifire.creator.skins.TopToolBarButtonSkin");
+		}
+		cComponents|MenuItemList {
+			skinClass: ClassReference("anifire.creator.skins.MenuItemListSkin");
+		}
+		cComponents|ColorPicker {
+			skinClass: ClassReference("anifire.creator.skins.FlatColorPickerSkin");
+		}
+		cComponents|ArrowTipContainer {
+			skinClass: ClassReference("anifire.creator.skins.ArrowTipContainerSkin");
+		}
+
+	s|DropDownList {
+			skinClass: ClassReference("anifire.creator.skins.DefaultDropDownListSkin");
+		}
+		cComponents|ConfirmPopUp {
+			skinClass: ClassReference("anifire.creator.skins.ConfirmPopUpSkin");
+			fontSize: 14;
+		}
+		s|Panel {
+			skinClass: ClassReference("anifire.creator.skins.ConfirmPanelSkin");
+		}
+
+	#slidingPanel,
+		cComponents|PropertyBox {
+			backgroundColor: #f3f2f5;
+			}
+
+	#typeButtonBar {
+			backgroundColor: #e5e4ea;
+		}
+
+	#slidingPanel,
+		#multiComponentChooser,
+		cComponents|PropertyBox {
+			borderColor: #d3cfdb;
+		}
+
+	cComponents|MultiComponentItemRenderer,
+		cComponents|ComponentItemRenderer {
+			backgroundColor: #fbfbfc;
+		}
+		cComponents|MultiComponentItemRenderer:hovered,
+		cComponents|ComponentItemRenderer:hovered {
+			backgroundColor: #ffccdf;
+		}
+		cComponents|MultiComponentItemRenderer:selectedAndShowsCaret,
+		cComponents|ComponentItemRenderer:selectedAndShowsCaret {
+			backgroundColor: #f97699;
+		}
+
+
+	.dark #slidingPanel {
+			backgroundColor: #18181f;
+		}
+
+	.dark #typeButtonBar {
+			backgroundColor: #2b2938;
+		}
+
+	.dark #slidingPanel,
+		.dark #multiComponentChooser {
+			borderColor: #323041;
+		}
+
+	.dark cComponents|MultiComponentItemRenderer,
+		.dark cComponents|ComponentItemRenderer {
+			backgroundColor: #1E1D25;
+		}
+		.dark cComponents|MultiComponentItemRenderer:hovered,
+		.dark cComponents|ComponentItemRenderer:hovered {
+			backgroundColor: #6b3f56;
+		}
+		.dark cComponents|MultiComponentItemRenderer:selectedAndShowsCaret,
+		.dark cComponents|ComponentItemRenderer:selectedAndShowsCaret {
+			backgroundColor: #732a46;
+		}
+
+
+	@font-face {
+				src: url("../fonts/files/Lato-Regular.ttf");
+				fontFamily: StudioSparkMain;
+				embedAsCFF: true;
+		  }
+		  @font-face {
+				src: url("../fonts/files/Lato-Italic.ttf");
+				fontStyle: italic;
+				fontFamily: StudioSparkMain;
+				embedAsCFF: true;
+		  }
+		  @font-face {
+				src: url("../fonts/files/Lato-Bold.ttf");
+				fontWeight: 700;
+				fontFamily: StudioSparkMain;
+				embedAsCFF: true;
+		  }
+	</fx:Style>
+
+<fx:Script>
+		<![CDATA[
+			import anifire.creator.core.CharacterCreator;
+			import anifire.creator.events.CcCoreEvent;
+			import anifire.managers.AppConfigManager;
+			import anifire.util.Util;
+			import anifire.util.UtilErrorLogger;
+			import anifire.utils.SecurityUtils;
+			import flash.external.ExternalInterface;
+			import mx.events.ResizeEvent;
+
+		private var _characterCreator:CharacterCreator;
+			private var _componentInit:Boolean;
+			private var _resourceInit:Boolean;
+
+		public function get cv_charPreview() : CharPreview
+			{
+				return charPreview;
+			}
+
+		public function get cv_componentPanel() : ComponentPanel
+			{
+				return componentPanel;
+			}
+
+		private function initApp() : void
+			{
+				SecurityUtils.init();
+				AppConfigManager.instance;
+				Util.loadClientLocale("go", onResourceComplete);
+			}
+
+		private function onResourceComplete(event:Event = null) : void
+			{
+				// make sure the resources and the application
+				// are ready before we get things up and running
+				_resourceInit = true;
+				if (_componentInit) {
+					initMainClass();
+				}
+			}
+
+		private function onApplicationComplete() : void
+			{
+				_componentInit = true;
+				if (_resourceInit) {
+					initMainClass();
+				}
+			}
+
+		private function initMainClass() : void
+			{
+				_characterCreator = CharacterCreator.init(this);
+				_characterCreator.addEventListener(CcCoreEvent.LOAD_EVERYTHING_COMPLETE, loadComplete);
+				resizeContentContainer();
+				addEventListener(ResizeEvent.RESIZE, resizeContentContainer);
+			}
+		
+				private function loadComplete(event:Event) : void
+			{
+				setCurrentState("editor");
+				if (ExternalInterface.available) {
+					var useDarkMode:Boolean = ExternalInterface.call("getDarkMode");
+					if (useDarkMode) {
+						styleName = "dark";
+					}
+					ExternalInterface.call("ccLoaded");
+				}
+			}
+
+		private function uncaughtErrorHandler(event:UncaughtErrorEvent) : void
+			{
+				UtilErrorLogger.getInstance().fatal("uncaughtErrorHandler: " + new Error().getStackTrace());
+			}
+
+		private function resizeContentContainer(event:ResizeEvent = null) : void
+			{
+				cv_charPreview.width = stage.stageWidth;
+				cv_charPreview.height = stage.stageHeight;
+				cv_componentPanel.width = stage.stageWidth;
+				cv_componentPanel.height = stage.stageHeight - 60;
+			}
+		]]>
+	</fx:Script>
+
+<fx:Declarations>
+		<s:Power id="power" easeInFraction="1" exponent="4"/>
+		<s:Animate
+			id="moveUp"
+			target="{componentPanel}"
+			duration="500"
+			effectStart="">
+			<s:motionPaths>
+				<s:SimpleMotionPath property="y" valueFrom="105" valueTo="5"/>
+				<s:SimpleMotionPath property="alpha" valueFrom="0" valueTo="1"/>
+			</s:motionPaths>
+		</s:Animate>
+		<s:Animate
+			id="moveDown"
+			target="{componentPanel}"
+			duration="500"
+			effectEnd="">
+			<s:motionPaths>
+				<s:SimpleMotionPath property="y" valueFrom="5" valueTo="105"/>
+				<s:SimpleMotionPath property="alpha" valueFrom="1" valueTo="0"/>
+			</s:motionPaths>
+		</s:Animate>
+	</fx:Declarations>
+
+<s:transitions>
+		<s:Transition fromState="*" toState="*">
+			<s:Parallel id="fadeIn" targets="{[charPreview, componentPanel]}">
+				<s:Fade duration="250" easer="{power}"/>
+			</s:Parallel>
+		</s:Transition>
+	</s:transitions>
+
+<s:states>
+		<s:State name="loading"/>
+		<s:State name="editor"/>
+	</s:states>
+
+<components:CharPreview
+		id="charPreview"
+		verticalCenter="0"
+		horizontalCenter="0"
+		alpha.loading="0"/>
+
+<components:ComponentPanel
+		id="componentPanel"
+		left="0"
+		verticalCenter="0"
+		alpha.loading="0"/>
+
+	<component:EyeDropperScreenOverlay id="eyedropperScreenCap"/>
+
+<components:CCLoadingScreen includeIn="loading"/>
+
+</s:Application>

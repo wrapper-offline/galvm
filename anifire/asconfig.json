@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"output": "../dist/libs/anifire.swc",
+		"source-path": [
+			"src"
+		],
+		"include-sources": [
+			"src"
+		],
+		"library-path": [
+			"../libs/nochump-ziplib-105.swc",
+			"../dist/libs/as3corelib.swc",
+			"../dist/libs/Singularity.swc"
+		],
+		"warnings": false
+	},
+	"type": "lib",
+	"additionalOptions": "-locale en_US"
+}

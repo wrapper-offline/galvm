@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"output": "../dist/bin/creator.swf",
+		"accessible": true,
+		"source-path": [
+			"src"
+		],
+		"library-path": [
+			"../dist/libs/anifire.swc"
+		]
+	},
+	"files": [
+		"src/creator.mxml"
+	],
+	"copySourcePathAssets": true,
+	"additionalOptions": "-locale en_US -managers=flash.fonts.CFFFontManager -verify-digests=false -runtime-shared-library-path=/opt/apache-flex-sdk/frameworks/libs/apache.swc,../../rsls/apache_4.16.1.20171115.swf -runtime-shared-library-path=/opt/apache-flex-sdk/frameworks/libs/framework.swc,../../rsls/framework_4.16.1.20171115.swf -runtime-shared-library-path=/opt/apache-flex-sdk/frameworks/libs/textLayout.swc,../../rsls/textLayout_4.16.1.20171115.swf -runtime-shared-library-path=/opt/apache-flex-sdk/frameworks/libs/spark.swc,../../rsls/spark_4.16.1.20171115.swf -runtime-shared-library-path=/opt/apache-flex-sdk/frameworks/libs/sparkskins.swc,../../rsls/sparkskins_4.16.1.20171115.swf -runtime-shared-library-path=/opt/apache-flex-sdk/frameworks/libs/rpc.swc,../../rsls/rpc_4.16.1.20171115.swf -runtime-shared-library-path=/opt/apache-flex-sdk/frameworks/libs/mx/mx.swc,../../rsls/mx_4.16.1.20171115.swf -runtime-shared-library-path=/opt/apache-flex-sdk/frameworks/libs/charts.swc,../../rsls/charts_4.16.1.20171115.swf -runtime-shared-library-path=/opt/apache-flex-sdk/frameworks/libs/spark_dmv.swc,../../rsls/spark_dmv_4.16.1.20171115.swf -runtime-shared-library-path=/opt/apache-flex-sdk/frameworks/libs/advancedgrids.swc,../../rsls/advancedgrids_4.16.1.20171115.swf"
+}

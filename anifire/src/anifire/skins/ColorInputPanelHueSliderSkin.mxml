@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	minWidth="11"
+	alpha.disabled=".5">
+
+	<fx:Metadata>
+		[HostComponent("spark.components.VSlider")]
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			override protected function measure() : void
+			{
+				var y:Number = Number(this.thumb.getLayoutBoundsY());
+				this.thumb.setLayoutBoundsPosition(this.thumb.getLayoutBoundsX(), 0);
+				super.measure();
+				this.thumb.setLayoutBoundsPosition(this.thumb.getLayoutBoundsX(), y);
+			}
+		]]>
+	</fx:Script>
+
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="disabled"/>
+	</s:states>
+	
+	<s:Button
+		id="track"
+		left="0"
+		right="0"
+		top="0"
+		bottom="0"
+		minHeight="33"
+		height="100"
+		tabEnabled="false"
+		skinClass="anifire.skins.ColorInputPanelHueSliderTrackSkin"/>
+	<s:Button
+		id="thumb"
+		width="25"
+		height="25"
+		tabEnabled="false"
+		skinClass="anifire.skins.ColorInputPanelHueSliderThumbSkin"/>
+
+</s:SparkSkin>
