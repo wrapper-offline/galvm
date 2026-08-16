@@ -185,8 +185,8 @@
 			enabled="true"
 			top="5"
 			right="5"
-			icon="@Embed('../../styles/images/panel/btn_close_init.png')"
-			iconOver="@Embed('../../styles/images/panel/btn_close_over.png')"
+			icon="@Embed('/styles/images/panel/btn_close_init.png')"
+			iconOver="@Embed('/styles/images/panel/btn_close_over.png')"
 			click="moveDown.play()"
 			label="{UtilDict.toDisplay('go','Close')}"/>
 		<s:HGroup
@@ -201,7 +201,7 @@
 			right="15">
 			<s:VGroup verticalCenter="0">
 				<s:Group height="33" alpha="1" alpha.normal="0.5" mouseChildren="true" mouseChildren.normal="false">
-					<s:Image source="@Embed('../../styles/images/details/ico_drag_body_min.png')" width="29" height="33"/>
+					<s:Image source="@Embed('/styles/images/details/ico_drag_body_min.png')" width="29" height="33"/>
 					<s:HSlider
 						id="sliderBody" 
 						x="30"
@@ -211,10 +211,10 @@
 						maximum="140"
 						stepSize="1"
 						changeEnd="changeBodySize()"/>
-					<s:Image source="@Embed('../../styles/images/details/ico_drag_body_max.png')" x="65" width="29" height="33"/>
+					<s:Image source="@Embed('/styles/images/details/ico_drag_body_max.png')" x="65" width="29" height="33"/>
 				</s:Group>
 				<s:Group height="33" alpha="1" alpha.normal="0.5" mouseChildren="true" mouseChildren.normal="false">
-					<s:Image source="@Embed('../../styles/images/details/ico_drag_head_min.png')" width="29" height="33"/>
+					<s:Image source="@Embed('/styles/images/details/ico_drag_head_min.png')" width="29" height="33"/>
 					<s:HSlider
 						id="sliderHead" 
 						x="30"
@@ -224,7 +224,7 @@
 						maximum="180"
 						stepSize="1"
 						changeEnd="changeHeadSize()"/>
-					<s:Image source="@Embed('../../styles/images/details/ico_drag_head_max.png')" x="65" width="29" height="33"/>
+					<s:Image source="@Embed('/styles/images/details/ico_drag_head_max.png')" x="65" width="29" height="33"/>
 				</s:Group>
 			</s:VGroup>
 			<s:VGroup verticalCenter="0" height="100%" verticalAlign="middle">
@@ -233,29 +233,29 @@
 						id="btnType01"
 						buttonMode="true"
 						enabled="true"
-						icon="@Embed('../../styles/images/details/btn_bodytype01_init.png')"
-						iconOver="@Embed('../../styles/images/details/btn_bodytype01_over.png')"
+						icon="@Embed('/styles/images/details/btn_bodytype01_init.png')"
+						iconOver="@Embed('/styles/images/details/btn_bodytype01_over.png')"
 						click="onScaleButtonClick(event)"/>
 					<cComponents:IconButton
 						id="btnType02"
 						buttonMode="true"
 						enabled="true"
-						icon="@Embed('../../styles/images/details/btn_bodytype02_init.png')"
-						iconOver="@Embed('../../styles/images/details/btn_bodytype02_over.png')"
+						icon="@Embed('/styles/images/details/btn_bodytype02_init.png')"
+						iconOver="@Embed('/styles/images/details/btn_bodytype02_over.png')"
 						click="onScaleButtonClick(event)"/>
 					<cComponents:IconButton
 						id="btnType03"
 						buttonMode="true"
 						enabled="true"
-						icon="@Embed('../../styles/images/details/btn_bodytype03_init.png')"
-						iconOver="@Embed('../../styles/images/details/btn_bodytype03_over.png')"
+						icon="@Embed('/styles/images/details/btn_bodytype03_init.png')"
+						iconOver="@Embed('/styles/images/details/btn_bodytype03_over.png')"
 						click="onScaleButtonClick(event)"/>
 					<cComponents:IconButton
 						id="btnType04"
 						buttonMode="true"
 						enabled="true"
-						icon="@Embed('../../styles/images/details/btn_bodytype04_init.png')"
-						iconOver="@Embed('../../styles/images/details/btn_bodytype04_over.png')"
+						icon="@Embed('/styles/images/details/btn_bodytype04_init.png')"
+						iconOver="@Embed('/styles/images/details/btn_bodytype04_over.png')"
 						click="onScaleButtonClick(event)"/>
 				</s:HGroup>
 				<s:HGroup verticalCenter="0" alpha="1" alpha.normal="0.5" mouseChildren="true" mouseChildren.normal="false">
@@ -263,29 +263,29 @@
 						id="btnArrowLeft"
 						buttonMode="true"
 						enabled="true"
-						icon="@Embed('../../styles/images/details/btn_arrowl_init.png')"
-						iconOver="@Embed('../../styles/images/details/btn_arrowl_over.png')"
+						icon="@Embed('/styles/images/details/btn_arrowl_init.png')"
+						iconOver="@Embed('/styles/images/details/btn_arrowl_over.png')"
 						click="dispatchEvent(new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK,this))"/>
 					<cComponents:IconButton
 						id="btnArrowRight"
 						buttonMode="true"
 						enabled="true"
-						icon="@Embed('../../styles/images/details/btn_arrowr_init.png')"
-						iconOver="@Embed('../../styles/images/details/btn_arrowr_over.png')"
+						icon="@Embed('/styles/images/details/btn_arrowr_init.png')"
+						iconOver="@Embed('/styles/images/details/btn_arrowr_over.png')"
 						click="dispatchEvent(new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK,this))"/>
 					<cComponents:IconButton
 						id="btnArrowUp"
 						buttonMode="true"
 						enabled="true"
-						icon="@Embed('../../styles/images/details/btn_arrowu_init.png')"
-						iconOver="@Embed('../../styles/images/details/btn_arrowu_over.png')"
+						icon="@Embed('/styles/images/details/btn_arrowu_init.png')"
+						iconOver="@Embed('/styles/images/details/btn_arrowu_over.png')"
 						click="dispatchEvent(new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK,this))"/>
 					<cComponents:IconButton
 						id="btnArrowDown"
 						buttonMode="true"
 						enabled="true"
-						icon="@Embed('../../styles/images/details/btn_arrowu_init.png')"
-						iconOver="@Embed('../../styles/images/details/btn_arrowu_over.png')"
+						icon="@Embed('/styles/images/details/btn_arrowu_init.png')"
+						iconOver="@Embed('/styles/images/details/btn_arrowu_over.png')"
 						click="dispatchEvent(new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK,this))"/>
 				</s:HGroup>
 			</s:VGroup>

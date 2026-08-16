@@ -13,7 +13,7 @@
 	<s:BitmapImage
 		verticalCenter="0"
 		horizontalCenter="0"
-		source="@Embed('../styles/images/icons/icon_colorpicker.png')"
-		source.over="@Embed('../styles/images/icons/icon_colorpicker_active.png')"/>
+		source="@Embed('/styles/images/icons/icon_colorpicker.png')"
+		source.over="@Embed('/styles/images/icons/icon_colorpicker_active.png')"/>
 
 </s:SparkButtonSkin>

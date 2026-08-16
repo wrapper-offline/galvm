@@ -68,7 +68,7 @@
 								buttonMode="true"
 								bottom="0"
 								right="0"
-								icon="@Embed('../../styles/images/panel/text/nocolor.png')"/>
+								icon="@Embed('/styles/images/panel/text/nocolor.png')"/>
 						</s:Group>
 					</s:HGroup>
 

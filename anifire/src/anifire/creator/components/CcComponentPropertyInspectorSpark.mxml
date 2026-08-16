@@ -210,9 +210,9 @@
 		enabled="true"
 		right="15"
 		bottom="27"
-		icon="@Embed('../../styles/images/details/btn_anchor_init.png')"
-		iconOver="@Embed('../../styles/images/details/btn_anchor_over.png')"
-		iconDisabled="@Embed('../../styles/images/details/btn_anchor_disabled.png')"
+		icon="@Embed('/styles/images/details/btn_anchor_init.png')"
+		iconOver="@Embed('/styles/images/details/btn_anchor_over.png')"
+		iconDisabled="@Embed('/styles/images/details/btn_anchor_disabled.png')"
 		click="moveUp.play()"
 		label="{UtilDict.toDisplay('go','Fine-tune size and position')}"/>
 
@@ -244,8 +244,8 @@
 			enabled="true"
 			top="5"
 			right="5"
-			icon="@Embed('../../styles/images/panel/btn_close_init.png')"
-			iconOver="@Embed('../../styles/images/panel/btn_close_over.png')"
+			icon="@Embed('/styles/images/panel/btn_close_init.png')"
+			iconOver="@Embed('/styles/images/panel/btn_close_over.png')"
 			click="startHide()"
 			label="{UtilDict.toDisplay('go','Close')}"/>
 		<s:HGroup
@@ -265,8 +265,8 @@
 					id="btnScaleUp"
 					buttonMode="true"
 					enabled="true"
-					icon="@Embed('../../styles/images/details/btn_scale_up_init.png')"
-					iconOver="@Embed('../../styles/images/details/btn_scale_up_over.png')"
+					icon="@Embed('/styles/images/details/btn_scale_up_init.png')"
+					iconOver="@Embed('/styles/images/details/btn_scale_up_over.png')"
 					mouseDown="onMouseDown(event)"
 					mouseOut="onMouseUp(event)"
 					mouseUp="onMouseUp(event)"/>
@@ -274,8 +274,8 @@
 					id="btnScaleDown"
 					buttonMode="true"
 					enabled="true"
-					icon="@Embed('../../styles/images/details/btn_scale_down_init.png')"
-					iconOver="@Embed('../../styles/images/details/btn_scale_down_over.png')"
+					icon="@Embed('/styles/images/details/btn_scale_down_init.png')"
+					iconOver="@Embed('/styles/images/details/btn_scale_down_over.png')"
 					mouseDown="onMouseDown(event)"
 					mouseOut="onMouseUp(event)"
 					mouseUp="onMouseUp(event)"/>
@@ -287,8 +287,8 @@
 					id="btnXScaleUp"
 					buttonMode="true"
 					enabled="true"
-					icon="@Embed('../../styles/images/details/btn_scale_up_x_init.png')"
-					iconOver="@Embed('../../styles/images/details/btn_scale_up_x_over.png')"
+					icon="@Embed('/styles/images/details/btn_scale_up_x_init.png')"
+					iconOver="@Embed('/styles/images/details/btn_scale_up_x_over.png')"
 					mouseDown="onMouseDown(event)"
 					mouseOut="onMouseUp(event)"
 					mouseUp="onMouseUp(event)"/>
@@ -296,8 +296,8 @@
 					id="btnXScaleDown"
 					buttonMode="true"
 					enabled="true"
-					icon="@Embed('../../styles/images/details/btn_scale_down_x_init.png')"
-					iconOver="@Embed('../../styles/images/details/btn_scale_down_x_over.png')"
+					icon="@Embed('/styles/images/details/btn_scale_down_x_init.png')"
+					iconOver="@Embed('/styles/images/details/btn_scale_down_x_over.png')"
 					mouseDown="onMouseDown(event)"
 					mouseOut="onMouseUp(event)"
 					mouseUp="onMouseUp(event)"/>
@@ -309,8 +309,8 @@
 					id="btnYScaleUp"
 					buttonMode="true"
 					enabled="true"
-					icon="@Embed('../../styles/images/details/btn_scale_up_y_init.png')"
-					iconOver="@Embed('../../styles/images/details/btn_scale_up_y_over.png')"
+					icon="@Embed('/styles/images/details/btn_scale_up_y_init.png')"
+					iconOver="@Embed('/styles/images/details/btn_scale_up_y_over.png')"
 					mouseDown="onMouseDown(event)"
 					mouseOut="onMouseUp(event)"
 					mouseUp="onMouseUp(event)"/>
@@ -318,8 +318,8 @@
 					id="btnYScaleDown"
 					buttonMode="true"
 					enabled="true"
-					icon="@Embed('../../styles/images/details/btn_scale_down_y_init.png')"
-					iconOver="@Embed('../../styles/images/details/btn_scale_down_y_over.png')"
+					icon="@Embed('/styles/images/details/btn_scale_down_y_init.png')"
+					iconOver="@Embed('/styles/images/details/btn_scale_down_y_over.png')"
 					mouseDown="onMouseDown(event)"
 					mouseOut="onMouseUp(event)"
 					mouseUp="onMouseUp(event)"/>
@@ -331,8 +331,8 @@
 					id="btnRotateUp"
 					buttonMode="true"
 					enabled="true"
-					icon="@Embed('../../styles/images/details/btn_rotate_left_init.png')"
-					iconOver="@Embed('../../styles/images/details/btn_rotate_left_over.png')"
+					icon="@Embed('/styles/images/details/btn_rotate_left_init.png')"
+					iconOver="@Embed('/styles/images/details/btn_rotate_left_over.png')"
 					mouseDown="onMouseDown(event)"
 					mouseOut="onMouseUp(event)"
 					mouseUp="onMouseUp(event)"/>
@@ -340,8 +340,8 @@
 					id="btnRotateDown"
 					buttonMode="true"
 					enabled="true"
-					icon="@Embed('../../styles/images/details/btn_rotate_right_init.png')"
-					iconOver="@Embed('../../styles/images/details/btn_rotate_right_over.png')"
+					icon="@Embed('/styles/images/details/btn_rotate_right_init.png')"
+					iconOver="@Embed('/styles/images/details/btn_rotate_right_over.png')"
 					mouseDown="onMouseDown(event)"
 					mouseOut="onMouseUp(event)"
 					mouseUp="onMouseUp(event)"/>
@@ -353,8 +353,8 @@
 					id="btnOffsetUp"
 					buttonMode="true"
 					enabled="true"
-					icon="@Embed('../../styles/images/details/btn_wider_init.png')"
-					iconOver="@Embed('../../styles/images/details/btn_wider_over.png')"
+					icon="@Embed('/styles/images/details/btn_wider_init.png')"
+					iconOver="@Embed('/styles/images/details/btn_wider_over.png')"
 					mouseDown="onMouseDown(event)"
 					mouseOut="onMouseUp(event)"
 					mouseUp="onMouseUp(event)"/>
@@ -362,8 +362,8 @@
 					id="btnOffsetDown"
 					buttonMode="true"
 					enabled="true"
-					icon="@Embed('../../styles/images/details/btn_closer_init.png')"
-					iconOver="@Embed('../../styles/images/details/btn_closer_over.png')"
+					icon="@Embed('/styles/images/details/btn_closer_init.png')"
+					iconOver="@Embed('/styles/images/details/btn_closer_over.png')"
 					mouseDown="onMouseDown(event)"
 					mouseOut="onMouseUp(event)"
 					mouseUp="onMouseUp(event)"/>

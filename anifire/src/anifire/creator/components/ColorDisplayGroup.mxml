@@ -38,6 +38,6 @@
 		right="0"
 		top="0"
 		bottom="0"
-		source="@Embed('../../styles/images/panel/text/nocolor.png')"/>
+		source="@Embed('/styles/images/panel/text/nocolor.png')"/>
 
 </s:Group>

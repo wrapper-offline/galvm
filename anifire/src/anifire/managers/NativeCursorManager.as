@@ -17,13 +17,13 @@ package anifire.managers
 	{
 		private static var _instance:NativeCursorManager;
 
-		[Embed(source="../styles/images/busy_cursor/1.png")]
+		[Embed(source="/styles/images/busy_cursor/1.png")]
 		private static const imgCursor1:Class;
-		[Embed(source="../styles/images/busy_cursor/2.png")]
+		[Embed(source="/styles/images/busy_cursor/2.png")]
 		private static const imgCursor2:Class;
-		[Embed(source="../styles/images/busy_cursor/3.png")]
+		[Embed(source="/styles/images/busy_cursor/3.png")]
 		private static const imgCursor3:Class;
-		[Embed(source="../styles/images/busy_cursor/4.png")]
+		[Embed(source="/styles/images/busy_cursor/4.png")]
 		private static const imgCursor4:Class;
 
 		public function NativeCursorManager()

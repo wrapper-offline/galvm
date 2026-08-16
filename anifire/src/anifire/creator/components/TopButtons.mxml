@@ -186,9 +186,9 @@
 				buttonMode="true"
 				styleName="topToolBar"
 				enabled="false"
-				icon="@Embed('../../styles/images/toolbar/btn_undo_init.png')"
-				iconOver="@Embed('../../styles/images/toolbar/btn_undo_over.png')"
-				iconDisabled="@Embed('../../styles/images/toolbar/btn_undo_disabled.png')"
+				icon="@Embed('/styles/images/toolbar/btn_undo_init.png')"
+				iconOver="@Embed('/styles/images/toolbar/btn_undo_over.png')"
+				iconDisabled="@Embed('/styles/images/toolbar/btn_undo_disabled.png')"
 				label="{UtilDict.toDisplay('go','Undo')}"
 				click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.UNDO_BUTTON_CLICK, this))"/>
 			<components:IconButton
@@ -196,9 +196,9 @@
 				buttonMode="true"
 				styleName="topToolBar"
 				enabled="false"
-				icon="@Embed('../../styles/images/toolbar/btn_redo_init.png')"
-				iconOver="@Embed('../../styles/images/toolbar/btn_redo_over.png')"
-				iconDisabled="@Embed('../../styles/images/toolbar/btn_redo_disabled.png')"
+				icon="@Embed('/styles/images/toolbar/btn_redo_init.png')"
+				iconOver="@Embed('/styles/images/toolbar/btn_redo_over.png')"
+				iconDisabled="@Embed('/styles/images/toolbar/btn_redo_disabled.png')"
 				label="{UtilDict.toDisplay('go','Redo')}"
 				click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.REDO_BUTTON_CLICK, this))"/>
 			<s:Spacer width="15"/>
@@ -207,8 +207,8 @@
 				buttonMode="true"
 				focusEnabled="false"
 				tabEnabled="false"
-				icon="@Embed('../../styles/images/toolbar/btn_gear_init.png')"
-				iconOver="@Embed('../../styles/images/toolbar/btn_gear_over.png')"
+				icon="@Embed('/styles/images/toolbar/btn_gear_init.png')"
+				iconOver="@Embed('/styles/images/toolbar/btn_gear_over.png')"
 				click="this.onExtraMenuButtonClick(event)"/>
 		</s:HGroup>
 		<s:HGroup
@@ -247,15 +247,15 @@
 					verticalCenter="0"
 					enabled="true"
 					visible="false"
-					icon="@Embed('../../styles/images/toolbar/btn_save_disabled.png')"
-					iconOver="@Embed('../../styles/images/toolbar/btn_save_disabled.png')"/>
+					icon="@Embed('/styles/images/toolbar/btn_save_disabled.png')"
+					iconOver="@Embed('/styles/images/toolbar/btn_save_disabled.png')"/>
 				<components:IconButton
 					id="btnSave"
 					buttonMode="true"
 					styleName="topToolBar"
 					enabled="true"
-					icon="@Embed('../../styles/images/toolbar/btn_save_init.png')"
-					iconOver="@Embed('../../styles/images/toolbar/btn_save_over.png')"
+					icon="@Embed('/styles/images/toolbar/btn_save_init.png')"
+					iconOver="@Embed('/styles/images/toolbar/btn_save_over.png')"
 					label="{UtilDict.toDisplay('go','Save')}"
 					click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.SAVE_BUTTON_CLICK, this))"/>
 			</s:Group>

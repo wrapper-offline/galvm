@@ -12,13 +12,13 @@ package anifire.creator.components
 	
 	public class CCPreloader extends Sprite implements IPreloaderDisplay
 	{
-		[Embed(source="../../styles/images/preloader/loading_logo.png")]
+		[Embed(source="/styles/images/preloader/loading_logo.png")]
 		private static var imgLogo:Class;
 
-		[Embed(source="../../styles/images/preloader/loading_track.png")]
+		[Embed(source="/styles/images/preloader/loading_track.png")]
 		private static var imgBarTrack:Class;
 		
-		[Embed(source="../../styles/images/preloader/loading_fill.png")]
+		[Embed(source="/styles/images/preloader/loading_fill.png")]
 		private static var imgBarFill:Class;
 		
 		private static const LOGO_WIDTH:int = 188;

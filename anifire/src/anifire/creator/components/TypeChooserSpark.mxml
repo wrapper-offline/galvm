@@ -209,26 +209,26 @@
 
 	<fx:Declarations>
 		<s:ArrayList id="typeList">
-			<fx:Object label="componentGroupClothes" icon="@Embed('../../styles/images/assets/icon_upperbody.png')"/>
-			<fx:Object label="GoUpper" icon="@Embed('../../styles/images/assets/ico_upper_body.png')"/>
-			<fx:Object label="GoLower" icon="@Embed('../../styles/images/assets/ico_lower_body.png')"/>
-			<fx:Object label="GoHands" icon="@Embed('../../styles/images/assets/ico_hand.png')"/>
-			<fx:Object label="GoFeet" icon="@Embed('../../styles/images/assets/ico_shoe.png')"/>
-			<fx:Object label="GoBehindBody" icon="@Embed('../../styles/images/assets/ico_back_prop.png')"/>
-			<fx:Object label="GoHair" icon="@Embed('../../styles/images/assets/ico_hair.png')"/>
-			<fx:Object label="upper_body" icon="@Embed('../../styles/images/assets/ico_upper_body.png')"/>
-			<fx:Object label="lower_body" icon="@Embed('../../styles/images/assets/ico_lower_body.png')"/>
-			<fx:Object label="faceshape" icon="@Embed('../../styles/images/assets/ico_face.png')"/>
-			<fx:Object label="hair" icon="@Embed('../../styles/images/assets/ico_hair.png')"/>
-			<fx:Object label="beard" icon="@Embed('../../styles/images/assets/ico_beard.png')"/>
-			<fx:Object label="mouth" icon="@Embed('../../styles/images/assets/ico_mouth.png')"/>
-			<fx:Object label="ear" icon="@Embed('../../styles/images/assets/ico_ear.png')"/>
-			<fx:Object label="mustache" icon="@Embed('../../styles/images/assets/ico_mustache.png')"/>
-			<fx:Object label="eye" icon="@Embed('../../styles/images/assets/ico_eye.png')"/>
-			<fx:Object label="eyebrow" icon="@Embed('../../styles/images/assets/ico_eyebrow.png')"/>
-			<fx:Object label="nose" icon="@Embed('../../styles/images/assets/ico_nose.png')"/>
-			<fx:Object label="glasses" icon="@Embed('../../styles/images/assets/ico_glasses.png')"/>
-			<fx:Object label="facedecoration" icon="@Embed('../../styles/images/assets/ico_face_dec.png')"/>			
+			<fx:Object label="componentGroupClothes" icon="@Embed('/styles/images/assets/icon_upperbody.png')"/>
+			<fx:Object label="GoUpper" icon="@Embed('/styles/images/assets/ico_upper_body.png')"/>
+			<fx:Object label="GoLower" icon="@Embed('/styles/images/assets/ico_lower_body.png')"/>
+			<fx:Object label="GoHands" icon="@Embed('/styles/images/assets/ico_hand.png')"/>
+			<fx:Object label="GoFeet" icon="@Embed('/styles/images/assets/ico_shoe.png')"/>
+			<fx:Object label="GoBehindBody" icon="@Embed('/styles/images/assets/ico_back_prop.png')"/>
+			<fx:Object label="GoHair" icon="@Embed('/styles/images/assets/ico_hair.png')"/>
+			<fx:Object label="upper_body" icon="@Embed('/styles/images/assets/ico_upper_body.png')"/>
+			<fx:Object label="lower_body" icon="@Embed('/styles/images/assets/ico_lower_body.png')"/>
+			<fx:Object label="faceshape" icon="@Embed('/styles/images/assets/ico_face.png')"/>
+			<fx:Object label="hair" icon="@Embed('/styles/images/assets/ico_hair.png')"/>
+			<fx:Object label="beard" icon="@Embed('/styles/images/assets/ico_beard.png')"/>
+			<fx:Object label="mouth" icon="@Embed('/styles/images/assets/ico_mouth.png')"/>
+			<fx:Object label="ear" icon="@Embed('/styles/images/assets/ico_ear.png')"/>
+			<fx:Object label="mustache" icon="@Embed('/styles/images/assets/ico_mustache.png')"/>
+			<fx:Object label="eye" icon="@Embed('/styles/images/assets/ico_eye.png')"/>
+			<fx:Object label="eyebrow" icon="@Embed('/styles/images/assets/ico_eyebrow.png')"/>
+			<fx:Object label="nose" icon="@Embed('/styles/images/assets/ico_nose.png')"/>
+			<fx:Object label="glasses" icon="@Embed('/styles/images/assets/ico_glasses.png')"/>
+			<fx:Object label="facedecoration" icon="@Embed('/styles/images/assets/ico_face_dec.png')"/>			
 		</s:ArrayList>
 	</fx:Declarations>
 
@@ -236,9 +236,9 @@
 		id="btnPrevious"
 		buttonMode="true"
 		enabled="false"
-		icon="@Embed('../../styles/images/typebar/step_arrowl_init.png')"
-		iconOver="@Embed('../../styles/images/typebar/step_arrowl_over.png')"
-		iconDisabled="@Embed('../../styles/images/typebar/step_arrowl_disabled.png')"
+		icon="@Embed('/styles/images/typebar/step_arrowl_init.png')"
+		iconOver="@Embed('/styles/images/typebar/step_arrowl_over.png')"
+		iconDisabled="@Embed('/styles/images/typebar/step_arrowl_disabled.png')"
 		label="{UtilDict.toDisplay('go','Previous')}"
 		click="onBtnClick(event)"/>
 	<s:Spacer width="18"/>
@@ -260,9 +260,9 @@
 		id="btnNext"
 		buttonMode="true"
 		enabled="false"
-		icon="@Embed('../../styles/images/typebar/step_arrowr_init.png')"
-		iconOver="@Embed('../../styles/images/typebar/step_arrowr_over.png')"
-		iconDisabled="@Embed('../../styles/images/typebar/step_arrowr_disabled.png')"
+		icon="@Embed('/styles/images/typebar/step_arrowr_init.png')"
+		iconOver="@Embed('/styles/images/typebar/step_arrowr_over.png')"
+		iconDisabled="@Embed('/styles/images/typebar/step_arrowr_disabled.png')"
 		label="{UtilDict.toDisplay('go','Next')}"
 		click="onBtnClick(event)"/>
 </s:HGroup>

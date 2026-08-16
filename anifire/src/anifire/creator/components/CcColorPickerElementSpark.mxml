@@ -170,29 +170,29 @@
 
 	<s:Group id="title" height="28" width="34" verticalCenter="0">
 		<s:Group id="ico" width="34" height="28" verticalCenter="-3">
-			<s:Image id="sicoccSkinColor" source="@Embed('../../styles/images/icons/color_face.png')" visible="false"/>
-			<s:Image id="sicoccFaceHairColor" source="@Embed('../../styles/images/icons/color_beard.png')" visible="false"/>
-			<s:Image id="sicoccEyeLib" source="@Embed('../../styles/images/icons/color_eyelid.png')" visible="false"/>
-			<s:Image id="sicoccEyeIris" source="@Embed('../../styles/images/icons/color_eyeiris.png')" visible="false"/>
-			<s:Image id="sicoccGlassesFrame" source="@Embed('../../styles/images/icons/color_frame.png')" visible="false"/>
-			<s:Image id="sicoccGlassesLens" source="@Embed('../../styles/images/icons/color_len.png')" visible="false"/>
-			<s:Image id="sicoccMouthLip" source="@Embed('../../styles/images/icons/color_mouth.png')" visible="false"/>
-			<s:Image id="sicoccMustache" source="@Embed('../../styles/images/icons/color_mustache.png')" visible="false"/>
-			<s:Image id="sicoccBeard" source="@Embed('../../styles/images/icons/color_beard.png')" visible="false"/>
-			<s:Image id="sicoccEyebrow" source="@Embed('../../styles/images/icons/color_eyebrow.png')" visible="false"/>
-			<s:Image id="sicoccHairMajor" source="@Embed('../../styles/images/icons/color_hair.png')" visible="false"/>
-			<s:Image id="sicoccHairMinor" source="@Embed('../../styles/images/icons/color_hair_minor.png')" visible="false"/>
-			<s:Image id="sicoccUpperMain" source="@Embed('../../styles/images/icons/color_upper.png')" visible="false"/>
-			<s:Image id="sicoccUpperMinor" source="@Embed('../../styles/images/icons/color_upper_minor.png')" visible="false"/>
-			<s:Image id="sicoccLowerMain" source="@Embed('../../styles/images/icons/color_lower.png')" visible="false"/>
-			<s:Image id="sicoccLowerMainA" source="@Embed('../../styles/images/icons/color_lower.png')" visible="false"/>
-			<s:Image id="sicoccLowerMinor" source="@Embed('../../styles/images/icons/color_lower_minor.png')" visible="false"/>
-			<s:Image id="sicoccBackMajor" source="@Embed('../../styles/images/icons/color_backprop.png')" visible="false"/>
-			<s:Image id="sicoccBackMinor" source="@Embed('../../styles/images/icons/color_backprop_minor.png')" visible="false"/>
-			<s:Image id="sicoccDecMajor" source="@Embed('../../styles/images/icons/color_acc.png')" visible="false"/>
-			<s:Image id="sicoccDecMinor" source="@Embed('../../styles/images/icons/color_acc_minor.png')" visible="false"/>
-			<s:Image id="sicoccFeetMain" source="@Embed('../../styles/images/icons/color_feet.png')" visible="false"/>
-			<s:Image id="sicoccHandMain" source="@Embed('../../styles/images/icons/color_hand.png')" visible="false"/>
+			<s:Image id="sicoccSkinColor" source="@Embed('/styles/images/icons/color_face.png')" visible="false"/>
+			<s:Image id="sicoccFaceHairColor" source="@Embed('/styles/images/icons/color_beard.png')" visible="false"/>
+			<s:Image id="sicoccEyeLib" source="@Embed('/styles/images/icons/color_eyelid.png')" visible="false"/>
+			<s:Image id="sicoccEyeIris" source="@Embed('/styles/images/icons/color_eyeiris.png')" visible="false"/>
+			<s:Image id="sicoccGlassesFrame" source="@Embed('/styles/images/icons/color_frame.png')" visible="false"/>
+			<s:Image id="sicoccGlassesLens" source="@Embed('/styles/images/icons/color_len.png')" visible="false"/>
+			<s:Image id="sicoccMouthLip" source="@Embed('/styles/images/icons/color_mouth.png')" visible="false"/>
+			<s:Image id="sicoccMustache" source="@Embed('/styles/images/icons/color_mustache.png')" visible="false"/>
+			<s:Image id="sicoccBeard" source="@Embed('/styles/images/icons/color_beard.png')" visible="false"/>
+			<s:Image id="sicoccEyebrow" source="@Embed('/styles/images/icons/color_eyebrow.png')" visible="false"/>
+			<s:Image id="sicoccHairMajor" source="@Embed('/styles/images/icons/color_hair.png')" visible="false"/>
+			<s:Image id="sicoccHairMinor" source="@Embed('/styles/images/icons/color_hair_minor.png')" visible="false"/>
+			<s:Image id="sicoccUpperMain" source="@Embed('/styles/images/icons/color_upper.png')" visible="false"/>
+			<s:Image id="sicoccUpperMinor" source="@Embed('/styles/images/icons/color_upper_minor.png')" visible="false"/>
+			<s:Image id="sicoccLowerMain" source="@Embed('/styles/images/icons/color_lower.png')" visible="false"/>
+			<s:Image id="sicoccLowerMainA" source="@Embed('/styles/images/icons/color_lower.png')" visible="false"/>
+			<s:Image id="sicoccLowerMinor" source="@Embed('/styles/images/icons/color_lower_minor.png')" visible="false"/>
+			<s:Image id="sicoccBackMajor" source="@Embed('/styles/images/icons/color_backprop.png')" visible="false"/>
+			<s:Image id="sicoccBackMinor" source="@Embed('/styles/images/icons/color_backprop_minor.png')" visible="false"/>
+			<s:Image id="sicoccDecMajor" source="@Embed('/styles/images/icons/color_acc.png')" visible="false"/>
+			<s:Image id="sicoccDecMinor" source="@Embed('/styles/images/icons/color_acc_minor.png')" visible="false"/>
+			<s:Image id="sicoccFeetMain" source="@Embed('/styles/images/icons/color_feet.png')" visible="false"/>
+			<s:Image id="sicoccHandMain" source="@Embed('/styles/images/icons/color_hand.png')" visible="false"/>
 		</s:Group>
 	</s:Group>
 	<s:HGroup id="tileColor" width="100%" height="70">

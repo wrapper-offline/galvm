@@ -77,8 +77,8 @@
 		enabled="true"
 		bottom="0"
 		right="15"
-		icon="@Embed('../../styles/images/control/btn_zoomin_init.png')"
-		iconOver="@Embed('../../styles/images/control/btn_zoomin_over.png')"
+		icon="@Embed('/styles/images/control/btn_zoomin_init.png')"
+		iconOver="@Embed('/styles/images/control/btn_zoomin_over.png')"
 		label="{UtilDict.toDisplay('go','Zoom In')}"
 		click="onZoomInClick(event)"/>
 	<components:IconButton
@@ -87,8 +87,8 @@
 		enabled="true"
 		bottom="0"
 		right="15"
-		icon="@Embed('../../styles/images/control/btn_zoomout_init.png')"
-		iconOver="@Embed('../../styles/images/control/btn_zoomout_over.png')"
+		icon="@Embed('/styles/images/control/btn_zoomout_init.png')"
+		iconOver="@Embed('/styles/images/control/btn_zoomout_over.png')"
 		label="{UtilDict.toDisplay('go','Zoom Out')}"
 		click="onZoomOutClick(event)"/>
 	<s:Line id="bottomLine" width="100%" bottom="0">

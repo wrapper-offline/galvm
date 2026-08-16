@@ -96,16 +96,16 @@
 		]]>
 	</fx:Script>
 
-	<s:Image source="@Embed('../../styles/images/details/bg_cross.png')"/>
+	<s:Image source="@Embed('/styles/images/details/bg_cross.png')"/>
 	<components:IconButton
 		id="btnUp"
 		buttonMode="true"
 		enabled="true"
 		horizontalCenter="0"
 		top="0"
-		icon="@Embed('../../styles/images/details/arrow_up_init.png')"
-		iconOver="@Embed('../../styles/images/details/arrow_up_over.png')"
-		iconDown="@Embed('../../styles/images/details/arrow_up_down.png')"
+		icon="@Embed('/styles/images/details/arrow_up_init.png')"
+		iconOver="@Embed('/styles/images/details/arrow_up_over.png')"
+		iconDown="@Embed('/styles/images/details/arrow_up_down.png')"
 		mouseDown="onMouseDown(event)"
 		mouseOut="onMouseUp(event)"
 		mouseUp="onMouseUp(event)"/>
@@ -115,9 +115,9 @@
 		enabled="true"
 		horizontalCenter="0"
 		bottom="0"
-		icon="@Embed('../../styles/images/details/arrow_down_init.png')"
-		iconOver="@Embed('../../styles/images/details/arrow_down_over.png')"
-		iconDown="@Embed('../../styles/images/details/arrow_down_down.png')"
+		icon="@Embed('/styles/images/details/arrow_down_init.png')"
+		iconOver="@Embed('/styles/images/details/arrow_down_over.png')"
+		iconDown="@Embed('/styles/images/details/arrow_down_down.png')"
 		mouseDown="onMouseDown(event)"
 		mouseOut="onMouseUp(event)"
 		mouseUp="onMouseUp(event)"/>
@@ -127,9 +127,9 @@
 		enabled="true"
 		verticalCenter="0"
 		left="0"
-		icon="@Embed('../../styles/images/details/arrow_left_init.png')"
-		iconOver="@Embed('../../styles/images/details/arrow_left_over.png')"
-		iconDown="@Embed('../../styles/images/details/arrow_left_down.png')"
+		icon="@Embed('/styles/images/details/arrow_left_init.png')"
+		iconOver="@Embed('/styles/images/details/arrow_left_over.png')"
+		iconDown="@Embed('/styles/images/details/arrow_left_down.png')"
 		mouseDown="onMouseDown(event)"
 		mouseOut="onMouseUp(event)"
 		mouseUp="onMouseUp(event)"/>
@@ -139,9 +139,9 @@
 		enabled="true"
 		verticalCenter="0"
 		right="0"
-		icon="@Embed('../../styles/images/details/arrow_right_init.png')"
-		iconOver="@Embed('../../styles/images/details/arrow_right_over.png')"
-		iconDown="@Embed('../../styles/images/details/arrow_right_down.png')"
+		icon="@Embed('/styles/images/details/arrow_right_init.png')"
+		iconOver="@Embed('/styles/images/details/arrow_right_over.png')"
+		iconDown="@Embed('/styles/images/details/arrow_right_down.png')"
 		mouseDown="onMouseDown(event)"
 		mouseOut="onMouseUp(event)"
 		mouseUp="onMouseUp(event)"/>

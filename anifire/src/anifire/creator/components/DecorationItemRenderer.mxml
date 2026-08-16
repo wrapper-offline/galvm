@@ -138,8 +138,8 @@
 		enabled="true"
 		bottom="10"
 		right="10"
-		icon="@Embed('../../styles/images/control/btn_delete_init.png')"
-		iconOver="@Embed('../../styles/images/control/btn_delete_over.png')"
+		icon="@Embed('/styles/images/control/btn_delete_init.png')"
+		iconOver="@Embed('/styles/images/control/btn_delete_over.png')"
 		click="this.onDeleteClick(event)"
 		label="{UtilDict.toDisplay('go','Delete')}"/>
 	

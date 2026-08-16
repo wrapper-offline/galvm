@@ -121,8 +121,8 @@
 		</s:fill>
 	</s:Rect>
 	<s:Group id="nullIcon" visible="false" horizontalCenter="0" verticalCenter="0">
-		<s:Image source="@Embed('../../styles/images/thumbBox/btn_remove_init.png')" visible="true" visible.hovered="false"/>
-		<s:Image source="@Embed('../../styles/images/thumbBox/btn_remove_over.png')" visible="false" visible.hovered="true"/>
+		<s:Image source="@Embed('/styles/images/thumbBox/btn_remove_init.png')" visible="true" visible.hovered="false"/>
+		<s:Image source="@Embed('/styles/images/thumbBox/btn_remove_over.png')" visible="false" visible.hovered="true"/>
 	</s:Group>
 	<components:BusyIndicator id="_loading" horizontalCenter="0" verticalCenter="0" visible="false" symbolColor="0"/>
 	<s:BitmapImage

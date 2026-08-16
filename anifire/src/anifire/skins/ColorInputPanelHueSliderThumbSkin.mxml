@@ -13,6 +13,6 @@
 		<s:State name="disabled"/>
 	</s:states>
 
-	<s:BitmapImage source="@Embed('../styles/images/colorpalette/slider_control.png')"/>
+	<s:BitmapImage source="@Embed('/styles/images/colorpalette/slider_control.png')"/>
 
 </s:SparkSkin>

@@ -20,11 +20,11 @@ package anifire.creator.components
 		public static const CONFIRM_POPUP_ALERT:int = 2;
 		public static const CONFIRM_POPUP_ERROR:int = 3;
 
-		[Embed(source="../../styles/images/TEMP_POPUP/imgAlert.png")]
+		[Embed(source="/styles/images/TEMP_POPUP/imgAlert.png")]
 		public static const imgAlert:Class;
-		[Embed(source="../../styles/images/TEMP_POPUP/imgConfirm.png")]
+		[Embed(source="/styles/images/TEMP_POPUP/imgConfirm.png")]
 		public static const imgConfirm:Class;
-		[Embed(source="../../styles/images/TEMP_POPUP/imgError.png")]
+		[Embed(source="/styles/images/TEMP_POPUP/imgError.png")]
 		public static const imgError:Class;
 
 		public var confirmButton:ButtonBase;
