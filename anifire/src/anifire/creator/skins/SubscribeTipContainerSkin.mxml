@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	minWidth="30"
+	minHeight="30">
+
+	<fx:Metadata>
+		[HostComponent("anifire.creator.components.ArrowTipContainer")]
+	</fx:Metadata>
+
+	<s:states>
+		<s:State name="above" stateGroups="aboves"/>
+		<s:State name="aboveRight" stateGroups="aboves"/>
+		<s:State name="below" stateGroups="belows"/>
+		<s:State name="belowRight" stateGroups="belows"/>
+	</s:states>
+
+	<s:Group
+		id="borderGroup"
+		left="0"
+		right="0"
+		top.aboves="0"
+		bottom.aboves="8"
+		top.belows="8"
+		bottom.belows="0">
+		<s:Rect id="border" left="0" right="0" top="0" bottom="0" radiusX="0">
+			<s:stroke>
+				<s:SolidColorStroke id="borderStroke" color="0xA09F9F"/>
+			</s:stroke>
+			<s:fill>
+				<s:SolidColor id="bgFill" color="0x333333"/>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	<s:Group
+		id="chromeGroup"
+		width="{hostComponent.targetWidth}"
+		bottom.aboves="0"
+		left.above="{hostComponent.offset}"
+		right.aboveRight="65"
+		top.belows="0"
+		left.below="{hostComponent.offset}"
+		right.belowRight="5">
+		<s:Group id="arrowGroup" horizontalCenter="0">
+			<s:Path
+				left="0"
+				right="0"
+				height="100%"
+				data.aboves="M 0 0 l 6 8 l 6 -8 Z"
+				data.belows="M 0 8 l 6 -8 l 6 8 Z">
+				<s:fill>
+					<s:SolidColor color="0x333333"/>
+				</s:fill>
+			</s:Path>
+			<s:Path
+				left="0"
+				right="0"
+				height="100%"
+				data.aboves="M 0 0 l 6 8 l 6 -8"
+				data.belows="M 0 8 l 6 -8 l 6 8">
+				<s:stroke>
+					<s:SolidColorStroke color="0xA09F9F"/>
+				</s:stroke>
+			</s:Path>
+		</s:Group>
+	</s:Group>
+	<s:Group
+		id="contentGroup"
+		left="0"
+		right="0"
+		top.aboves="3"
+		bottom.aboves="11"
+		top.belows="11"
+		bottom.belows="3"/>
+
+</s:SparkSkin>

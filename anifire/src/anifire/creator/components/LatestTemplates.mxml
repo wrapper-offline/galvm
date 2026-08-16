@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.component.CCThumb;
+			import anifire.creator.events.CcTemplateChooserEvent;
+			import anifire.creator.models.CcCharacter;
+
+			public function addThumbnail(param1:CCThumb, param2:CcCharacter) : void
+			{
+				var tthumb:anifire.creator.components.LatestTemplateCharThumb = null;
+				var thumb:CCThumb = param1;
+				var char:CcCharacter = param2;
+				var self:anifire.creator.components.LatestTemplates = this;
+				if(this.tiles.getChildren().length < 6)
+				{
+					tthumb = new anifire.creator.components.LatestTemplateCharThumb();
+					tthumb.character = char;
+					tthumb.thumbnail = thumb;
+					tthumb.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+					{
+						dispatchEvent(new CcTemplateChooserEvent(CcTemplateChooserEvent.USER_WANT_TO_PREVIEW,tthumb,char,true));
+					});
+					this.tiles.addChild(tthumb);
+				}
+			}
+		]]>
+	</fx:Script>
+
+	<mx:Canvas>
+		<mx:HBox verticalAlign="middle" width="100%">
+			<mx:HBox id="tiles" horizontalAlign="center" verticalAlign="middle" horizontalGap="-5" width="100%"/>
+			<mx:Canvas
+				click="dispatchEvent(new CcTemplateChooserEvent(CcTemplateChooserEvent.PREVIEW_TAB_CHANGED,this,'preview_professions',true))"
+				width="120"
+				height="123"
+				styleName="buoyNext"/>
+		</mx:HBox>
+	</mx:Canvas>
+
+</mx:Canvas>

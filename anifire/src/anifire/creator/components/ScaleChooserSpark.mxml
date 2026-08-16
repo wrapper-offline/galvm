@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:cComponents="anifire.creator.components.*"
+	width="300"
+	height="100">
+	
+	<fx:Declarations>
+		<s:Animate
+			id="moveUp"
+			target="{yPad}"
+			duration="500"
+			effectStart="this.hideFinishFlag=false;this.yPad.mouseChildren=true;">
+			<s:motionPaths>
+				<s:SimpleMotionPath property="y" valueFrom="105" valueTo="5"/>
+				<s:SimpleMotionPath property="alpha" valueFrom="0" valueTo="1"/>
+			</s:motionPaths>
+		</s:Animate>
+		<s:Animate
+			id="moveDown"
+			target="{yPad}"
+			duration="500"
+			effectEnd="this.hideFinishFlag=true;this.yPad.mouseChildren=false;">
+			<s:motionPaths>
+				<s:SimpleMotionPath property="y" valueFrom="5" valueTo="105"/>
+				<s:SimpleMotionPath property="alpha" valueFrom="1" valueTo="0"/>
+			</s:motionPaths>
+		</s:Animate>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import anifire.constant.CcLibConstant;
+			import anifire.creator.events.CcScaleChosenEvent;
+			import anifire.creator.events.CcThumbPropertyEvent;
+			import anifire.util.UtilDict;
+			import anifire.util.UtilUser;
+
+			private var hideFinishFlag:Boolean = true;
+
+			private function onCustomScaleUpdate() : void
+			{
+				var _loc1_:CcScaleChosenEvent = new CcScaleChosenEvent(CcScaleChosenEvent.SCALE_CHOSEN,this);
+				_loc1_.head_scale = this.sliderHead.value;
+				_loc1_.body_scale = this.sliderBody.value;
+				dispatchEvent(_loc1_);
+			}
+			
+			private function onScaleButtonClick(param1:Event) : void
+			{
+				var _loc2_:CcScaleChosenEvent = new CcScaleChosenEvent(CcScaleChosenEvent.SCALE_CHOSEN,this);
+				switch(param1.currentTarget)
+				{
+					case this.btnType01:
+						_loc2_.head_scale = CcLibConstant.DEFAULT_HEADSCALES[0];
+						_loc2_.body_scale = CcLibConstant.DEFAULT_BODYSCALES[0];
+						_loc2_.head_pos = CcLibConstant.DEFAULT_HEADPOS[0];
+						break;
+					case this.btnType02:
+						_loc2_.head_scale = CcLibConstant.DEFAULT_HEADSCALES[1];
+						_loc2_.body_scale = CcLibConstant.DEFAULT_BODYSCALES[1];
+						_loc2_.head_pos = CcLibConstant.DEFAULT_HEADPOS[1];
+						break;
+					case this.btnType03:
+						_loc2_.head_scale = CcLibConstant.DEFAULT_HEADSCALES[2];
+						_loc2_.body_scale = CcLibConstant.DEFAULT_BODYSCALES[2];
+						_loc2_.head_pos = CcLibConstant.DEFAULT_HEADPOS[2];
+						break;
+					case this.btnType04:
+						_loc2_.head_scale = CcLibConstant.DEFAULT_HEADSCALES[3];
+						_loc2_.body_scale = CcLibConstant.DEFAULT_BODYSCALES[3];
+						_loc2_.head_pos = CcLibConstant.DEFAULT_HEADPOS[3];
+				}
+				this.updateSliders(_loc2_.body_scale * 100,_loc2_.head_scale * 100);
+				dispatchEvent(_loc2_);
+			}
+			
+			public function show() : void
+			{
+				if(UtilUser.hasPlusFeatures())
+				{
+					setCurrentState("isPlus");
+				}
+				else
+				{
+					setCurrentState("normal");
+				}
+				this.addEventListener(CcThumbPropertyEvent.CCPROP_DOWN_BUTTON_CLICK,this.updateHeadPos);
+				this.addEventListener(CcThumbPropertyEvent.CCPROP_UP_BUTTON_CLICK,this.updateHeadPos);
+				this.addEventListener(CcThumbPropertyEvent.CCPROP_LEFT_BUTTON_CLICK,this.updateHeadPos);
+				this.addEventListener(CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK,this.updateHeadPos);
+				this.moveUp.play();
+			}
+			
+			public function close() : void
+			{
+				if(!this.hideFinishFlag)
+				{
+					this.startHide();
+				}
+			}
+			
+			public function startHide() : void
+			{
+				this.moveDown.play();
+			}
+			
+			private function changeHeadSize() : void
+			{
+				var _loc1_:CcScaleChosenEvent = new CcScaleChosenEvent(CcScaleChosenEvent.SCALE_CHOSEN,this);
+				_loc1_.head_scale = this.sliderHead.value / 100;
+				dispatchEvent(_loc1_);
+			}
+			
+			private function changeBodySize() : void
+			{
+				var _loc1_:CcScaleChosenEvent = new CcScaleChosenEvent(CcScaleChosenEvent.SCALE_CHOSEN,this);
+				_loc1_.body_scale = this.sliderBody.value / 100;
+				dispatchEvent(_loc1_);
+			}
+			
+			private function updateHeadPos(param1:Event) : void
+			{
+				var _loc2_:Number = 0;
+				var _loc3_:Number = 0;
+				switch(param1.type)
+				{
+					case CcThumbPropertyEvent.CCPROP_UP_BUTTON_CLICK:
+						_loc3_ = -1;
+						break;
+					case CcThumbPropertyEvent.CCPROP_DOWN_BUTTON_CLICK:
+						_loc3_ = 1;
+						break;
+					case CcThumbPropertyEvent.CCPROP_LEFT_BUTTON_CLICK:
+						_loc2_ = 1;
+						break;
+					case CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK:
+						_loc2_ = -1;
+				}
+				var _loc4_:CcScaleChosenEvent;
+				(_loc4_ = new CcScaleChosenEvent(CcScaleChosenEvent.SCALE_CHOSEN,this)).head_shift = new Point(_loc2_,_loc3_);
+				dispatchEvent(_loc4_);
+			}
+			
+			public function updateSliders(param1:Number, param2:Number) : void
+			{
+				this.sliderBody.value = param1;
+				this.sliderHead.value = param2;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="isPlus"/>
+	</s:states>
+
+	<s:Group id="yPad" y="105" x="{(this.width - yPad.width) / 2}" alpha="0" mouseChildren="false">
+		<s:Rect width="280" height="101" radiusX="5" radiusY="5">
+			<s:fill>
+				<s:SolidColor color="0x333333"/>
+			</s:fill>
+		</s:Rect>
+		<s:RectangularDropShadow
+			id="dropShadow"
+			blurX="20"
+			blurY="20"
+			alpha="0.45"
+			distance="7"
+			angle="90"
+			color="0x000000"
+			blRadius="3"
+			brRadius="3"
+			tlRadius="3"
+			trRadius="3"
+			left="0"
+			right="0"
+			top="0"
+			bottom="0"/>
+		<cComponents:IconButton
+			id="btnClose"
+			buttonMode="true"
+			enabled="true"
+			top="5"
+			right="5"
+			icon="@Embed('../../styles/images/panel/btn_close_init.png')"
+			iconOver="@Embed('../../styles/images/panel/btn_close_over.png')"
+			click="moveDown.play()"
+			label="{UtilDict.toDisplay('go','Close')}"/>
+		<s:HGroup
+			width="100%"
+			height="100%"
+			verticalCenter="0"
+			horizontalCenter="0"
+			gap="22"
+			top="15"
+			bottom="15"
+			left="15"
+			right="15">
+			<s:VGroup verticalCenter="0">
+				<s:Group height="33" alpha="1" alpha.normal="0.5" mouseChildren="true" mouseChildren.normal="false">
+					<s:Image source="@Embed('../../styles/images/details/ico_drag_body_min.png')" width="29" height="33"/>
+					<s:HSlider
+						id="sliderBody" 
+						x="30"
+						width="20"
+						verticalCenter="0"
+						minimum="60"
+						maximum="140"
+						stepSize="1"
+						changeEnd="changeBodySize()"/>
+					<s:Image source="@Embed('../../styles/images/details/ico_drag_body_max.png')" x="65" width="29" height="33"/>
+				</s:Group>
+				<s:Group height="33" alpha="1" alpha.normal="0.5" mouseChildren="true" mouseChildren.normal="false">
+					<s:Image source="@Embed('../../styles/images/details/ico_drag_head_min.png')" width="29" height="33"/>
+					<s:HSlider
+						id="sliderHead" 
+						x="30"
+						width="20"
+						verticalCenter="0"
+						minimum="60"
+						maximum="180"
+						stepSize="1"
+						changeEnd="changeHeadSize()"/>
+					<s:Image source="@Embed('../../styles/images/details/ico_drag_head_max.png')" x="65" width="29" height="33"/>
+				</s:Group>
+			</s:VGroup>
+			<s:VGroup verticalCenter="0" height="100%" verticalAlign="middle">
+				<s:HGroup verticalCenter="0">
+					<cComponents:IconButton
+						id="btnType01"
+						buttonMode="true"
+						enabled="true"
+						icon="@Embed('../../styles/images/details/btn_bodytype01_init.png')"
+						iconOver="@Embed('../../styles/images/details/btn_bodytype01_over.png')"
+						click="onScaleButtonClick(event)"/>
+					<cComponents:IconButton
+						id="btnType02"
+						buttonMode="true"
+						enabled="true"
+						icon="@Embed('../../styles/images/details/btn_bodytype02_init.png')"
+						iconOver="@Embed('../../styles/images/details/btn_bodytype02_over.png')"
+						click="onScaleButtonClick(event)"/>
+					<cComponents:IconButton
+						id="btnType03"
+						buttonMode="true"
+						enabled="true"
+						icon="@Embed('../../styles/images/details/btn_bodytype03_init.png')"
+						iconOver="@Embed('../../styles/images/details/btn_bodytype03_over.png')"
+						click="onScaleButtonClick(event)"/>
+					<cComponents:IconButton
+						id="btnType04"
+						buttonMode="true"
+						enabled="true"
+						icon="@Embed('../../styles/images/details/btn_bodytype04_init.png')"
+						iconOver="@Embed('../../styles/images/details/btn_bodytype04_over.png')"
+						click="onScaleButtonClick(event)"/>
+				</s:HGroup>
+				<s:HGroup verticalCenter="0" alpha="1" alpha.normal="0.5" mouseChildren="true" mouseChildren.normal="false">
+					<cComponents:IconButton
+						id="btnArrowLeft"
+						buttonMode="true"
+						enabled="true"
+						icon="@Embed('../../styles/images/details/btn_arrowl_init.png')"
+						iconOver="@Embed('../../styles/images/details/btn_arrowl_over.png')"
+						click="dispatchEvent(new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK,this))"/>
+					<cComponents:IconButton
+						id="btnArrowRight"
+						buttonMode="true"
+						enabled="true"
+						icon="@Embed('../../styles/images/details/btn_arrowr_init.png')"
+						iconOver="@Embed('../../styles/images/details/btn_arrowr_over.png')"
+						click="dispatchEvent(new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK,this))"/>
+					<cComponents:IconButton
+						id="btnArrowUp"
+						buttonMode="true"
+						enabled="true"
+						icon="@Embed('../../styles/images/details/btn_arrowu_init.png')"
+						iconOver="@Embed('../../styles/images/details/btn_arrowu_over.png')"
+						click="dispatchEvent(new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK,this))"/>
+					<cComponents:IconButton
+						id="btnArrowDown"
+						buttonMode="true"
+						enabled="true"
+						icon="@Embed('../../styles/images/details/btn_arrowu_init.png')"
+						iconOver="@Embed('../../styles/images/details/btn_arrowu_over.png')"
+						click="dispatchEvent(new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK,this))"/>
+				</s:HGroup>
+			</s:VGroup>
+		</s:HGroup>
+	</s:Group>
+	
+</s:Group>

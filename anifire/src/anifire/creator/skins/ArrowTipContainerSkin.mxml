@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	minWidth="30"
+	minHeight="30">
+
+	<fx:Metadata>
+		[HostComponent("anifire.creator.components.ArrowTipContainer")]
+	</fx:Metadata>
+
+	<s:states>
+		<s:State name="above" stateGroups="aboves"/>
+		<s:State name="aboveRight" stateGroups="aboves"/>
+		<s:State name="below" stateGroups="belows"/>
+		<s:State name="belowRight" stateGroups="belows"/>
+	</s:states>
+
+	<s:Group
+		id="borderGroup"
+		top.aboves="0"
+		top.belows="8"
+		bottom.aboves="8"
+		bottom.belows="0"
+		left="0"
+		right="0">
+		<s:RectangularDropShadow
+			id="dropShadow"
+			blurX="20"
+			blurY="20"
+			alpha="0.45"
+			distance="7"
+			angle="90"
+			color="0"
+			blRadius="3"
+			brRadius="3"
+			tlRadius="3"
+			trRadius="3"
+			left="0"
+			right="0"
+			top="0"
+			bottom="0"/>
+		<s:Rect
+			id="border"
+			left="0"
+			right="0"
+			top="0"
+			bottom="0"
+			radiusX="3">
+			<s:stroke>
+				<s:SolidColorStroke id="borderStroke" color="0xA09F9F"/>
+			</s:stroke>
+			<s:fill>
+				<s:SolidColor id="bgFill" color="0xFFFFFF"/>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	<s:Group
+		id="chromeGroup"
+		bottom.aboves="0"
+		top.belows="0"
+		left.above="{hostComponent.offset}"
+		left.below="{hostComponent.offset}"
+		right.aboveRight="55"
+		right.belowRight="5"
+		width="{hostComponent.targetWidth}">
+		<s:Group id="arrowGroup" horizontalCenter="0">
+			<s:Path
+				data.aboves="M 0 0 l 6 8 l 6 -8 Z"
+				data.belows="M 0 8 l 6 -8 l 6 8 Z"
+				left="0"
+				right="0"
+				height="100%">
+				<s:fill>
+					<s:SolidColor color="0xFFFFFF"/>
+				</s:fill>
+			</s:Path>
+			<s:Path
+				data.aboves="M 0 0 l 6 8 l 6 -8"
+				data.belows="M 0 8 l 6 -8 l 6 8"
+				left="0"
+				right="0"
+				height="100%">
+				<s:stroke>
+					<s:SolidColorStroke color="0xA09F9F"/>
+				</s:stroke>
+			</s:Path>
+		</s:Group>
+	</s:Group>
+	<s:Group
+		id="contentGroup"
+		top.aboves="3"
+		top.belows="11"
+		bottom.aboves="11"
+		bottom.belows="3"
+		left="0"
+		right="0"/>
+
+</s:SparkSkin>

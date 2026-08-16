@@ -1,220 +1,189 @@
 package anifire.models.creator
 {
 	import anifire.constant.CcLibConstant;
-	
+
 	public class CCBodyShapeModel
 	{
-		
-		protected var themeModel:CCThemeModel;
-		
+		protected var themeModel:CCThemeModel;	
 		public var bodyShapeId:String;
-		
 		public var components:Object;
-		
 		public var libraries:Object;
-		
 		public var actions:Object;
-		
 		public var runwayMode:Boolean;
-		
 		public var defaultCharacterXML:Vector.<XML>;
-		
 		public var defaultActionId:String;
-		
 		public var defaultMotionId:String;
-		
 		public var defaultFaceId:String;
-		
+
+		/**
+		 * Stores the amount of actions per category, indexed by category ID.
+		 */
 		public var actionCategories:Object;
-		
-		public function CCBodyShapeModel(param1:CCThemeModel)
+
+		public function CCBodyShapeModel(parentTheme:CCThemeModel)
 		{
 			super();
-			this.themeModel = param1;
+			this.themeModel = parentTheme;
 			this.components = {};
 			this.libraries = {};
 			this.actions = {};
-			if(param1.runwayMode)
-			{
+			if (parentTheme.runwayMode) {
 				this.runwayMode = true;
 				this.defaultCharacterXML = new Vector.<XML>();
 				this.actionCategories = {};
 			}
 		}
-		
-		public function parse(param1:XML) : void
+
+		public function parse(bsNode:XML) : void
 		{
-			this.bodyShapeId = param1.@id;
-			this.defaultActionId = param1.@default_action + ".xml";
-			this.defaultMotionId = param1.@default_motion + ".xml";
-			this.defaultFaceId = param1.@facial_thumb;
-			var _loc2_:XMLList = param1.children();
-			var _loc3_:int = _loc2_.length();
-			var _loc4_:int = 0;
-			while(_loc4_ < _loc3_)
-			{
-				this.processNode(_loc2_[_loc4_]);
-				_loc4_++;
+			this.bodyShapeId = bsNode.@id;
+			this.defaultActionId = bsNode.@default_action + ".xml";
+			this.defaultMotionId = bsNode.@default_motion + ".xml";
+			this.defaultFaceId = bsNode.@facial_thumb;
+			var children:XMLList = bsNode.children();
+			var numChildren:int = children.length();
+			for (var i:int = 0; i < numChildren; i++) {
+				this.processNode(children[i]);
 			}
 		}
-		
-		protected function processNode(param1:XML) : void
+
+		protected function processNode(node:XML) : void
 		{
-			var _loc2_:String = param1.localName() as String;
-			switch(_loc2_)
-			{
+			var tagName:String = node.localName() as String;
+			switch (tagName) {
 				case "actionpack":
-					this.processActionPackNode(param1);
+					this.processActionPackNode(node);
 					break;
 				case "component":
-					this.processComponentNode(param1);
+					this.processComponentNode(node);
 					break;
 				case "library":
-					this.processLibraryNode(param1);
+					this.processLibraryNode(node);
 					break;
 				case "action":
-					this.createAction(param1);
+					this.createAction(node);
 					break;
 				case "default_char":
-					if(this.runwayMode)
-					{
-						this.defaultCharacterXML.push(param1);
+					if (this.runwayMode) {
+						this.defaultCharacterXML.push(node);
 					}
 			}
 		}
-		
-		protected function processComponentNode(param1:XML) : void
+
+		protected function processComponentNode(componentNode:XML) : void
 		{
-			var _loc2_:CCComponentModel = new CCComponentModel(this.runwayMode);
-			_loc2_.parse(param1);
-			this.storeComponent(_loc2_);
+			var component:CCComponentModel = new CCComponentModel(this.runwayMode);
+			component.parse(componentNode);
+			this.storeComponent(component);
 		}
-		
-		protected function processLibraryNode(param1:XML) : void
+
+		protected function processLibraryNode(libNode:XML) : void
 		{
-			var _loc2_:CCLibraryModel = new CCLibraryModel(this.runwayMode);
-			_loc2_.parse(param1);
-			this.storeLibrary(_loc2_);
+			var library:CCLibraryModel = new CCLibraryModel(this.runwayMode);
+			library.parse(libNode);
+			this.storeLibrary(library);
 		}
-		
-		protected function processActionPackNode(param1:XML) : void
+
+		protected function processActionPackNode(apNode:XML) : void
 		{
-			var _loc2_:XMLList = param1.children();
-			var _loc3_:int = _loc2_.length();
-			var _loc4_:int = 0;
-			while(_loc4_ < _loc3_)
-			{
-				this.createAction(_loc2_[_loc4_],param1.@enable != "N");
-				_loc4_++;
+			var children:XMLList = apNode.children();
+			var numChildren:int = children.length();
+			for (var i:int = 0; i < numChildren; i++) {
+				this.createAction(children[i], apNode.@enable != "N");
 			}
 		}
-		
-		private function createAction(param1:XML, param2:Boolean = true) : void
+
+		private function createAction(actionElem:XML, packEnabled:Boolean = true) : void
 		{
-			var _loc7_:CCComponentModel = null;
-			var _loc9_:* = 0;
-			var _loc10_:String = null;
-			var _loc11_:String = null;
-			var _loc12_:CCFaceModel = null;
-			var _loc13_:Object = null;
-			var _loc14_:String = null;
-			var _loc3_:CCActionModel = new CCActionModel();
-			_loc3_.id = param1.@id + ".xml";
-			_loc3_.name = param1.@name;
-			_loc3_.isMotion = param1.@is_motion == "Y";
-			_loc3_.isLoop = param1.@loop == "Y";
-			_loc3_.totalframe = param1.@totalframe;
-			_loc3_.category = param1.@category;
-			_loc3_.enabled = param2 && param1.@enable != "N";
-			if(this.runwayMode && Boolean(_loc3_.category))
-			{
-				_loc9_ = int(this.actionCategories[_loc3_.category]);
-				_loc9_ = _loc9_ + 1;
-				this.actionCategories[_loc3_.category] = _loc9_;
+			var action:CCActionModel = new CCActionModel();
+			action.id = actionElem.@id + ".xml";
+			action.name = actionElem.@name;
+			action.isMotion = actionElem.@is_motion == "Y";
+			action.isLoop = actionElem.@loop == "Y";
+			action.totalframe = actionElem.@totalframe;
+			action.category = actionElem.@category;
+			action.enabled = packEnabled && actionElem.@enable != "N";
+			if (this.runwayMode && Boolean(action.category)) {
+				var numActions = int(this.actionCategories[action.category]);
+				numActions = numActions + 1;
+				this.actionCategories[action.category] = numActions;
 			}
-			var _loc4_:String = param1.@next as String;
-			if("@next" in param1)
-			{
-				_loc3_.nextActionId = param1.@next + ".xml";
+			var _loc4_:String = actionElem.@next as String;
+			if ("@next" in actionElem) {
+				action.nextActionId = actionElem.@next + ".xml";
 			}
-			var _loc5_:XMLList = param1.selection;
-			var _loc6_:int = _loc5_.length();
-			var _loc8_:int = 0;
-			while(_loc8_ < _loc6_)
-			{
-				_loc10_ = _loc5_[_loc8_].@type;
-				if(_loc10_ == "facial")
-				{
-					_loc11_ = _loc5_[_loc8_].@facial_id;
-					_loc3_.defaultFacialId = _loc11_ + ".xml";
-					_loc12_ = this.themeModel.faces[_loc11_];
-					if(_loc12_)
-					{
-						_loc13_ = _loc12_.componentStates;
-						for(_loc14_ in _loc13_)
-						{
-							_loc3_.addComponent(_loc14_,_loc13_[_loc14_]);
+			var selections:XMLList = actionElem.selection;
+			var numSels:int = selections.length();
+			for (var selI:int = 0; selI < numSels; selI++) {
+				var componentType:String = selections[selI].@type;
+				if (componentType == "facial") {
+					// flatten face selections into the action
+					var faceId:String = selections[selI].@facial_id;
+					action.defaultFacialId = faceId + ".xml";
+					var face:CCFaceModel = this.themeModel.faces[faceId];
+					if (face) {
+						var states:Object = face.componentStates;
+						for (var stateI:String in states) {
+							action.addComponent(stateI, states[stateI]);
 						}
 					}
+				} else {
+					action.addComponent(componentType, selections[selI].@state_id);
 				}
-				else
-				{
-					_loc3_.addComponent(_loc10_,_loc5_[_loc8_].@state_id);
-				}
-				_loc8_++;
 			}
-			if(param1.prop.length() > 0)
-			{
-				_loc3_.propXML = param1.prop;
+			if (actionElem.prop.length() > 0) {
+				action.propXML = actionElem.prop;
 			}
-			if(CcLibConstant.CHAR_WITH_FREEACTION(this.themeModel.themeId))
-			{
-				_loc3_.addComponent("freeaction",param1.@id);
-				_loc7_ = new CCComponentModel(this.runwayMode);
-				_loc7_.id = param1.@id;
-				_loc7_.type = "freeaction";
-				this.storeComponent(_loc7_);
+			if (CcLibConstant.CHAR_WITH_FREEACTION(this.themeModel.themeId)) {
+				action.addComponent("freeaction", actionElem.@id);
+				var component:CCComponentModel = new CCComponentModel(this.runwayMode);
+				component.id = actionElem.@id;
+				component.type = "freeaction";
+				this.storeComponent(component);
 			}
-			this.actions[_loc3_.id] = _loc3_;
+			this.actions[action.id] = action;
 		}
-		
-		protected function createDefaultCharacter(param1:XML) : void
+
+		/** Deprecated */
+		protected function createDefaultCharacter(_unused:XML) : void
 		{
 		}
 		
-		private function componentUniqueId(param1:String, param2:String) : String
+		private function componentUniqueId(type:String, id:String) : String
 		{
-			return param1 + ":" + param2;
+			return type + ":" + id;
 		}
-		
-		public function storeComponent(param1:CCComponentModel) : void
+
+		public function storeComponent(component:CCComponentModel) : void
 		{
-			var _loc2_:String = this.componentUniqueId(param1.type,param1.id);
-			this.components[_loc2_] = param1;
+			var uniqueId:String = this.componentUniqueId(component.type, component.id);
+			this.components[uniqueId] = component;
 		}
-		
-		public function getComponent(param1:String, param2:String) : CCComponentModel
+
+		public function getComponent(type:String, id:String) : CCComponentModel
 		{
-			var _loc3_:String = this.componentUniqueId(param1,param2);
-			return this.components[_loc3_];
+			var uniqueId:String = this.componentUniqueId(type, id);
+			return this.components[uniqueId];
 		}
-		
-		public function storeLibrary(param1:CCLibraryModel) : void
+
+		public function storeLibrary(library:CCLibraryModel) : void
 		{
-			var _loc2_:String = this.componentUniqueId(param1.type,param1.id);
-			this.libraries[_loc2_] = param1;
+			var uniqueId:String = this.componentUniqueId(library.type, library.id);
+			this.libraries[uniqueId] = library;
 		}
-		
-		public function getLibrary(param1:String, param2:String) : CCLibraryModel
+
+		public function getLibrary(type:String, id:String) : CCLibraryModel
 		{
-			var _loc3_:String = this.componentUniqueId(param1,param2);
-			return this.libraries[_loc3_];
+			var uniqueId:String = this.componentUniqueId(type, id);
+			return this.libraries[uniqueId];
 		}
-		
+
+		/**
+		 * Returns the body shape ID.
+		 */
 		public function toString() : String
 		{
 			return this.bodyShapeId;
 		}
 	}
 }
-

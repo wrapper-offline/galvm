@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	verticalScrollPolicy="off"
+	creationComplete="creationCompleteHandler()">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.component.CCThumb;
+			import anifire.creator.models.CcCharacter;
+			import flash.filters.GlowFilter;
+			import mx.core.UIComponent;
+
+			private var _thumb:CCThumb = null;
+			private var _char:CcCharacter = null;
+
+			private function toggleGlow(param1:MouseEvent) : void
+			{
+				if(param1.type == MouseEvent.ROLL_OVER)
+				{
+					if(this._thumb)
+					{
+						this._thumb.filters = [new flash.filters.GlowFilter(16777215,1,8,8,3)];
+					}
+				}
+				else if(param1.type == MouseEvent.ROLL_OUT)
+				{
+					if(this._thumb)
+					{
+						this._thumb.filters = [];
+					}
+				}
+			}
+			
+			public function set thumbnail(param1:CCThumb) : void
+			{
+				this.removeAllChildren();
+				this._thumb = param1;
+				var _loc2_:UIComponent = new UIComponent();
+				_loc2_.addChild(param1);
+				_loc2_.width = param1.thumbWidth;
+				_loc2_.height = param1.thumbHeight;
+				width = 128;
+				height = 150;
+				buttonMode = true;
+				mouseEnabled = true;
+				useHandCursor = true;
+				_loc2_.x = (width - _loc2_.width) / 2;
+				_loc2_.y = (height - _loc2_.height) / 2;
+				addChild(_loc2_);
+			}
+			
+			public function get character() : CcCharacter
+			{
+				return this._char;
+			}
+			
+			public function set character(param1:CcCharacter) : void
+			{
+				this._char = param1;
+			}
+			
+			public function creationCompleteHandler() : void
+			{
+				setChildIndex(this.raft,0);
+				addEventListener(MouseEvent.ROLL_OVER,this.toggleGlow);
+				addEventListener(MouseEvent.ROLL_OUT,this.toggleGlow);
+			}
+		]]>
+	</fx:Script>
+
+	<mx:Canvas id="raft" styleName="templateCharThumbRaft" x="0" y="115" width="128" height="40"/>
+
+</mx:Canvas>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	creationComplete="creationCompleteHandler()"
+	styleName.selected="templateCharThumbSelected">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.component.CCThumb;
+			import anifire.constant.CcLibConstant;
+			import anifire.creator.models.CcCharacter;
+			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
+			import mx.utils.ColorUtil;
+
+			private var _thumb:CCThumb;
+			private var _char:CcCharacter;
+
+			public function set thumbnail(param1:CCThumb) : void
+			{
+				this.removeAllChildren();
+				this._thumb = param1;
+				var _loc2_:UIComponent = new UIComponent();
+				_loc2_.addChild(param1);
+				_loc2_.width = param1.thumbWidth;
+				_loc2_.height = param1.thumbHeight;
+				width = CcLibConstant.TEMPLATE_CHAR_THUMB_WIDTH;
+				height = CcLibConstant.TEMPLATE_CHAR_THUMB_WIDTH;
+				buttonMode = true;
+				mouseEnabled = true;
+				useHandCursor = true;
+				_loc2_.x = (width - _loc2_.width) / 2;
+				_loc2_.y = (height - _loc2_.height) / 2;
+				addChild(_loc2_);
+				styleName = "templateCharThumbNormal";
+			}
+			
+			public function get character() : CcCharacter
+			{
+				return this._char;
+			}
+			
+			public function set character(param1:CcCharacter) : void
+			{
+				this._char = param1;
+			}
+			
+			private function creationCompleteHandler() : void
+			{
+				var _bgColor:uint = 0;
+				var brightenedColor:uint = 0;
+				_bgColor = uint(FlexGlobals.topLevelApplication.styleManager.getStyleDeclaration("." + styleName).getStyle("backgroundColor"));
+				brightenedColor = uint(ColorUtil.adjustBrightness(_bgColor,32));
+				var toggleHighlight:Function = function(param1:MouseEvent):void
+				{
+					setStyle("backgroundColor",param1.type == MouseEvent.ROLL_OVER ? brightenedColor : _bgColor);
+				};
+				addEventListener(MouseEvent.ROLL_OVER,toggleHighlight);
+				addEventListener(MouseEvent.ROLL_OUT,toggleHighlight);
+			}
+		]]>
+	</fx:Script>
+
+	<mx:states>
+		<s:State name="selected"/>
+	</mx:states>
+
+</mx:Canvas>

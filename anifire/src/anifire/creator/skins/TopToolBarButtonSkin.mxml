@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	width="50"
+	height="50">
+
+	<fx:Metadata>
+		[HostComponent("anifire.creator.components.IconButton")]
+	</fx:Metadata>
+
+	<s:states>
+		<s:State name="disabled"/>
+		<s:State name="down"/>
+		<s:State name="over"/>
+		<s:State name="up"/>
+	</s:states>
+
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor alpha="0"/>
+		</s:fill>
+	</s:Rect>
+	<s:Line left="0" top="0" bottom="0">
+		<s:stroke>
+			<s:SolidColorStroke color="0xDDDDDD"/>
+		</s:stroke>
+	</s:Line>
+	<s:Line right="0" top="0" bottom="0">
+		<s:stroke>
+			<s:SolidColorStroke color="0xDDDDDD"/>
+		</s:stroke>
+	</s:Line>
+	<s:BitmapImage id="iconDisplay" smooth="true" verticalCenter="0" horizontalCenter="0"/>
+	<s:PopUpAnchor left="0" right="0" bottom="5" popUpPosition="below" displayPopUp="true" includeIn="over">
+		<s:popUp>
+			<s:Group
+				id="popUpGroup"
+				width="50"
+				mouseEnabled="false"
+				mouseChildren="false"
+				blendMode="layer"
+				alpha="0.9">
+				<s:Path horizontalCenter="0" data="M 0 5 l 5 -5 l 5 5 Z">
+					<s:fill>
+						<s:SolidColor color="0x2B2B2B"/>
+					</s:fill>
+				</s:Path>
+				<s:Group minWidth="50" horizontalCenter="0" top="5">
+					<s:Rect width="100%" height="100%">
+						<s:fill>
+							<s:SolidColor color="0x2B2B2B"/>
+						</s:fill>
+					</s:Rect>
+					<s:Label
+						id="labelDisplay"
+						width="100%"
+						height="100%"
+						color="0xFFFFFF"
+						textAlign="center"
+						paddingLeft="10"
+						paddingRight="10"
+						paddingTop="5"
+						paddingBottom="5"/>
+				</s:Group>
+			</s:Group>
+		</s:popUp>
+	</s:PopUpAnchor>
+
+</s:Skin>

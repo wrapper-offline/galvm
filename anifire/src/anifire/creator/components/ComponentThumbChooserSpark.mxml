@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:components="anifire.creator.components.*">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.constant.CcLibConstant;
+			import anifire.creator.events.CcComponentThumbChooserEvent;
+			import anifire.creator.models.CcCharacter;
+			import anifire.creator.models.CcComponent;
+			import anifire.creator.models.CcComponentThumb;
+			import anifire.creator.models.CcLibrary;
+			import anifire.creator.models.CcTheme;
+			import anifire.creator.utils.ComponentThumbFilter;
+			import anifire.util.UtilHashArray;
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import spark.events.IndexChangeEvent;
+
+			private static const EVENT_TAG_FILTER_CHANGED:String = "evt_tag_changed";
+			private var componentThumbs:UtilHashArray;
+			private var componentType:String;
+			private var currentPageNum:int = 0;
+			private var timeoutId:int = -1;
+			private var _biggerHeight:Number;
+			private var _smallerHeight:Number;
+			private var _filter:ComponentThumbFilter = null;
+			private var _filteredThumbs:UtilHashArray;
+			[Bindable]
+			public var _thumbnailSource:ArrayCollection;
+			private const DELAY_BETWEEN_LOADING_EACH_THUMB:Number = 200;
+			private var scrollTimer:Timer;
+			private var scrollDy:Number = 0;
+
+			private function initTagFilter() : void
+			{
+				this.addEventListener(EVENT_TAG_FILTER_CHANGED,function(param1:Event):void
+				{
+					var _loc2_:UtilHashArray = new UtilHashArray();
+					var _loc3_:int = 0;
+					while(_loc3_ < componentThumbs.length)
+					{
+						if(!_filter || _filter.filter(componentThumbs.getValueByIndex(_loc3_) as CcComponentThumb))
+						{
+							_loc2_.push(componentThumbs.getKey(_loc3_),componentThumbs.getValueByIndex(_loc3_));
+						}
+						_loc3_++;
+					}
+					_filteredThumbs = _loc2_;
+					initPage();
+				});
+			}
+			
+			public function set thumbFilter(param1:ComponentThumbFilter) : void
+			{
+				var _loc2_:* = this._filter != param1;
+				this._filter = param1;
+				if(_loc2_)
+				{
+					this.dispatchEvent(new Event(EVENT_TAG_FILTER_CHANGED));
+				}
+			}
+			
+			public function set biggerHeight(param1:Number) : void
+			{
+				this._biggerHeight = param1;
+			}
+			
+			public function set smallerHeight(param1:Number) : void
+			{
+				this._smallerHeight = param1;
+			}
+			
+			public function init(ccChar:CcCharacter, ccTheme:CcTheme, componentType:String, moneyMode:int, shouldUseBiggerHeight:Boolean) : void
+			{
+				this.doClearTimeOut();
+				if(shouldUseBiggerHeight)
+				{
+					this.height = this._biggerHeight;
+					this.thumbnailTileSpark.height = this._biggerHeight;
+				}
+				else
+				{
+					this.height = this._smallerHeight;
+					this.thumbnailTileSpark.height = this._smallerHeight;
+				}
+				this.componentType = componentType;
+				if(CcLibConstant.USER_CHOOSE_ABLE_HEAD_COMPONENT_TYPES.indexOf(componentType) >= 0)
+				{
+					this.componentThumbs = ccTheme.getComponentThumbByType(componentType);
+				}
+				else if(CcLibConstant.USER_CHOOSE_ABLE_BODY_COMPONENT_TYPES.indexOf(componentType) >= 0)
+				{
+					this.componentThumbs = ccChar.bodyShape.getComponentThumbByType(componentType);
+				}
+				if(this.componentThumbs == null)
+				{
+					this.componentThumbs = new UtilHashArray();
+				}
+				this.initTagFilter();
+				var _componentThumbs:Array = [];
+				var enabledComponentThumbs:UtilHashArray = new UtilHashArray();
+				var i:int = 0;
+				while(i < this.componentThumbs.length)
+				{
+					if((this.componentThumbs.getValueByIndex(i) as CcComponentThumb).enable)
+					{
+						if(!this._filter || this._filter.filter(this.componentThumbs.getValueByIndex(i) as CcComponentThumb))
+						{
+							_componentThumbs.push({
+								"key":this.componentThumbs.getKey(i),
+								"data":this.componentThumbs.getValueByIndex(i),
+								"order":i
+							});
+						}
+					}
+					i++;
+				}
+				_componentThumbs.sort(function(param1:Object, param2:Object):Number
+				{
+					var _loc3_:int = (param1.data as CcComponentThumb).displayOrder - (param2.data as CcComponentThumb).displayOrder;
+					return _loc3_ == 0 ? param1.order - param2.order : _loc3_;
+				});
+				this._thumbnailSource = new ArrayCollection();
+				var isNullThumbnailNeeded:Boolean = CcLibConstant.OPTIONAL_COMPONENTS.containsKey(componentType);
+				if(isNullThumbnailNeeded)
+				{
+					this._thumbnailSource.addItem({
+						"key":"null",
+						"data":null
+					});
+				}
+				for each(var item:Object in _componentThumbs)
+				{
+					this._thumbnailSource.addItem({
+						"key":item.key,
+						"data":item.data
+					});
+				}
+				_componentThumbs = null;
+				this.thumbnailTileSpark.setStyle("backgroundColor",null);
+				this.thumbnailTileSpark.setStyle("borderStyle",null);
+				this.dispatchEvent(new Event(EVENT_TAG_FILTER_CHANGED));
+				this.thumbnailTileSpark.scroller.verticalScrollBar.addEventListener(Event.CHANGE,this.scrollerUpdate);
+				this.thumbnailTileSpark.addEventListener(FlexEvent.UPDATE_COMPLETE,this.scrollerUpdate);
+				this.scrollerUpdate();
+				this.thumbnailTileSpark.scroller.addEventListener(MouseEvent.MOUSE_WHEEL,this.disableScroll,true);
+				if(CcLibConstant.ALL_LIBRARY_TYPES.indexOf(this.componentType) > -1)
+				{
+					var sLib:CcLibrary = ccChar.getUserChosenLibraryByType(this.componentType);
+					if(sLib)
+					{
+						i = 0;
+						while(i < this._thumbnailSource.length)
+						{
+							if(this._thumbnailSource.getItemAt(i).key == this.componentType + "_" + sLib.component_id)
+							{
+								this.thumbnailTileSpark.selectedIndex = i;
+								break;
+							}
+							i++;
+						}
+					}
+				}
+				else
+				{
+					var sComArray:Array = ccChar.getUserChosenComponentByComponentType(this.componentType);
+					if(sComArray.length == 1)
+					{
+						var sCom:CcComponent = sComArray[0] as CcComponent;
+						i = 0;
+						while(i < this._thumbnailSource.length)
+						{
+							if(this._thumbnailSource.getItemAt(i).key == sCom.componentThumb.internalId)
+							{
+								this.thumbnailTileSpark.selectedIndex = i;
+								break;
+							}
+							i++;
+						}
+					}
+				}
+				this.thumbnailTileSpark.removeEventListener(MouseEvent.CLICK,this.onDecoClick);
+				if(CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(this.componentType) > -1)
+				{
+					this.thumbnailTileSpark.addEventListener(MouseEvent.CLICK,this.onDecoClick);
+					this.thumbnailTileSpark.itemRenderer = new ClassFactory(anifire.creator.components.DecoThumbRenderer);
+				}
+				else
+				{
+					this.thumbnailTileSpark.addEventListener(IndexChangeEvent.CHANGE,this.onThumbSelect);
+					this.thumbnailTileSpark.itemRenderer = new ClassFactory(anifire.creator.components.ComponentItemRenderer);
+				}
+				callLater(this.thumbnailTileSpark.ensureIndexIsVisible,[this.thumbnailTileSpark.selectedIndex + 10 > this.thumbnailTileSpark.dataProvider.length ? this.thumbnailTileSpark.selectedIndex : this.thumbnailTileSpark.selectedIndex + 10]);
+			}
+			
+			private function disableScroll(param1:MouseEvent) : void
+			{
+				param1.stopPropagation();
+			}
+			
+			private function initPage() : void
+			{
+				this.doClearTimeOut();
+				this.currentPageNum = 0;
+			}
+			
+			private function doClearTimeOut() : void
+			{
+				if(this.timeoutId >= 0)
+				{
+					clearTimeout(this.timeoutId);
+				}
+				this.timeoutId = -1;
+			}
+			
+			private function scrollerUpdate(param1:Event = null) : void
+			{
+				if(this.thumbnailTileSpark.scroller.verticalScrollBar.value == 0)
+				{
+					this.upButt.enabled = false;
+				}
+				else
+				{
+					this.upButt.enabled = true;
+				}
+				if(this.thumbnailTileSpark.scroller.verticalScrollBar.value == this.thumbnailTileSpark.scroller.verticalScrollBar.maximum)
+				{
+					this.downButt.enabled = false;
+				}
+				else
+				{
+					this.downButt.enabled = true;
+				}
+				this.upLayer.visible = this.downLayer.visible = this.thumbnailTileSpark.scroller.verticalScrollBar.includeInLayout;
+			}
+			
+			private function onDecoClick(param1:MouseEvent) : void
+			{
+				this.thumbnailTileSpark.selectedItem = null;
+			}
+			
+			private function onThumbSelect(param1:IndexChangeEvent) : void
+			{
+				var _loc2_:CcComponentThumbChooserEvent = null;
+				_loc2_ = new CcComponentThumbChooserEvent(CcComponentThumbChooserEvent.COMPONENT_THUMB_CHOSEN,this);
+				_loc2_.componentThumb = param1.currentTarget.selectedItem.data;
+				if(!_loc2_.componentThumb)
+				{
+					_loc2_ = new CcComponentThumbChooserEvent(CcComponentThumbChooserEvent.NONE_COMPONENT_THUMB_CHOSEN,this);
+					_loc2_.noneComponentThumbType = this.componentType;
+				}
+				this.dispatchEvent(_loc2_);
+			}
+			
+			private function onThumbDown(param1:Event) : void
+			{
+				var _loc3_:CcComponentThumbChooserEvent = null;
+				var _loc2_:anifire.creator.components.CcComponentThumbDetailThumbnail = param1.currentTarget as anifire.creator.components.CcComponentThumbDetailThumbnail;
+				if(!_loc2_.isNullThumbnail)
+				{
+					_loc3_ = new CcComponentThumbChooserEvent(CcComponentThumbChooserEvent.COMPONENT_THUMB_CHOSEN,this);
+					_loc3_.componentThumb = _loc2_.componentThumb;
+					this.dispatchEvent(_loc3_);
+				}
+				else
+				{
+					_loc3_ = new CcComponentThumbChooserEvent(CcComponentThumbChooserEvent.NONE_COMPONENT_THUMB_CHOSEN,this);
+					_loc3_.noneComponentThumbType = _loc2_.componentType;
+					this.dispatchEvent(_loc3_);
+				}
+			}
+			
+			private function initTile() : void
+			{
+				var _loc5_:int = 0;
+				var _loc6_:int = 0;
+				var _loc1_:Number = CcLibConstant.COMPONENT_THUMB_CHOOSER_TILE_PADDING_SIZE;
+				var _loc2_:Number = CcLibConstant.COMPONENT_THUMB_CHOOSER_TILE_PADDING_SIZE;
+				var _loc3_:Number = CcLibConstant.COMPONENT_THUMB_CHOOSER_TILE_GAP_SIZE;
+				var _loc4_:Number = CcLibConstant.COMPONENT_THUMB_CHOOSER_TILE_GAP_SIZE;
+				var _loc7_:Number = Number(this.thumbnailTileSpark.width);
+				var _loc8_:Number = Number(this.thumbnailTileSpark.height);
+				var _loc9_:Number = CcLibConstant.COMPONENT_THUMB_CHOOSER_THUMBNAIL_HEIGHT;
+				var _loc10_:Number = CcLibConstant.COMPONENT_THUMB_CHOOSER_THUMBNAIL_WIDTH;
+			}
+			
+			private function scrollUpdate(param1:TimerEvent) : void
+			{
+				this.thumbnailTileSpark.scroller.verticalScrollBar.value += this.scrollDy;
+			}
+			
+			private function onMouseUp(param1:Event) : void
+			{
+				this.scrollDy = 0;
+				if(this.scrollTimer)
+				{
+					this.scrollTimer.stop();
+				}
+				this.scrollerUpdate();
+			}
+			
+			private function onMouseDown(param1:Event) : void
+			{
+				switch(param1.currentTarget)
+				{
+					case this.upButt:
+						this.scrollDy = -10;
+						break;
+					case this.downButt:
+						this.scrollDy = 10;
+				}
+				this.scrollTimer = new Timer(20);
+				this.scrollTimer.addEventListener(TimerEvent.TIMER,this.scrollUpdate);
+				this.scrollTimer.start();
+			}
+		]]>
+	</fx:Script>
+
+	<components:ThumbList
+		id="thumbnailTileSpark"
+		width="100%"
+		height="100%"
+		useHandCursor="true"
+		borderVisible="false"
+		contentBackgroundAlpha="0"
+		dataProvider="{this._thumbnailSource}">
+		<components:layout>
+			<s:TileLayout
+				paddingTop="60"
+				paddingRight="60"
+				paddingBottom="45"
+				paddingLeft="45"
+				verticalGap="4"
+				horizontalGap="2"
+				columnAlign="justifyUsingGap"
+				orientation="rows"/>
+		</components:layout>
+	</components:ThumbList>
+	<s:Group id="upLayer" height="45" width="639" top="0">
+		<s:Rect width="100%" height="100%">
+			<s:fill>
+				<s:SolidColor color="0xFFFFFF" alpha="0.4"/>
+			</s:fill>
+		</s:Rect>
+		<components:IconButton
+			id="upButt"
+			buttonMode="true"
+			enabled="true"
+			verticalCenter="0"
+			horizontalCenter="0"
+			icon="@Embed('../../styles/images/thumbBox/scrollup_init.png')"
+			iconOver="@Embed('../../styles/images/thumbBox/scrollup_over.png')"
+			iconDisabled="@Embed('../../styles/images/thumbBox/scrollup_disabled.png')"
+			mouseDown="onMouseDown(event)"
+			mouseOut="onMouseUp(event)"
+			mouseUp="onMouseUp(event)"/>
+	</s:Group>
+	<s:Group id="downLayer" height="45" width="639" bottom="0">
+		<s:Rect width="100%" height="100%">
+			<s:fill>
+				<s:SolidColor color="0xFFFFFF" alpha="0.4"/>
+			</s:fill>
+		</s:Rect>
+		<components:IconButton
+			id="downButt"
+			buttonMode="true"
+			enabled="true"
+			verticalCenter="0"
+			horizontalCenter="0"
+			icon="@Embed('../../styles/images/thumbBox/scrolldown_init.png')"
+			iconOver="@Embed('../../styles/images/thumbBox/scrolldown_over.png')"
+			iconDisabled="@Embed('../../styles/images/thumbBox/scrolldown_disabled.png')"
+			mouseDown="onMouseDown(event)"
+			mouseOut="onMouseUp(event)"
+			mouseUp="onMouseUp(event)"/>
+	</s:Group>
+
+</s:Group>

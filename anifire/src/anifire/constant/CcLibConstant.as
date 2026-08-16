@@ -549,37 +549,35 @@ package anifire.constant
 			return __componentOrderInHead;
 		}
 
+		/**
+		 * Array containing all component types that support multiselection.
+		 */
 		public static function get ALL_MULTIPLE_COMPONENT_TYPES() : Array
 		{
-			if(!__allMultipleComponentTypes)
-			{
+			if (!__allMultipleComponentTypes) {
 				__allMultipleComponentTypes = [];
 				__allMultipleComponentTypes.push(COMPONENT_TYPE_FACIAL_DECORATION);
 			}
 			return __allMultipleComponentTypes;
 		}
 
-		public static function COLORS_BY_COMPONENT(param1:String) : Array
+		public static function COLORS_BY_COMPONENT(type:String) : Array
 		{
-			if(param1 == COMPONENT_TYPE_EYE)
-			{
-				return ["ccEyeLib","ccEyeIris","ccSkinColor"];
+			if (type == COMPONENT_TYPE_EYE) {
+				return ["ccEyeLib", "ccEyeIris", "ccSkinColor"];
 			}
-			if(param1 == COMPONENT_TYPE_MOUTH)
-			{
-				return ["ccMouthLip","ccSkinColor"];
+			if (type == COMPONENT_TYPE_MOUTH) {
+				return ["ccMouthLip", "ccSkinColor"];
 			}
 			return null;
 		}
 
-		public static function IS_TAKE_ORIGINAL_COLOR(param1:String) : Boolean
+		public static function IS_TAKE_ORIGINAL_COLOR(type:String) : Boolean
 		{
-			if(ALL_LIBRARY_TYPES.indexOf(param1) > -1)
-			{
+			if (ALL_LIBRARY_TYPES.indexOf(type) > -1) {
 				return true;
 			}
-			if(param1 == COMPONENT_TYPE_HAIR)
-			{
+			if (type == COMPONENT_TYPE_HAIR) {
 				return true;
 			}
 			return false;
@@ -587,33 +585,33 @@ package anifire.constant
 
 		public static function get ALL_COLOR_CODE_USED() : Array
 		{
-			var _loc1_:Array = new Array();
-			_loc1_.push("ccSkinColor");
-			_loc1_.push("ccFaceHairColor");
-			_loc1_.push("ccUpperMain");
-			_loc1_.push("ccUpperMinor");
-			_loc1_.push("ccLowerMainA");
-			_loc1_.push("ccLowerMain");
-			_loc1_.push("ccLowerMinor");
-			_loc1_.push("ccFeetMain");
-			_loc1_.push("ccDecMajor");
-			_loc1_.push("ccDecMinor");
-			_loc1_.push("ccEyeLib");
-			_loc1_.push("ccEyeIris");
-			_loc1_.push("ccMouthLip");
-			_loc1_.push("ccGlassesFrame");
-			_loc1_.push("ccGlassesLens");
-			_loc1_.push("ccHairMajor");
-			_loc1_.push("ccHairMinor");
-			_loc1_.push("ccEyebrow");
-			_loc1_.push("ccHandMain");
-			_loc1_.push("ccHandMinor");
-			_loc1_.push("ccBackMajor");
-			_loc1_.push("ccBackMinor");
-			_loc1_.push("ccBeard");
-			_loc1_.push("ccMustache");
-			_loc1_.push("ccEarrings");
-			return _loc1_;
+			var colorCodes:Array = new Array();
+			colorCodes.push("ccSkinColor");
+			colorCodes.push("ccFaceHairColor");
+			colorCodes.push("ccUpperMain");
+			colorCodes.push("ccUpperMinor");
+			colorCodes.push("ccLowerMainA");
+			colorCodes.push("ccLowerMain");
+			colorCodes.push("ccLowerMinor");
+			colorCodes.push("ccFeetMain");
+			colorCodes.push("ccDecMajor");
+			colorCodes.push("ccDecMinor");
+			colorCodes.push("ccEyeLib");
+			colorCodes.push("ccEyeIris");
+			colorCodes.push("ccMouthLip");
+			colorCodes.push("ccGlassesFrame");
+			colorCodes.push("ccGlassesLens");
+			colorCodes.push("ccHairMajor");
+			colorCodes.push("ccHairMinor");
+			colorCodes.push("ccEyebrow");
+			colorCodes.push("ccHandMain");
+			colorCodes.push("ccHandMinor");
+			colorCodes.push("ccBackMajor");
+			colorCodes.push("ccBackMinor");
+			colorCodes.push("ccBeard");
+			colorCodes.push("ccMustache");
+			colorCodes.push("ccEarrings");
+			return colorCodes;
 		}
 
 		public static function get CC_PREVIEW_DY() : Number

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	alpha.disabled="0.5">
+
+	<fx:Metadata>
+		[HostComponent("anifire.creator.components.ConfirmPopUp")]
+	</fx:Metadata>
+
+	<s:transitions>
+		<s:Transition fromState="closed" toState="normal" autoReverse="true">
+			<s:effect>
+				<s:Fade duration="150" target="{chrome}"/>
+			</s:effect>
+		</s:Transition>
+		<s:Transition fromState="disabledAndClosed" toState="disabled" autoReverse="true">
+			<s:effect>
+				<s:Fade duration="150" target="{chrome}"/>
+			</s:effect>
+		</s:Transition>
+		<s:Transition fromState="normal" toState="closed" autoReverse="true">
+			<s:effect>
+				<s:Fade duration="150" target="{chrome}"/>
+			</s:effect>
+		</s:Transition>
+		<s:Transition fromState="disabled" toState="disabledAndClosed" autoReverse="true">
+			<s:effect>
+				<s:Fade duration="150" target="{chrome}"/>
+			</s:effect>
+		</s:Transition>
+	</s:transitions>
+
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="disabled"/>
+		<s:State name="closed" stateGroups="closedGroup"/>
+		<s:State name="disabledAndClosed" stateGroups="closedGroup"/>
+	</s:states>
+
+	<s:Group id="chrome" visible.closedGroup="false">
+		<s:Panel id="panel" minWidth="200" maxWidth="400" title="{null}">
+			<s:layout>
+				<s:VerticalLayout gap="20" paddingTop="30" paddingLeft="25" paddingRight="25" paddingBottom="32"/>
+			</s:layout>
+			<s:controlBarContent>
+				<s:Button id="cancelButton" buttonMode="true"/>
+				<s:Button id="confirmButton" buttonMode="true" styleName="primary"/>
+			</s:controlBarContent>
+			<!-- <s:mxmlContentFactory> -->
+				<s:HGroup width="100%" height="100%" gap="15" verticalAlign="baseline">
+					<s:BitmapImage
+						id="iconDisplay"
+						baseline="-15"
+						visible="{hostComponent.iconType != 0}"
+						includeInLayout="{hostComponent.iconType != 0}"/>
+					<s:VGroup width="100%" height="100%" gap="10">
+						<s:Label id="titleDisplay"
+							fontSize="21"
+							color="0x505E73"
+							visible="{hostComponent.title != null}"
+							includeInLayout="{hostComponent.title != null}"
+							text="{hostComponent.title}"/>
+						<s:Label id="messageLabel" width="100%" top="20" color="0x333333"/>
+					</s:VGroup>
+				</s:HGroup>
+			<!-- </s:mxmlContentFactory> -->
+		</s:Panel>
+		<s:Button id="closeButton" styleName="closePopUp" top="15" right="15" buttonMode="true"/>
+	</s:Group>
+
+</s:Skin>

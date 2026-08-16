@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:components="anifire.creator.components.*"
+	verticalGap="2">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.constant.CcLibConstant;
+			import anifire.creator.events.CcComponentThumbnailMouseEvent;
+			import anifire.creator.models.CcComponentThumb;
+			import anifire.util.UtilDict;
+			import mx.events.FlexEvent;
+
+			public var componentThumb:CcComponentThumb = null;
+			private var thumbnailWidth:Number;
+			private var thumbnailHeight:Number;
+			private var bgStyleName:String;
+			public var _componentType:String;
+			public var ccComponentThumbThumbnail:CcComponentThumbThumbnail;
+
+			public function get componentType() : String
+			{
+				return this._componentType;
+			}
+			
+			public function get isNullThumbnail() : Boolean
+			{
+				return this.componentThumb == null ? true : false;
+			}
+			
+			public function initNullThumbnail(param1:CcComponentThumbThumbnail, param2:Number, param3:Number, param4:String, param5:String) : void
+			{
+				this.commonInit(param1,param2,param3,null,param4,param5);
+			}
+			
+			public function init(param1:CcComponentThumbThumbnail, param2:Number, param3:Number, param4:CcComponentThumb, param5:String, param6:int) : void
+			{
+				this.commonInit(param1,param2,param3,param4,param4.type,param5);
+			}
+			
+			private function commonInit(param1:CcComponentThumbThumbnail, param2:Number, param3:Number, param4:CcComponentThumb, param5:String, param6:String) : void
+			{
+				this.componentThumb = param4;
+				this.thumbnailWidth = param2;
+				this.thumbnailHeight = param3;
+				this._componentType = param5;
+				this.setBgStyleName(param6);
+				this.ccComponentThumbThumbnail = param1;
+				if(this.initialized)
+				{
+					this.uiComponentInit();
+				}
+				else
+				{
+					this.addEventListener(FlexEvent.CREATION_COMPLETE,this.doUiComponentInit);
+				}
+			}
+			
+			public function startMouseOutChecking(param1:Stage) : void
+			{
+				param1.addEventListener(MouseEvent.MOUSE_MOVE,this.onStageMouseMove);
+			}
+			
+			private function endMouseEndChecking(param1:Stage) : void
+			{
+				param1.removeEventListener(MouseEvent.MOUSE_MOVE,this.onStageMouseMove);
+			}
+			
+			private function onStageMouseMove(param1:MouseEvent) : void
+			{
+				var _loc4_:CcComponentThumbnailMouseEvent = null;
+				var _loc2_:Point = this.globalToLocal(new Point(param1.stageX,param1.stageY));
+				var _loc3_:Rectangle = this.getRect(this);
+				if(_loc2_.x < _loc3_.left || _loc2_.x > _loc3_.right || _loc2_.y < _loc3_.top || _loc2_.y > _loc3_.bottom)
+				{
+					_loc4_ = new CcComponentThumbnailMouseEvent(CcComponentThumbnailMouseEvent.MOUSE_REALLY_OUT,this);
+					this.dispatchEvent(_loc4_);
+					this.endMouseEndChecking(param1.currentTarget as Stage);
+				}
+			}
+			
+			private function doUiComponentInit(param1:Event) : void
+			{
+				(param1.target as IEventDispatcher).removeEventListener(param1.type,this.doUiComponentInit);
+				this.uiComponentInit();
+			}
+			
+			private function uiComponentInit() : void
+			{
+				if(this.isNullThumbnail)
+				{
+					this.componentThumbnail.initNullThumbnail(this,this.thumbnailWidth,this.thumbnailHeight,this.componentType);
+				}
+				else
+				{
+					this.componentThumbnail.init(this,this.thumbnailWidth,this.thumbnailHeight,this.componentThumb);
+				}
+			}
+			
+			public function setBgStyleName(param1:String) : void
+			{
+				this.bgStyleName = param1;
+				if(this.componentThumbnail != null)
+				{
+					this.componentThumbnail.setBgStyleName(this.bgStyleName);
+				}
+			}
+			
+			public function getZoomCenterPosition() : Point
+			{
+				return new Point(this.thumbnailWidth / 2, this.thumbnailHeight / 2);
+			}
+		]]>
+	</fx:Script>
+
+	<components:CcComponentThumbThumbnail id="componentThumbnail"/>
+
+</mx:VBox>

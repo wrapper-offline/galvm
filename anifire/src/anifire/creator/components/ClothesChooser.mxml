@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Tile
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:cComponents="anifire.creator.components.*">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.constant.CcLibConstant;
+			import anifire.creator.events.CcComponentThumbChooserEvent;
+			import anifire.creator.models.CcCharacter;
+			import anifire.creator.models.CcTheme;
+
+			private var _biggerHeight:Number;
+			private var _smallerHeight:Number;
+			private var _thumbChooserWidth:Number;
+
+			public function set thumbChooserWidth(param1:Number) : void
+			{
+				this._thumbChooserWidth = param1;
+				if(this.initialized)
+				{
+					this.upperBodyChooser.width = param1;
+					this.lowerBodyChooser.width = param1;
+				}
+			}
+			
+			public function set biggerHeight(param1:Number) : void
+			{
+				this._biggerHeight = param1;
+				if(this.initialized)
+				{
+					this.upperBodyChooser.biggerHeight = this._biggerHeight;
+				}
+			}
+			
+			public function set smallerHeight(param1:Number) : void
+			{
+				this._smallerHeight = param1;
+				if(this.initialized)
+				{
+					this.lowerBodyChooser.smallerHeight = this._smallerHeight;
+				}
+			}
+			
+			public function init(param1:CcCharacter, param2:CcTheme, param3:String, param4:int, param5:Boolean) : void
+			{
+				this.upperBodyChooser.init(param1,param2,CcLibConstant.COMPONENT_TYPE_UPPER_BODY,param4,param5);
+				this.upperBodyChooser.addEventListener(CcComponentThumbChooserEvent.COMPONENT_THUMB_CHOSEN,this.onComponentThumbChoosen);
+				this.lowerBodyChooser.init(param1,param2,CcLibConstant.COMPONENT_TYPE_LOWER_BODY,param4,param5);
+				this.lowerBodyChooser.addEventListener(CcComponentThumbChooserEvent.COMPONENT_THUMB_CHOSEN,this.onComponentThumbChoosen);
+			}
+			
+			private function onComponentThumbChoosen(param1:CcComponentThumbChooserEvent) : void
+			{
+				var _loc2_:CcComponentThumbChooserEvent = new CcComponentThumbChooserEvent(CcComponentThumbChooserEvent.COMPONENT_THUMB_CHOSEN,this);
+				_loc2_.componentThumb = param1.componentThumb;
+				this.dispatchEvent(_loc2_);
+			}
+			
+			private function initComponentThumbChooser(param1:ComponentThumbChooserSpark) : void
+			{
+				param1.smallerHeight = this._smallerHeight;
+				param1.biggerHeight = this._biggerHeight;
+				param1.width = this._thumbChooserWidth;
+			}
+		]]>
+	</fx:Script>
+
+	<cComponents:ComponentThumbChooserSpark id="upperBodyChooser" creationComplete="this.initComponentThumbChooser(this.upperBodyChooser)"/>
+	<cComponents:ComponentThumbChooserSpark id="lowerBodyChooser" creationComplete="this.initComponentThumbChooser(this.lowerBodyChooser)"/>
+
+</mx:Tile>

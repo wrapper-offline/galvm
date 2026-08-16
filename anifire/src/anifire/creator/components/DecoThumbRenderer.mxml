@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:components="anifire.creator.components.*"
+	autoDrawBackground="false"
+	width="105"
+	height="105"
+	useHandCursor="true"
+	buttonMode="true">
+	
+	<fx:Script>
+		<![CDATA[
+			import anifire.creator.events.CcComponentLoadEvent;
+			import anifire.creator.models.CcComponentThumb;
+			import anifire.util.UtilUser;
+			
+			private var cid:String;
+			private var thumb:CcComponentThumb;
+			[Bindable]
+			private var isNull:Boolean = false;
+			protected var _loader:Loader = new Loader();
+			protected var _bitmapData:BitmapData;
+			protected var _displayWidth:Number = 105;
+			protected var _displayHeight:Number = 105;
+			protected var _displayMatrix:Matrix = new Matrix();
+			
+			override public function set data(param1:Object) : void
+			{
+				if(!param1)
+				{
+					super.data = param1;
+					return;
+				}
+				this.cid = param1.key;
+				this.thumb = param1.data;
+				super.data = this.thumb;
+				if(!this.thumb)
+				{
+					this.isNull = true;
+					this.nullIcon.visible = true;
+				}
+				else
+				{
+					this.isNull = false;
+					this.nullIcon.visible = false;
+				}
+				if(this.thumb)
+				{
+					this.imageDisplay.source = null;
+					this.updateThumbData();
+				}
+				else
+				{
+					this.imageDisplay.source = null;
+				}
+				if(UtilUser.hasAdminFeatures)
+				{
+					this.toolTip = this.cid;
+				}
+			}
+			
+			private function updateThumbData() : void
+			{
+				this.thumb.addEventListener(CcComponentLoadEvent.LOAD_THUMBNAIL_IMAGE_DATA_COMPLETE,this.onLoadThumbImage);
+				this.thumb.loadThumbnailImageData();
+				this._loading.visible = true;
+			}
+			
+			private function onLoadThumbImage(param1:Event) : void
+			{
+				if(Boolean(this.thumb) && this.thumb.thumbnailImageData is ByteArray)
+				{
+					this._loader.contentLoaderInfo.addEventListener(Event.INIT,this.onImageLoaderInit);
+					this._loader.loadBytes(this.thumb.thumbnailImageData);
+				}
+				else
+				{
+					this.imageDisplay.source = null;
+				}
+			}
+			
+			protected function onImageLoaderInit(param1:Event = null) : void
+			{
+				if(this._loader.content is DisplayObject)
+				{
+					this.createBitmap(this._loader.content);
+				}
+				else
+				{
+					this.imageDisplay.source = this._loader.content;
+				}
+				this._loading.visible = false;
+			}
+			
+			protected function createBitmap(param1:DisplayObject) : void
+			{
+				this._bitmapData = new BitmapData(this._displayWidth,this._displayHeight,true,16711680);
+				this._displayMatrix.a = this._displayWidth / 60;
+				this._displayMatrix.d = this._displayHeight / 60;
+				this._bitmapData.draw(param1,this._displayMatrix,new ColorTransform(),null,null,true);
+				this.imageDisplay.source = this._bitmapData;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="hovered"/>
+	</s:states>
+	
+	<s:Group id="nullIcon" visible="false" horizontalCenter="0" verticalCenter="0">
+		<s:Image source="@Embed('../../styles/images/thumbBox/btn_remove_init.png')" visible="true" visible.hovered="false"/>
+		<s:Image source="@Embed('../../styles/images/thumbBox/btn_remove_over.png')" visible="false" visible.hovered="true"/>
+	</s:Group>
+	<components:BusyIndicator id="_loading" horizontalCenter="0" verticalCenter="0" visible="false" symbolColor="0"/>
+	<s:BitmapImage
+		id="imageDisplay"
+		width="90"
+		width.hovered="105"
+		height="90"
+		height.hovered="105"
+		scaleX="-1"
+		horizontalCenter="0"
+		verticalCenter="0"
+		smoothingQuality="high"
+		smooth="true"/>
+	<s:Rect top="0" right="0" bottom="0" left="0" visible="false" visible.hovered="true">
+		<s:stroke>
+			<s:SolidColorStroke color="0x21BBA6" weight="1" alpha="1"/>
+		</s:stroke>
+	</s:Rect>
+	
+</s:ItemRenderer>

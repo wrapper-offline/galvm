@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:components="anifire.creator.components.*"
+	autoDrawBackground="false"
+	minHeight="0"
+	mouseOver="onMouseOver(event)"
+	removedFromStage="onRemove()"
+	buttonMode="{displayOverlay}"
+	enabled="{model.enabled}"
+	mouseEnabled="{model.enabled}">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.creator.events.MenuItemEvent;
+			import anifire.creator.interfaces.IMenuItemOwner;
+			import anifire.creator.models.MenuItemModel;
+
+			[Bindable]
+			protected var model:MenuItemModel;
+			[Bindable]
+			protected var displayIndicator:Boolean = false;
+			[Bindable]
+			protected var displaySeparator:Boolean = false;
+			[Bindable]
+			protected var displayOverlay:Boolean = true;
+
+			override public function set data(param1:Object) : void
+			{
+				super.data = param1;
+				this.model = data as MenuItemModel;
+				if(this.model)
+				{
+					labelDisplay.text = this.model.label;
+					this.displaySeparator = this.model.menuType == MenuItemModel.MENU_TYPE_SEPARATOR;
+					this.displayIndicator = this.model.menuType == MenuItemModel.MENU_TYPE_RADIO || this.model.menuType == MenuItemModel.MENU_TYPE_CHECKBOX;
+					this.displayOverlay = !this.displaySeparator && this.model.enabled;
+				}
+			}
+			
+			public function closeSubMenu() : void
+			{
+				this.subMenuDisplay.displayPopUp = false;
+			}
+			
+			protected function onMouseOver(param1:MouseEvent) : void
+			{
+				var _loc2_:IMenuItemOwner = owner as IMenuItemOwner;
+				if(!_loc2_)
+				{
+				}
+				this.subMenuDisplay.displayPopUp = true;
+			}
+			
+			protected function onItemClick(param1:MenuItemEvent) : void
+			{
+				var _loc2_:IMenuItemOwner = owner as IMenuItemOwner;
+				if(_loc2_)
+				{
+					_loc2_.menuItemClicked(param1.item,true,param1.mouseEvent);
+				}
+			}
+			
+			protected function onRemove() : void
+			{
+				this.subMenuDisplay.displayPopUp = false;
+			}
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<components:MenuItemList
+			id="subMenu"
+			itemClick="onItemClick(event)"
+			includeInLayout="{model.hasSubMenu()}"
+			visible="{model.hasSubMenu()}"
+			dataProvider="{model.subMenu}"/>
+	</fx:Declarations>
+
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="hovered"/>
+	</s:states>
+
+	<s:Rect includeIn="hovered" left="3" right="3" top="0" bottom="0" visible="{displayOverlay}">
+		<s:fill>
+			<s:SolidColor color="0x5DB8A7"/>
+		</s:fill>
+	</s:Rect>
+	<s:Line top="5" bottom="5" left="0" right="0" visible="{displaySeparator}" includeInLayout="{displaySeparator}">
+		<s:stroke>
+			<s:SolidColorStroke color="0x000000"/>
+		</s:stroke>
+	</s:Line>
+	<s:HGroup left="5" right="5" top="5" bottom="5" verticalAlign="middle" gap="-4" visible="{!displaySeparator}" includeInLayout="{!displaySeparator}">
+		<s:Group id="selectedIndicator" width="20" height="100%" visible="{model.selected &amp;&amp; model.selectable}" includeInLayout="{displayIndicator}">
+			<s:Path horizontalCenter="0" verticalCenter="0" data="M 0 5 l 4 3 l 4 -8">
+				<s:stroke>
+					<s:SolidColorStroke weight="2" caps="square" color="0x53B6A8"/>
+				</s:stroke>
+			</s:Path>
+		</s:Group>
+		<s:Group width="30" height="100%" visible="{model.icon != null}" includeInLayout="{model.icon != null}">
+			<s:BitmapImage horizontalCenter="0" verticalCenter="0" smooth="true" source="{model.icon}"/>
+		</s:Group>
+		<s:Label id="labelDisplay" width="100%" paddingLeft="10" paddingRight="10" textAlign="left" fontSize="15"/>
+		<s:Group right="0" top="0" bottom="0" width="20" visible="{model.hasSubMenu()}">
+			<s:Path verticalCenter="-0.5" horizontalCenter="0" data="M 0 0 l 5 4 l -5 4">
+				<s:stroke>
+					<s:SolidColorStroke weight="2" caps="square" color="0x53B6A8"/>
+				</s:stroke>
+			</s:Path>
+		</s:Group>
+	</s:HGroup>
+	<s:PopUpAnchor
+		id="subMenuDisplay"
+		width="100%"
+		height="100%"
+		popUpWidthMatchesAnchorWidth="false"
+		popUpHeightMatchesAnchorHeight="false"
+		displayPopUp="false"
+		popUpPosition="right"
+		popUp="{subMenu}">
+	</s:PopUpAnchor>
+
+</s:ItemRenderer>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	width="100%"
+	height="80"
+	creationComplete="init()">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.constant.CcLibConstant;
+			import anifire.creator.events.CcSelectedDecorationEvent;
+			import anifire.creator.models.CcCharacter;
+			import anifire.creator.models.CcComponent;
+			import mx.collections.ArrayCollection;
+			import spark.components.List;
+			import spark.events.IndexChangeEvent;
+			import spark.events.ListEvent;
+
+			public static const THUMB_INIT:String = "Init";
+			public static const THUMB_OVER:String = "Over";
+			[Bindable]
+			private var _selectedList:List;
+			private var _selectedThumb:CcComponentThumbThumbnail;
+			[Bindable]
+			public var _thumbnailSource:ArrayCollection;
+			[Bindable]
+			public var _decoratedList:Array;
+
+			override public function set visible(param1:Boolean) : void
+			{
+				super.visible = param1;
+				var _loc2_:Number = Number(this.selectedList.numChildren);
+				if(param1)
+				{
+					this.selectedList.addEventListener(ListEvent.ITEM_ROLL_OVER,this.onThumbMouseOver);
+					this.selectedList.addEventListener(ListEvent.ITEM_ROLL_OUT,this.onThumbMouseOut);
+					this.selectedList.addEventListener(IndexChangeEvent.CARET_CHANGE,this.onThumbDown);
+					this.selectedList.addEventListener(CcSelectedDecorationEvent.DECORATION_DELETED,this.onThumbDelete);
+				}
+				else
+				{
+					this.selectedList.removeEventListener(ListEvent.ITEM_ROLL_OVER,this.onThumbMouseOver);
+					this.selectedList.removeEventListener(ListEvent.ITEM_ROLL_OUT,this.onThumbMouseOut);
+					this.selectedList.removeEventListener(IndexChangeEvent.CARET_CHANGE,this.onThumbDown);
+					this.selectedList.removeEventListener(CcSelectedDecorationEvent.DECORATION_DELETED,this.onThumbDelete);
+				}
+			}
+
+			public function set selectedThumb(param1:anifire.creator.components.CcComponentThumbThumbnail) : void
+			{
+				var _loc2_:Number = Number(this.selectedList.numChildren);
+				var _loc3_:int = 0;
+				while(_loc3_ < _loc2_)
+				{
+					_loc3_++;
+				}
+				this._selectedThumb = param1;
+			}
+			
+			public function init() : void
+			{
+				this._decoratedList = new Array();
+				this._thumbnailSource = new ArrayCollection();
+				this._thumbnailSource.source = this._decoratedList;
+			}
+			
+			public function initByCcChar(param1:CcCharacter) : void
+			{
+				var _loc3_:CcComponent = null;
+				this.init();
+				var _loc2_:int = 0;
+				while(_loc2_ < param1.getUserChosenComponentSize())
+				{
+					_loc3_ = param1.getUserChosenComponentByIndex(_loc2_);
+					if(CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(_loc3_.componentThumb.type) > -1)
+					{
+						this.addComponent(_loc3_);
+					}
+					_loc2_++;
+				}
+			}
+			
+			public function addComponent(param1:CcComponent) : void
+			{
+				this.addThumbnail(param1,param1.componentThumb.type);
+			}
+			
+			private function onThumbDelete(param1:Event) : void
+			{
+				var _loc2_:CcSelectedDecorationEvent = null;
+				_loc2_ = new CcSelectedDecorationEvent(CcSelectedDecorationEvent.DECORATION_DELETED,this);
+				_loc2_.ccComponent = this._decoratedList[this.selectedList.selectedIndex];
+				this.dispatchEvent(_loc2_);
+				this._decoratedList.splice(this.selectedList.selectedIndex,1);
+				if(this._decoratedList.length <= 0)
+				{
+					this._thumbnailSource = null;
+				}
+				else
+				{
+					this._thumbnailSource = new ArrayCollection();
+					this._thumbnailSource.source = this._decoratedList;
+				}
+				this.selectedList.validateNow();
+			}
+			
+			private function addThumbnail(param1:CcComponent, param2:String) : void
+			{
+				this._decoratedList.push(param1);
+				this._thumbnailSource = new ArrayCollection();
+				this._thumbnailSource.source = this._decoratedList;
+				this.selectedList.validateNow();
+				this.selectedList.selectedIndex = this.selectedList.dataProvider.length - 1;
+				this.selectedList.ensureIndexIsVisible(this.selectedList.dataProvider.length - 1);
+			}
+			
+			private function onThumbDown(param1:IndexChangeEvent) : void
+			{
+				var _loc2_:CcComponent = null;
+				var _loc3_:CcSelectedDecorationEvent = null;
+				if(param1.newIndex > -1)
+				{
+					_loc2_ = this._decoratedList[param1.newIndex];
+					_loc3_ = new CcSelectedDecorationEvent(CcSelectedDecorationEvent.DECORATION_CHOOSEN,this);
+					_loc3_.ccComponent = _loc2_;
+					this.dispatchEvent(_loc3_);
+				}
+			}
+			
+			private function onThumbMouseOver(param1:ListEvent) : void
+			{
+				var _loc2_:CcComponent = null;
+				var _loc3_:CcSelectedDecorationEvent = null;
+				try
+				{
+					_loc2_ = this._decoratedList[param1.itemIndex];
+					_loc3_ = new CcSelectedDecorationEvent(CcSelectedDecorationEvent.DECORATION_MOUSE_OVER,this);
+					_loc3_.ccComponent = _loc2_;
+					this.dispatchEvent(_loc3_);
+				}
+				catch(e:Error)
+				{
+				}
+			}
+			
+			private function onThumbMouseOut(param1:ListEvent) : void
+			{
+				var _loc2_:CcComponent = null;
+				var _loc3_:CcSelectedDecorationEvent = null;
+				try
+				{
+					_loc2_ = this._decoratedList[param1.itemIndex];
+					_loc3_ = new CcSelectedDecorationEvent(CcSelectedDecorationEvent.DECORATION_MOUSE_OUT,this);
+					_loc3_.ccComponent = _loc2_;
+					this.dispatchEvent(_loc3_);
+				}
+				catch(e:Error)
+				{
+				}
+			}
+		]]>
+	</fx:Script>
+
+	<s:List
+		id="selectedList"
+		width="100%"
+		height="100%"
+		borderVisible="false"
+		contentBackgroundAlpha="0"
+		verticalScrollPolicy="off"
+		itemRenderer="anifire.creator.components.DecorationItemRenderer"
+		dataProvider="{_thumbnailSource}">
+		<s:layout>
+			<s:HorizontalLayout paddingTop="5" paddingBottom="5" paddingLeft="15" paddingRight="15" gap="10"/>
+		</s:layout>
+	</s:List>
+
+</s:Group>

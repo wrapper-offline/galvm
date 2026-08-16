@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:components="anifire.creator.components.*"
+	width="300"
+	height="68"
+	creationComplete="createMenuModel()">
+
+	<fx:Declarations>
+		<s:Fade id="fadeIn" alphaFrom="0" alphaTo="1" duration="300"/>
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.constant.CcLibConstant;
+			import anifire.constant.ServerConstants;
+			import anifire.creator.events.CcButtonBarEvent;
+			import anifire.creator.events.MenuItemEvent;
+			import anifire.creator.models.MenuItemModel;
+			import anifire.managers.ExternalLinkManager;
+			import anifire.managers.ServerConnector;
+			import anifire.util.UtilDict;
+			import anifire.util.UtilUser;
+			import flashx.textLayout.elements.LinkElement;
+			import flashx.textLayout.elements.ParagraphElement;
+			import flashx.textLayout.elements.SpanElement;
+			import flashx.textLayout.elements.TextFlow;
+			import flashx.textLayout.events.FlowElementMouseEvent;
+			import mx.collections.ArrayCollection;
+
+			protected function createMenuModel() : void
+			{
+				var _loc3_:MenuItemModel = null;
+				var _loc4_:MenuItemModel = null;
+				var _loc1_:ArrayCollection = new ArrayCollection();
+				if(CcLibConstant.RANDOM_CHAR)
+				{
+					_loc3_ = new MenuItemModel(UtilDict.toDisplay("go","Randomize character"),"random");
+					_loc1_.addItem(_loc3_);
+				}
+				var _loc2_:MenuItemModel = new MenuItemModel(UtilDict.toDisplay("go","Reset character"),"reset");
+				_loc1_.addItem(_loc2_);
+				if(CcLibConstant.CHANGE_CHAR_SCALE)
+				{
+					_loc4_ = new MenuItemModel(UtilDict.toDisplay("go","Scaling tool"),"scale");
+					_loc1_.addItem(_loc4_);
+				}
+				this.extraMenu.dataProvider = _loc1_;
+				this.refreshRole();
+			}
+			
+			public function refreshRole() : void
+			{
+				var _loc1_:String = null;
+				var _loc2_:TextFlow = null;
+				var _loc3_:Array = null;
+				var _loc4_:ParagraphElement = null;
+				var _loc5_:SpanElement = null;
+				var _loc6_:LinkElement = null;
+				var _loc7_:SpanElement = null;
+				var _loc8_:SpanElement = null;
+				this.btnSave.visible = true;
+				this.btnSaveDisabled.visible = false;
+				if(CcLibConstant.IS_BUSINESS_THEME && !UtilUser.hasBusinessFeatures)
+				{
+					this.btnSave.visible = false;
+					this.btnSaveDisabled.visible = true;
+					_loc1_ = UtilDict.toDisplay("go","To save this character, please {0} to a business plan.");
+				}
+				else if(UtilUser.userType == UtilUser.BASIC_USER)
+				{
+					this.btnSave.visible = false;
+					this.btnSaveDisabled.visible = true;
+					_loc1_ = UtilDict.toDisplay("go","To save this character, please {0} now.");
+				}
+				if(this.btnSaveDisabled.visible)
+				{
+					_loc2_ = new TextFlow();
+					_loc3_ = _loc1_.split("{0}");
+					_loc4_ = new ParagraphElement();
+					(_loc5_ = new SpanElement()).text = _loc3_[0];
+					_loc4_.addChild(_loc5_);
+					_loc6_ = new LinkElement();
+					(_loc7_ = new SpanElement()).text = UtilDict.toDisplay("go","subscribe");
+					_loc7_.fontFamily = "StudioSparkMain";
+					_loc7_.fontWeight = "bold";
+					_loc7_.color = 1808298;
+					_loc6_.addChild(_loc7_);
+					_loc6_.addEventListener(FlowElementMouseEvent.CLICK,this.onUpgradeLinkClick);
+					_loc4_.addChild(_loc6_);
+					if(_loc3_.length > 1)
+					{
+						(_loc8_ = new SpanElement()).text = _loc3_[1];
+						_loc4_.addChild(_loc8_);
+					}
+					_loc2_.addChild(_loc4_);
+					this.warnLabel.textFlow = _loc2_;
+					this.warnLabel.textFlow.fontFamily = "StudioSparkMain";
+					this.btnSaveDisabled.addEventListener(MouseEvent.MOUSE_OVER,this.displaySubscribe);
+				}
+				else
+				{
+					this.warnLabel.textFlow = null;
+					this.btnSaveDisabled.removeEventListener(MouseEvent.MOUSE_OVER,this.displaySubscribe);
+				}
+			}
+			
+			override public function set currentState(param1:String) : void
+			{
+				if(CcLibConstant.IS_BUSINESS_THEME && !UtilUser.hasBusinessFeatures || UtilUser.userType == UtilUser.BASIC_USER)
+				{
+					if(param1 == "preview")
+					{
+						this.subscribeDisplay.displayPopUp = true;
+					}
+				}
+				if(param1 == "editor")
+				{
+					this.subscribeDisplay.displayPopUp = false;
+				}
+				super.currentState = param1;
+			}
+			
+			protected function onUpgradeLinkClick(param1:FlowElementMouseEvent) : void
+			{
+				ExternalLinkManager.instance.navigateWithSession(ServerConstants.BUSINESS_PLAN_PAGE_PATH,"wndbizplan");
+				ServerConnector.instance.onUpsellUpgradePending();
+			}
+			
+			protected function displaySubscribe(param1:Event) : void
+			{
+				this.subscribeDisplay.displayPopUp = true;
+			}
+			
+			protected function displayMenu() : void
+			{
+				this.extraMenuDisplay.displayPopUp = true;
+			}
+			
+			protected function onExtraMenuButtonClick(param1:MouseEvent) : void
+			{
+				this.displayMenu();
+			}
+			
+			protected function onMenuItemClick(param1:MenuItemEvent) : void
+			{
+				var _loc2_:String = param1.item.value;
+				switch(_loc2_)
+				{
+					case "random":
+						this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.RANDOMIZE_BUTTON_CLICK,this));
+						break;
+					case "reset":
+						this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.RESET_BUTTON_CLICK,this));
+						break;
+					case "scale":
+						this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.SCALE_BUTTON_CLICK,this));
+				}
+			}
+		]]>
+	</fx:Script>
+
+	<s:states>
+		<s:State name="editor"/>
+		<s:State name="preview"/>
+	</s:states>
+
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="0xEEEEEE"/>
+		</s:fill>
+	</s:Rect>
+	<s:HGroup width="300" height="40" verticalAlign="middle" horizontalAlign="right" verticalCenter="0">
+		<s:HGroup
+			height="40"
+			verticalAlign="middle"
+			gap="-1"
+			horizontalAlign="right"
+			verticalCenter="0"
+			visible.editor="true"
+			visible.preview="false">
+			<components:IconButton
+				id="btnUndo"
+				buttonMode="true"
+				styleName="topToolBar"
+				enabled="false"
+				icon="@Embed('../../styles/images/toolbar/btn_undo_init.png')"
+				iconOver="@Embed('../../styles/images/toolbar/btn_undo_over.png')"
+				iconDisabled="@Embed('../../styles/images/toolbar/btn_undo_disabled.png')"
+				label="{UtilDict.toDisplay('go','Undo')}"
+				click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.UNDO_BUTTON_CLICK, this))"/>
+			<components:IconButton
+				id="btnRedo"
+				buttonMode="true"
+				styleName="topToolBar"
+				enabled="false"
+				icon="@Embed('../../styles/images/toolbar/btn_redo_init.png')"
+				iconOver="@Embed('../../styles/images/toolbar/btn_redo_over.png')"
+				iconDisabled="@Embed('../../styles/images/toolbar/btn_redo_disabled.png')"
+				label="{UtilDict.toDisplay('go','Redo')}"
+				click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.REDO_BUTTON_CLICK, this))"/>
+			<s:Spacer width="15"/>
+			<components:IconButton
+				id="btnOther"
+				buttonMode="true"
+				focusEnabled="false"
+				tabEnabled="false"
+				icon="@Embed('../../styles/images/toolbar/btn_gear_init.png')"
+				iconOver="@Embed('../../styles/images/toolbar/btn_gear_over.png')"
+				click="this.onExtraMenuButtonClick(event)"/>
+		</s:HGroup>
+		<s:HGroup
+			height="40"
+			verticalAlign="middle"
+			gap="-1"
+			horizontalAlign="right"
+			verticalCenter="0"
+			visible.editor="true"
+			visible.preview="true">
+			<s:Spacer width="15"/>
+			<s:Button
+				id="previewButton"
+				buttonMode="true"
+				styleName="default"
+				width="85"
+				label="{UtilDict.toDisplay('go','PREVIEW')}"
+				click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.PREVIEW_BUTTON_CLICK, this))"
+				visible.preview="false"
+				includeInLayout.preview="false"/>
+			<s:Button
+				id="modifyButton"
+				buttonMode="true"
+				styleName="default"
+				width="85"
+				label="{UtilDict.toDisplay('go','MODIFY')}"
+				click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.MODIFY_BUTTON_CLICK, this))"
+				visible.editor="false"
+				includeInLayout.editor="false"/>
+			<s:Spacer width="15"/>
+			<s:Group horizontalCenter="0" verticalCenter="0">
+				<components:IconButton
+					id="btnSaveDisabled"
+					buttonMode="true"
+					horizontalCenter="0"
+					verticalCenter="0"
+					enabled="true"
+					visible="false"
+					icon="@Embed('../../styles/images/toolbar/btn_save_disabled.png')"
+					iconOver="@Embed('../../styles/images/toolbar/btn_save_disabled.png')"/>
+				<components:IconButton
+					id="btnSave"
+					buttonMode="true"
+					styleName="topToolBar"
+					enabled="true"
+					icon="@Embed('../../styles/images/toolbar/btn_save_init.png')"
+					iconOver="@Embed('../../styles/images/toolbar/btn_save_over.png')"
+					label="{UtilDict.toDisplay('go','Save')}"
+					click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.SAVE_BUTTON_CLICK, this))"/>
+			</s:Group>
+		</s:HGroup>
+	</s:HGroup>
+	<components:PopUpAnchor id="extraMenuDisplay" width="100%" bottom="0" popUpPosition="belowRight" right="20">
+		<components:popUp>
+			<components:ArrowTipContainer
+				id="dropDown"
+				left="5"
+				right="5"
+				top="5"
+				bottom="5"
+				tipPosition="below"
+				targetWidth="20"
+				offset="15">
+				<components:MenuItemList id="extraMenu" top="5" bottom="5" itemClick="onMenuItemClick(event)"/>
+			</components:ArrowTipContainer>
+		</components:popUp>
+	</components:PopUpAnchor>
+	<components:PopUpAnchor
+		id="subscribeDisplay"
+		maxWidth="160"
+		bottom="0"
+		popUpPosition="belowCenter"
+		right="2">
+		<components:popUp>
+			<components:ArrowTipContainer
+				id="subscribeTip"
+				left="5"
+				right="5"
+				top="5"
+				bottom="5"
+				tipPosition="belowRight"
+				targetWidth="20"
+				offset="15"
+				showEffect="{fadeIn}"
+				skinClass="anifire.creator.skins.SubscribeTipContainerSkin">
+				<s:RichEditableText
+					id="warnLabel"
+					multiline="true"
+					minWidth="140"
+					maxWidth="160"
+					editable="false"
+					focusEnabled="false"
+					selectable="false"
+					verticalCenter="0"
+					fontSize="13"
+					color="0xFFFFFF"
+					textAlign="left"
+					paddingLeft="15"
+					paddingRight="15"
+					paddingTop="15"
+					paddingBottom="15"/>
+			</components:ArrowTipContainer>
+		</components:popUp>
+	</components:PopUpAnchor>
+
+</s:Group>

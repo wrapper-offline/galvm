@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:components="anifire.creator.components.*"
+	autoDrawBackground="false"
+	width="70"
+	height="70">
+	
+	<fx:Script>
+		<![CDATA[
+			import anifire.creator.events.CcComponentLoadEvent;
+			import anifire.creator.events.CcSelectedDecorationEvent;
+			import anifire.creator.models.CcComponent;
+			import anifire.util.UtilDict;
+
+			private var component:CcComponent;
+			protected var _loader:Loader = new Loader();
+			protected var _bitmapData:BitmapData;
+			protected var _displayWidth:Number = 60;
+			protected var _displayHeight:Number = 60;
+			protected var _displayMatrix:Matrix = new Matrix();
+
+			override public function set data(param1:Object) : void
+			{
+				super.data = param1;
+				this.component = param1 as CcComponent;
+				if(this.component)
+				{
+					this.imageDisplay.source = null;
+					this.updateThumbData();
+				}
+				else
+				{
+					this.imageDisplay.source = null;
+				}
+			}
+			
+			private function updateThumbData() : void
+			{
+				this.component.componentThumb.addEventListener(CcComponentLoadEvent.LOAD_THUMBNAIL_IMAGE_DATA_COMPLETE,this.onLoadThumbImage);
+				this.component.componentThumb.loadThumbnailImageData();
+				this._loading.visible = true;
+			}
+			
+			private function onLoadThumbImage(param1:Event) : void
+			{
+				var e:Event = param1;
+				try
+				{
+					if(Boolean(this.component.componentThumb) && this.component.componentThumb.thumbnailImageData is ByteArray)
+					{
+						this._loader.contentLoaderInfo.addEventListener(Event.INIT,this.onImageLoaderInit);
+						this._loader.loadBytes(this.component.componentThumb.thumbnailImageData);
+					}
+					else
+					{
+						this.imageDisplay.source = null;
+					}
+				}
+				catch(e:Error)
+				{
+				}
+			}
+			
+			protected function onImageLoaderInit(param1:Event = null) : void
+			{
+				if(this._loader.content is DisplayObject)
+				{
+					this.createBitmap(this._loader.content);
+				}
+				else
+				{
+					this.imageDisplay.source = this._loader.content;
+				}
+				this._loading.visible = false;
+			}
+			
+			protected function createBitmap(param1:DisplayObject) : void
+			{
+				this._bitmapData = new BitmapData(this._displayWidth,this._displayHeight,true,16711680);
+				this._bitmapData.draw(param1,this._displayMatrix,new ColorTransform(),null,null,true);
+				this.imageDisplay.source = this._bitmapData;
+			}
+			
+			private function onDeleteClick(param1:Event) : void
+			{
+				owner.dispatchEvent(new CcSelectedDecorationEvent(CcSelectedDecorationEvent.DECORATION_DELETED,this));
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="hovered"/>
+		<s:State name="selected"/>
+		<s:State name="normalAndShowsCaret"/>
+		<s:State name="hoveredAndShowsCaret"/>
+		<s:State name="selectedAndShowsCaret"/>
+	</s:states>
+
+	<s:Rect
+		width="50"
+		width.hovered="70"
+		width.selectedAndShowsCaret="70"
+		height="50"
+		height.hovered="70"
+		height.selectedAndShowsCaret="70"
+		radiusX="5"
+		radiusX.hovered="10"
+		radiusY="5"
+		radiusY.hovered="10"
+		verticalCenter="0"
+		horizontalCenter="0">
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF" color.hovered="0xE2E7ED" color.selected="0xE2E7ED" color.selectedAndShowsCaret="0xE2E7ED"/>
+		</s:fill>
+	</s:Rect>
+	<components:BusyIndicator id="_loading" horizontalCenter="0" verticalCenter="0" visible="false" symbolColor="0"/>
+	<s:BitmapImage
+		id="imageDisplay"
+		width="50"
+		width.hovered="70"
+		width.selectedAndShowsCaret="70"
+		height="50"
+		height.hovered="70"
+		height.selectedAndShowsCaret="70"
+		horizontalCenter="0"
+		verticalCenter="0"
+		smoothingQuality="high"
+		smooth="true"/>
+	<components:IconButton
+		id="btnDelete"
+		buttonMode="true"
+		visible="false"
+		visible.selectedAndShowsCaret="true"
+		enabled="true"
+		bottom="10"
+		right="10"
+		icon="@Embed('../../styles/images/control/btn_delete_init.png')"
+		iconOver="@Embed('../../styles/images/control/btn_delete_over.png')"
+		click="this.onDeleteClick(event)"
+		label="{UtilDict.toDisplay('go','Delete')}"/>
+	
+	
+</s:ItemRenderer>

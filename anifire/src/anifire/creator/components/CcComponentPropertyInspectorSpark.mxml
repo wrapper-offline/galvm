@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:cComponents="anifire.creator.components.*"
+	width="300"
+	height="100">
+
+	<fx:Declarations>
+		<s:Animate
+			id="moveUp"
+			target="{yPad}"
+			duration="500"
+			effectStart="this.hideFinishFlag=false;this.yPad.mouseChildren=true;">
+			<s:motionPaths>
+				<s:SimpleMotionPath property="y" valueFrom="105" valueTo="5"/>
+				<s:SimpleMotionPath property="alpha" valueFrom="0" valueTo="1"/>
+			</s:motionPaths>
+		</s:Animate>
+		<s:Animate
+			id="moveDown"
+			target="{yPad}"
+			duration="500"
+			effectEnd="this.hideFinishFlag=true;this.yPad.mouseChildren=false;">
+			<s:motionPaths>
+				<s:SimpleMotionPath property="y" valueFrom="5" valueTo="105"/>
+				<s:SimpleMotionPath property="alpha" valueFrom="1" valueTo="0"/>
+			</s:motionPaths>
+		</s:Animate>
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.constant.CcLibConstant;
+			import anifire.creator.events.CcThumbPropertyEvent;
+			import anifire.creator.models.CcComponent;
+			import anifire.util.UtilDict;
+
+			private var _component:CcComponent;
+			private var _timer:Timer;
+			private var _type:String;
+			private var hideFinishFlag:Boolean = true;
+
+			public function init(param1:CcComponent, param2:int = 0) : void
+			{
+				if(!CcLibConstant.HAS_DETAIL_CONTROL)
+				{
+					return;
+				}
+				this._timer = new Timer(200,1);
+				this._component = param1;
+				if(CcLibConstant.ALL_HEAD_COMPONENT_TYPES.indexOf(this._component.componentThumb.type) > -1)
+				{
+					this.btnExtend.enabled = true;
+				}
+				else
+				{
+					this.btnExtend.enabled = false;
+				}
+				if(CcLibConstant.ALL_OFFSETABLE_COMPONENT_TYPES.indexOf(this._component.componentThumb.type) > -1)
+				{
+					this.btnOffsetUp.visible = true;
+					this.btnOffsetDown.visible = true;
+				}
+				else
+				{
+					this.btnOffsetUp.visible = false;
+					this.btnOffsetDown.visible = false;
+				}
+				if(param2 == 1)
+				{
+					setCurrentState("keep_pro");
+				}
+				else
+				{
+					setCurrentState("no_pro");
+				}
+				this.bgCross.addEventListener(CcThumbPropertyEvent.CCPROP_UP_BUTTON_CLICK,this.onCrossDown);
+				this.bgCross.addEventListener(CcThumbPropertyEvent.CCPROP_DOWN_BUTTON_CLICK,this.onCrossDown);
+				this.bgCross.addEventListener(CcThumbPropertyEvent.CCPROP_LEFT_BUTTON_CLICK,this.onCrossDown);
+				this.bgCross.addEventListener(CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK,this.onCrossDown);
+			}
+			
+			private function onCrossDown(param1:Event) : void
+			{
+				CcThumbPropertyEvent(param1).component = this._component;
+				this.dispatch(param1);
+			}
+			
+			private function onMouseDown(param1:Event) : void
+			{
+				this._type = this.getTypeByEventTarget(param1.currentTarget);
+				var _loc2_:CcThumbPropertyEvent = new CcThumbPropertyEvent(this._type,this);
+				_loc2_.component = this._component;
+				this.dispatch(_loc2_);
+				this._timer = new Timer(1000,1);
+				this._timer.addEventListener(TimerEvent.TIMER,this.doFirstTimer);
+				this._timer.start();
+			}
+			
+			private function onMouseUp(param1:Event) : void
+			{
+				if(this._timer != null && this._timer.running)
+				{
+					this._timer.stop();
+					this._timer.removeEventListener(TimerEvent.TIMER,this.doTimer);
+					var _loc2_:CcThumbPropertyEvent = new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_LOCATION_UPDATE,this);
+					this.dispatch(_loc2_);
+				}
+			}
+			
+			private function doFirstTimer(param1:TimerEvent) : void
+			{
+				this._timer.stop();
+				this._timer.removeEventListener(TimerEvent.TIMER,this.doFirstTimer);
+				this._timer = new Timer(20);
+				this._timer.addEventListener(TimerEvent.TIMER,this.doTimer);
+				this._timer.start();
+			}
+			
+			private function doTimer(event:TimerEvent) : void
+			{
+				var _loc2_:String = this._type;
+				var _loc3_:CcThumbPropertyEvent = new CcThumbPropertyEvent(_loc2_, this);
+				_loc3_.component = this._component;
+				this.dispatch(_loc3_);
+			}
+			
+			private function onClick(event:Event) : void
+			{
+				var eventType:String = this.getTypeByEventTarget(event.currentTarget);
+				var newEvent:CcThumbPropertyEvent = new CcThumbPropertyEvent(eventType, this);
+				newEvent.component = this._component;
+				this.dispatch(newEvent);
+			}
+			
+			public function destroy() : void
+			{
+				this.btnExtend.enabled = false;
+			}
+			
+			public function close() : void
+			{
+				if(!this.hideFinishFlag)
+				{
+					this.startHide();
+				}
+			}
+			
+			private function startHide() : void
+			{
+				this.moveDown.play();
+			}
+			
+			private function dispatch(event:Event) : void
+			{
+				var newEvent:CcThumbPropertyEvent = CcThumbPropertyEvent(event).clone() as CcThumbPropertyEvent;
+				newEvent.component = this._component;
+				this.dispatchEvent(newEvent);
+			}
+			
+			private function getTypeByEventTarget(target:Object) : String
+			{
+				var eventType:String = "";
+				switch (target) {
+					case this.btnRotateUp:
+						eventType = CcThumbPropertyEvent.CCPROP_ROTATEUP_BUTTON_CLICK;
+						break;
+					case this.btnRotateDown:
+						eventType = CcThumbPropertyEvent.CCPROP_ROTATEDOWN_BUTTON_CLICK;
+						break;
+					case this.btnScaleUp:
+						eventType = CcThumbPropertyEvent.CCPROP_SCALEUP_BUTTON_CLICK;
+						break;
+					case this.btnScaleDown:
+						eventType = CcThumbPropertyEvent.CCPROP_SCALEDOWN_BUTTON_CLICK;
+						break;
+					case this.btnXScaleUp:
+						eventType = CcThumbPropertyEvent.CCPROP_SCALEXUP_BUTTON_CLICK;
+						break;
+					case this.btnXScaleDown:
+						eventType = CcThumbPropertyEvent.CCPROP_SCALEXDOWN_BUTTON_CLICK;
+						break;
+					case this.btnYScaleUp:
+						eventType = CcThumbPropertyEvent.CCPROP_SCALEYUP_BUTTON_CLICK;
+						break;
+					case this.btnYScaleDown:
+						eventType = CcThumbPropertyEvent.CCPROP_SCALEYDOWN_BUTTON_CLICK;
+						break;
+					case this.btnOffsetUp:
+						eventType = CcThumbPropertyEvent.CCPROP_OFFSETUP_BUTTON_CLICK;
+						break;
+					case this.btnOffsetDown:
+						eventType = CcThumbPropertyEvent.CCPROP_OFFSETDOWN_BUTTON_CLICK;
+				}
+				return eventType;
+			}
+		]]>
+	</fx:Script>
+
+	<s:states>
+		<s:State name="keep_pro"/>
+		<s:State name="no_pro"/>
+	</s:states>
+
+	<cComponents:IconButton
+		id="btnExtend"
+		buttonMode="true"
+		enabled="true"
+		right="15"
+		bottom="27"
+		icon="@Embed('../../styles/images/details/btn_anchor_init.png')"
+		iconOver="@Embed('../../styles/images/details/btn_anchor_over.png')"
+		iconDisabled="@Embed('../../styles/images/details/btn_anchor_disabled.png')"
+		click="moveUp.play()"
+		label="{UtilDict.toDisplay('go','Fine-tune size and position')}"/>
+
+	<s:Group id="yPad" y="105" x="{(this.width - yPad.width) / 2}" alpha="0" mouseChildren="false">
+		<s:Rect width="280" height="101" radiusX="5" radiusY="5">
+			<s:fill>
+				<s:SolidColor color="0x333333"/>
+			</s:fill>
+		</s:Rect>
+		<s:RectangularDropShadow
+			id="dropShadow"
+			blurX="20"
+			blurY="20"
+			alpha="0.45"
+			distance="7"
+			angle="90"
+			color="0x000000"
+			blRadius="3"
+			brRadius="3"
+			tlRadius="3"
+			trRadius="3"
+			left="0"
+			right="0"
+			top="0"
+			bottom="0"/>
+		<cComponents:IconButton
+			id="btnClose"
+			buttonMode="true"
+			enabled="true"
+			top="5"
+			right="5"
+			icon="@Embed('../../styles/images/panel/btn_close_init.png')"
+			iconOver="@Embed('../../styles/images/panel/btn_close_over.png')"
+			click="startHide()"
+			label="{UtilDict.toDisplay('go','Close')}"/>
+		<s:HGroup
+			width="100%"
+			horizontalCenter="0"
+			verticalCenter="0"
+			top="15"
+			bottom="15"
+			left="15"
+			right="15"
+			gap="8"
+			horizontalAlign="center">
+
+			<!-- combined scale -->
+			<s:VGroup includeIn="keep_pro" gap="8">
+				<cComponents:IconButton
+					id="btnScaleUp"
+					buttonMode="true"
+					enabled="true"
+					icon="@Embed('../../styles/images/details/btn_scale_up_init.png')"
+					iconOver="@Embed('../../styles/images/details/btn_scale_up_over.png')"
+					mouseDown="onMouseDown(event)"
+					mouseOut="onMouseUp(event)"
+					mouseUp="onMouseUp(event)"/>
+				<cComponents:IconButton
+					id="btnScaleDown"
+					buttonMode="true"
+					enabled="true"
+					icon="@Embed('../../styles/images/details/btn_scale_down_init.png')"
+					iconOver="@Embed('../../styles/images/details/btn_scale_down_over.png')"
+					mouseDown="onMouseDown(event)"
+					mouseOut="onMouseUp(event)"
+					mouseUp="onMouseUp(event)"/>
+			</s:VGroup>
+
+			<!-- scale x -->
+			<s:VGroup includeIn="no_pro" gap="8">
+				<cComponents:IconButton
+					id="btnXScaleUp"
+					buttonMode="true"
+					enabled="true"
+					icon="@Embed('../../styles/images/details/btn_scale_up_x_init.png')"
+					iconOver="@Embed('../../styles/images/details/btn_scale_up_x_over.png')"
+					mouseDown="onMouseDown(event)"
+					mouseOut="onMouseUp(event)"
+					mouseUp="onMouseUp(event)"/>
+				<cComponents:IconButton
+					id="btnXScaleDown"
+					buttonMode="true"
+					enabled="true"
+					icon="@Embed('../../styles/images/details/btn_scale_down_x_init.png')"
+					iconOver="@Embed('../../styles/images/details/btn_scale_down_x_over.png')"
+					mouseDown="onMouseDown(event)"
+					mouseOut="onMouseUp(event)"
+					mouseUp="onMouseUp(event)"/>
+			</s:VGroup>
+
+			<!-- scale y -->
+			<s:VGroup includeIn="no_pro" gap="8">
+				<cComponents:IconButton
+					id="btnYScaleUp"
+					buttonMode="true"
+					enabled="true"
+					icon="@Embed('../../styles/images/details/btn_scale_up_y_init.png')"
+					iconOver="@Embed('../../styles/images/details/btn_scale_up_y_over.png')"
+					mouseDown="onMouseDown(event)"
+					mouseOut="onMouseUp(event)"
+					mouseUp="onMouseUp(event)"/>
+				<cComponents:IconButton
+					id="btnYScaleDown"
+					buttonMode="true"
+					enabled="true"
+					icon="@Embed('../../styles/images/details/btn_scale_down_y_init.png')"
+					iconOver="@Embed('../../styles/images/details/btn_scale_down_y_over.png')"
+					mouseDown="onMouseDown(event)"
+					mouseOut="onMouseUp(event)"
+					mouseUp="onMouseUp(event)"/>
+			</s:VGroup>
+
+			<!-- rotation -->
+			<s:VGroup gap="8">
+				<cComponents:IconButton
+					id="btnRotateUp"
+					buttonMode="true"
+					enabled="true"
+					icon="@Embed('../../styles/images/details/btn_rotate_left_init.png')"
+					iconOver="@Embed('../../styles/images/details/btn_rotate_left_over.png')"
+					mouseDown="onMouseDown(event)"
+					mouseOut="onMouseUp(event)"
+					mouseUp="onMouseUp(event)"/>
+				<cComponents:IconButton
+					id="btnRotateDown"
+					buttonMode="true"
+					enabled="true"
+					icon="@Embed('../../styles/images/details/btn_rotate_right_init.png')"
+					iconOver="@Embed('../../styles/images/details/btn_rotate_right_over.png')"
+					mouseDown="onMouseDown(event)"
+					mouseOut="onMouseUp(event)"
+					mouseUp="onMouseUp(event)"/>
+			</s:VGroup>
+
+			<!-- offset -->
+			<s:VGroup gap="8">
+				<cComponents:IconButton
+					id="btnOffsetUp"
+					buttonMode="true"
+					enabled="true"
+					icon="@Embed('../../styles/images/details/btn_wider_init.png')"
+					iconOver="@Embed('../../styles/images/details/btn_wider_over.png')"
+					mouseDown="onMouseDown(event)"
+					mouseOut="onMouseUp(event)"
+					mouseUp="onMouseUp(event)"/>
+				<cComponents:IconButton
+					id="btnOffsetDown"
+					buttonMode="true"
+					enabled="true"
+					icon="@Embed('../../styles/images/details/btn_closer_init.png')"
+					iconOver="@Embed('../../styles/images/details/btn_closer_over.png')"
+					mouseDown="onMouseDown(event)"
+					mouseOut="onMouseUp(event)"
+					mouseUp="onMouseUp(event)"/>
+			</s:VGroup>
+
+			<cComponents:DirectionControlSpark id="bgCross" verticalCenter="0" right="0"/>
+		</s:HGroup>
+	</s:Group>
+
+</s:Group>

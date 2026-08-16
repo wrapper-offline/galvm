@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	creationComplete="init()">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+
+			protected var _title:String;
+			protected var _message:String;
+			protected var _confirmText:String;
+			protected var _cancelText:String;
+			protected var _data:Object;
+
+			public function set data(param1:Object) : void
+			{
+				this._data = param1;
+			}
+			
+			[Bindable]
+			public function get title() : String
+			{
+				return this._title;
+			}
+			public function set title(value:String) : void
+			{
+				if (this._title != value) {
+					this._title = value;
+				}
+			}
+
+			[Bindable]
+			public function get message() : String
+			{
+				return this._message;
+			}
+			public function set message(value:String) : void
+			{
+				if (this._message != value) {
+					this._message = value;
+				}
+			}
+			
+			[Bindable]
+			public function get confirmText() : String
+			{
+				return this._confirmText;
+			}
+			public function set confirmText(value:String) : void
+			{
+				if (this._confirmText != value) {
+					this._confirmText = value;
+				}
+			}
+			
+			[Bindable]
+			public function get cancelText() : String
+			{
+				return this._cancelText;
+			}
+			public function set cancelText(value:String) : void
+			{
+				if (this._cancelText != value) {
+					this._cancelText = value;
+				}
+			}
+			
+			protected function confirm() : void
+			{
+				close(true, this._data);
+			}
+			
+			protected function cancel() : void
+			{
+				close(false, this._data);
+			}
+			
+			protected function init() : void
+			{
+			}
+			
+			override public function open(owner:DisplayObjectContainer, modal:Boolean = false) : void
+			{
+				super.open(owner, modal);
+				PopUpManager.centerPopUp(this);
+			}
+		]]>
+	</fx:Script>
+
+</s:SkinnablePopUpContainer>

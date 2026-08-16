@@ -8,7 +8,7 @@ package anifire.models.creator
 	
 	public class CCThemeModel extends EventDispatcher
 	{
-		/** Seems to have enabled parsing of Creator-specific data. */
+		/** Seems to have enabled parsing of data useful to Creator. */
 		public var runwayMode:Boolean;
 
 		public var themeId:String;
@@ -59,9 +59,9 @@ package anifire.models.creator
 		/**
 		 * Parses all children in a theme XML.
 		 */
-		public function parse(themeElem:XML) : void
+		public function parse(themeNode:XML) : void
 		{
-			var children:XMLList = themeElem.children();
+			var children:XMLList = themeNode.children();
 			var numChildren:int = children.length();
 			for (var child:XML, i:int = 0; i < numChildren; i++) {
 				child = children[i];

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	minWidth="80"
+	minHeight="32"
+	alpha.disabled="0.5">
+
+	<fx:Metadata>
+		[HostComponent("spark.components.Button")]
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			override protected function commitProperties() : void
+			{
+				super.commitProperties();
+				this.iconDisplay.includeInLayout = this.iconDisplay.source != null;
+			}
+		]]>
+	</fx:Script>
+
+	<s:states>
+		<s:State name="up"/>
+		<s:State name="over"/>
+		<s:State name="down"/>
+		<s:State name="disabled"/>
+	</s:states>
+
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="3" radiusY="3">
+		<s:fill>
+			<s:SolidColor color="0xE97D3B" color.over="0xDD6522" color.disabled="0xCACBCC"/>
+		</s:fill>
+	</s:Rect>
+	<s:HGroup
+		id="contentGroup"
+		left="0"
+		right="0"
+		top="0"
+		bottom="0"
+		gap="5"
+		paddingLeft="15"
+		paddingRight="15"
+		horizontalAlign="center"
+		verticalAlign="middle">
+		<s:BitmapImage id="iconDisplay"/>
+		<s:Label
+			id="labelDisplay"
+			maxDisplayedLines="1"
+			color="0xFFFFFF"
+			fontStyle="italic"
+			typographicCase="lowercaseToSmallCaps"/>
+	</s:HGroup>
+
+</s:SparkSkin>

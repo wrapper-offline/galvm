@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	minWidth="21"
+	minHeight="21">
+
+	<fx:Metadata>
+		[HostComponent("spark.components.Button")]
+	</fx:Metadata>
+
+	<s:states>
+		<s:State name="up"/>
+		<s:State name="over" stateGroups="overAndDownStates"/>
+		<s:State name="down" stateGroups="overAndDownStates"/>
+		<s:State name="disabled"/>
+	</s:states>
+
+	<s:Rect id="frameDisplay" left="0" right="0" top="0" bottom="0" radiusX="4" radiusY="4">
+		<s:stroke>
+			<s:SolidColorStroke color="0xCAC9D4"/>
+		</s:stroke>
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF"/>
+		</s:fill>
+	</s:Rect>
+	<s:Rect id="shadow" left="1" top="1" right="1" height="1" radiusX="3">
+		<s:fill>
+			<s:SolidColor color="0x000000" alpha="0.12"/>
+		</s:fill>
+	</s:Rect>
+	<s:Group width="24" right="1" top="0" bottom="0">
+		<s:Line left="0" top="8" bottom="8">
+			<s:stroke>
+				<s:SolidColorStroke color="0xCAC9D4"/>
+			</s:stroke>
+		</s:Line>
+		<s:Path
+			id="triangle"
+			verticalCenter="0"
+			horizontalCenter="0"
+			data="M 0 0 l 4 4 l 4 -4"
+			visible.disabled="false">
+			<s:stroke>
+				<s:SolidColorStroke color="0x43BCA5" weight="2" caps="square"/>
+			</s:stroke>
+		</s:Path>
+	</s:Group>
+
+</s:SparkSkin>

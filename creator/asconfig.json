@@ -6,7 +6,8 @@
 			"src"
 		],
 		"library-path": [
-			"../dist/libs/anifire.swc"
+			"../dist/libs/anifire.swc",
+			"../dist/libs/as3corelib.swc"
 		]
 	},
 	"files": [

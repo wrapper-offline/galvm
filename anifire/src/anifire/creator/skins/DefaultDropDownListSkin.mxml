@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:core="mx.core.*"
+	xmlns:components="anifire.creator.components.*"
+	width="110"
+	minHeight="32">
+
+	<fx:Metadata>
+		[HostComponent("spark.components.DropDownList")]
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			protected function getIconFromItem(item:Object) : Class
+			{
+				if (item) {
+					return item.icon;
+				}
+				return null;
+			}
+		]]>
+	</fx:Script>
+
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="open"/>
+		<s:State name="disabled"/>
+	</s:states>
+
+	<s:PopUpAnchor
+		id="popUp"
+		includeIn="open"
+		itemDestructionPolicy="auto"
+		displayPopUp.normal="false"
+		displayPopUp.open="true"
+		left="0"
+		right="0"
+		top="0"
+		bottom="0"
+		popUpPosition="above"
+		popUpWidthMatchesAnchorWidth="false">
+		<s:popUp>
+			<s:Group id="dropDown" minWidth="{popUp.width}">
+				<s:RectangularDropShadow
+					id="dropShadow"
+					blurX="20"
+					blurY="20"
+					alpha="0.45"
+					distance="7"
+					blRadius="3"
+					brRadius="3"
+					tlRadius="3"
+					trRadius="3"
+					angle="90"
+					color="0"
+					left="0"
+					top="0"
+					right="0"
+					bottom="0"/>
+				<s:Rect id="border" left="0" right="0" top="0" bottom="0" radiusX="3">
+					<s:stroke>
+						<s:SolidColorStroke id="borderStroke" weight="1" color="0xA09F9F"/>
+					</s:stroke>
+					<s:fill>
+						<s:SolidColor id="bgFill" color="0xFFFFFF"/>
+					</s:fill>
+				</s:Rect>
+				<s:Scroller
+					id="scroller"
+					left="0"
+					top="3"
+					right="0"
+					bottom="3"
+					hasFocusableChildren="false"
+					minViewportInset="1"
+					buttonMode="true">
+					<s:viewport>
+						<s:DataGroup id="dataGroup" itemRenderer="anifire.creator.components.DefaultDropDownListItemRenderer">
+							<s:layout>
+								<s:VerticalLayout
+									gap="0"
+									horizontalAlign="contentJustify"
+									requestedMinRowCount="1"
+									requestedMaxRowCount="6"/>
+							</s:layout>
+						</s:DataGroup>
+					</s:viewport>
+				</s:Scroller>
+			</s:Group>
+		</s:popUp>
+	</s:PopUpAnchor>
+	<s:Button
+		id="openButton"
+		enabled.disabled="false"
+		left="0"
+		right="0"
+		top="0"
+		bottom="0"
+		buttonMode="true"
+		focusEnabled="false"
+		tabEnabled="false"
+		skinClass="anifire.creator.skins.DefaultDropDownListButtonSkin"/>
+	<s:HGroup
+		left="0"
+		right="0"
+		top="0"
+		bottom="0"
+		paddingLeft="6"
+		paddingRight="30"
+		minWidth="75"
+		verticalAlign="middle"
+		mouseEnabled="false"
+		mouseChildren="false">
+		<s:BitmapImage
+			id="iconDisplay"
+			alpha.disabled="0.5"
+			source="{getIconFromItem(hostComponent.selectedItem)}"
+			includeInLayout="{getIconFromItem(hostComponent.selectedItem) != null}"/>
+		<s:Label
+			id="labelDisplay"
+			maxDisplayedLines="1"
+			minWidth="75"
+			width="100%"
+			color.disabled="0xAAAAAA"
+			fontWeight="bold"/>
+	</s:HGroup>
+
+</s:SparkSkin>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:crComponents="anifire.creator.components.*"
+	xmlns:aeComponents="anifire.component.*"
+	alpha.disabled="0.5">
+
+	<fx:Metadata>
+		[HostComponent("spark.components.DropDownList")]
+	</fx:Metadata>
+
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="open"/>
+		<s:State name="disabled"/>
+	</s:states>
+
+	<s:PopUpAnchor
+		id="popUp"
+		left="0"
+		right="0"
+		top="0"
+		bottom="0"
+		popUpPosition="above"
+		popUpWidthMatchesAnchorWidth="true"
+		displayPopUp.normal="false"
+		displayPopUp.open="true"
+		includeIn="open"
+		itemDestructionPolicy="auto">
+		<s:popUp>
+			<s:Group id="dropDown">
+				<aeComponents:ColorInputPanel
+					id="colorInputPanel"
+					width="250"
+					height="250"
+					right="-10"
+					bottom="10"/>
+			</s:Group>
+		</s:popUp>
+	</s:PopUpAnchor>
+	<s:Button
+		id="openButton"
+		left="0"
+		right="0"
+		top="0"
+		bottom="0"
+		focusEnabled="false"
+		tabEnabled="false"
+		buttonMode="true"
+		skinClass="anifire.creator.skins.ColorPickerOpenButtonSkin"/>
+	<s:Group width="35" height="25" verticalCenter="0" mouseChildren="false" mouseEnabled="false">
+		<crComponents:ColorDisplayGroup
+			id="colorDisplay"
+			width="25"
+			height="25"
+			left="0"
+			top="0"
+			bottom="0"/>
+		<s:Path id="triangle1" right="2" verticalCenter="0">
+			<s:data>m 0 0 l 6 0 l -3 3 Z</s:data>
+			<s:fill>
+				<s:SolidColor color="0xFFFFFF"/>
+			</s:fill>
+		</s:Path>
+	</s:Group>
+
+</s:SparkSkin>

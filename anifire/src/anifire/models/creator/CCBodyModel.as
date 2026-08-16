@@ -12,36 +12,51 @@ package anifire.models.creator
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
-	
+
+	/**
+	 * The CCBodyModel class represents a custom character body.
+	 */
 	public class CCBodyModel extends EventDispatcher
 	{
-		
+		/**
+		 * All property keys are component types. Property values can be either
+		 * a <code>Vector.&lt;CCBodyComponentModel&gt;</code> or a
+		 * <code>CCBodyComponentModel</code>, depending on whether the
+		 * component type supports multiselection or not.
+		 */
 		public var components:Object;
-		
+
 		public var libraries:Object;
-		
 		public var colors:Object;
-		
 		public var bodyScale:Object;
-		
 		public var headScale:Object;
-		
 		public var headPos:Object;
-		
+
+		/** Whether the character body has finished parsing. */
 		public var completed:Boolean = false;
-		
+
+		/** Character asset ID. */
 		public var assetId:String;
-		
+
+		/**
+		 * Specifies how the character should be animated.<br/>
+		 * <br/>
+		 * <code>1</code>: Skeleton<br/>
+		 * <code>2</code>: Freeaction
+		 */
 		public var version:Number;
-		
+
 		public var bodyShapeId:String;
-		
+
+		/** CC theme ID of the character. */
 		public var themeId:String;
-		
+
+		/** Original character body XML. */
 		public var source:XML;
-		
+
+		/** Used to download the character body XML. */
 		protected var loader:URLLoader;
-		
+
 		public function CCBodyModel(param1:String)
 		{
 			super();
@@ -54,144 +69,125 @@ package anifire.models.creator
 			this.headPos = {};
 			this.version = 1;
 		}
-		
+
+		/**
+		 * Downloads the character body from the API server.
+		 */
 		public function load() : void
 		{
-			var _loc1_:URLRequest = null;
-			var _loc2_:URLVariables = null;
-			if(!this.loader)
-			{
-				_loc1_ = new URLRequest(ServerConstants.ACTION_GET_CC_CHAR_COMPOSITION_XML);
-				_loc1_.method = URLRequestMethod.POST;
-				_loc2_ = AppConfigManager.instance.createURLVariables();
-				_loc2_["assetId"] = this.assetId;
-				_loc1_.data = _loc2_;
-				if(Boolean(this.assetId) && this.assetId != "")
-				{
+			if (!this.loader) {
+				var request:URLRequest = new URLRequest(ServerConstants.ACTION_GET_CC_CHAR_COMPOSITION_XML);
+				request.method = URLRequestMethod.POST;
+				var variables:URLVariables = AppConfigManager.instance.createURLVariables();
+				variables["assetId"] = this.assetId;
+				request.data = variables;
+				if (Boolean(this.assetId) && this.assetId != "") {
 					this.loader = new URLLoader();
-					this.loader.addEventListener(Event.COMPLETE,this.onLoaderComplete);
-					this.loader.addEventListener(IOErrorEvent.IO_ERROR,this.onLoaderError);
-					this.loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onLoaderError);
-					this.loader.load(_loc1_);
+					this.loader.addEventListener(Event.COMPLETE, this.onLoaderComplete);
+					this.loader.addEventListener(IOErrorEvent.IO_ERROR, this.onLoaderError);
+					this.loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onLoaderError);
+					this.loader.load(request);
 				}
 			}
 		}
-		
-		protected function onLoaderComplete(param1:Event) : void
+		protected function onLoaderComplete(event:Event) : void
 		{
-			this.loader.removeEventListener(Event.COMPLETE,this.onLoaderComplete);
-			var _loc2_:String = this.loader.data;
-			if(_loc2_.charAt(0) == "0")
-			{
-				this.parse(XML(_loc2_.substr(1)));
-			}
-			else
-			{
+			this.loader.removeEventListener(Event.COMPLETE, this.onLoaderComplete);
+			var response:String = this.loader.data;
+			if (response.charAt(0) == "0") {
+				this.parse(XML(response.substr(1)));
+			} else {
 				this.dispatchError();
 			}
 		}
-		
-		protected function onLoaderError(param1:Event) : void
+		protected function onLoaderError(event:Event) : void
 		{
 			this.dispatchError();
 		}
-		
+
 		protected function dispatchError() : void
 		{
 			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
 		}
-		
-		public function parse(param1:XML) : void
+
+		/**
+		 * Parses a character body element.
+		 */
+		public function parse(bodyElem:XML) : void
 		{
-			var _loc2_:int = 0;
-			var _loc3_:String = null;
-			var _loc4_:String = null;
-			var _loc7_:CCBodyComponentModel = null;
-			var _loc8_:Vector.<CCBodyComponentModel> = null;
-			var _loc9_:CCColor = null;
-			var _loc5_:XMLList = param1.component;
-			var _loc6_:int = _loc5_.length();
-			_loc2_ = 0;
-			while(_loc2_ < _loc6_)
-			{
-				_loc7_ = new CCBodyComponentModel();
-				_loc7_.parse(_loc5_[_loc2_]);
-				if(_loc7_.type == "bodyshape")
-				{
-					this.bodyShapeId = _loc7_.component_id;
-					this.themeId = _loc7_.theme_id;
+			var i:int = 0;
+			var children:XMLList = bodyElem.component;
+			var length:int = children.length();
+			for (i = 0; i < length; i++) {
+				var bodyComponent:CCBodyComponentModel = new CCBodyComponentModel();
+				bodyComponent.parse(children[i]);
+				if (bodyComponent.type == "bodyshape") {
+					this.bodyShapeId = bodyComponent.component_id;
+					this.themeId = bodyComponent.theme_id;
 				}
-				if(CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(_loc7_.type) > -1)
-				{
-					if(!this.components[_loc7_.type])
-					{
-						_loc8_ = this.components[_loc7_.type] = new Vector.<CCBodyComponentModel>();
+				var bodyComponents:Vector.<CCBodyComponentModel>;
+				if (CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(bodyComponent.type) > -1) {
+					if (!this.components[bodyComponent.type]) {
+						bodyComponents = this.components[bodyComponent.type] = new Vector.<CCBodyComponentModel>();
+					} else {
+						bodyComponents = this.components[bodyComponent.type];
 					}
-					else
-					{
-						_loc8_ = this.components[_loc7_.type];
-					}
-					_loc8_.push(_loc7_);
+					bodyComponents.push(bodyComponent);
+				} else {
+					this.components[bodyComponent.type] = bodyComponent;
 				}
-				else
-				{
-					this.components[_loc7_.type] = _loc7_;
-				}
-				_loc2_++;
 			}
-			_loc5_ = param1.library;
-			_loc6_ = _loc5_.length();
-			_loc2_ = 0;
-			while(_loc2_ < _loc6_)
-			{
-				_loc3_ = _loc5_[_loc2_].@type;
-				_loc4_ = _loc5_[_loc2_].@component_id;
-				this.libraries[_loc3_] = _loc4_;
-				_loc2_++;
+			children = bodyElem.library;
+			length = children.length();
+			for (i = 0; i < length; i++) {
+				var libType:String = children[i].@type;
+				var libId:String = children[i].@component_id;
+				this.libraries[libType] = libId;
 			}
-			_loc5_ = param1.color;
-			_loc6_ = _loc5_.length();
-			_loc2_ = 0;
-			while(_loc2_ < _loc6_)
-			{
-				_loc9_ = new CCColor();
-				_loc9_.parse(_loc5_[_loc2_]);
-				if(_loc9_.targetComponent)
-				{
-					this.colors[_loc9_.type + _loc9_.targetComponent] = _loc9_;
+			children = bodyElem.color;
+			length = children.length();
+			for (i = 0; i < length; i++) {
+				var color:CCColor = new CCColor();
+				color.parse(children[i]);
+				if (color.targetComponent) {
+					this.colors[color.type + color.targetComponent] = color;
+				} else {
+					this.colors[color.type] = color;
 				}
-				else
-				{
-					this.colors[_loc9_.type] = _loc9_;
-				}
-				_loc2_++;
 			}
-			this.bodyScale.scalex = Number(param1.@xscale);
-			this.bodyScale.scaley = Number(param1.@yscale);
-			this.headScale.scalex = Number(param1.@hxscale);
-			this.headScale.scaley = Number(param1.@hyscale);
-			this.headPos.dx = Number(param1.@headdx);
-			this.headPos.dy = Number(param1.@headdy);
-			this.version = Number(param1.@version);
-			this.source = param1;
+			this.bodyScale.scalex = Number(bodyElem.@xscale);
+			this.bodyScale.scaley = Number(bodyElem.@yscale);
+			this.headScale.scalex = Number(bodyElem.@hxscale);
+			this.headScale.scaley = Number(bodyElem.@hyscale);
+			this.headPos.dx = Number(bodyElem.@headdx);
+			this.headPos.dy = Number(bodyElem.@headdy);
+			this.version = Number(bodyElem.@version);
+			this.source = bodyElem;
 			this.completed = true;
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
-		
-		public function getColor(param1:String) : CCColor
+
+		public function getColor(type:String) : CCColor
 		{
-			return this.colors[param1];
+			return this.colors[type];
 		}
-		
-		public function getComponentId(param1:String) : Object
+
+		/**
+		 * Returns either a <code>Vector.&lt;CCBodyComponentModel&gt;</code> or
+		 * a <code>CCBodyComponentModel</code>, depending on whether the
+		 * component type supports multiselection or not. 
+		 */
+		public function getComponentId(type:String) : Object
 		{
-			return this.components[param1];
+			return this.components[type];
 		}
-		
-		public function getLibraryId(param1:String) : String
+
+		/**
+		 * Returns a library ID.
+		 */
+		public function getLibraryId(type:String) : String
 		{
-			return this.libraries[param1];
+			return this.libraries[type];
 		}
 	}
 }
-
