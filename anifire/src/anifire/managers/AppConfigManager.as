@@ -5,7 +5,10 @@ package anifire.managers
 
 	/**
 	 * The AppConfigManager singleton class keeps track of the application
-	 * configuration.
+	 * configuration.<br/>
+	 * <br/>
+	 * When the class is created, the configuration is initialized using the
+	 * app parameters.
 	 */
 	public class AppConfigManager
 	{

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group
-	xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx"
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:components="anifire.creator.components.*"
 	width="300"
 	height="100%"
-	scrollRect="{new Rectangle(0,0,this.width,this.height)}"
+	scrollRect="{new Rectangle(0, 0, this.width, this.height)}"
 	creationComplete="init()">
 
 	<fx:Script>
@@ -16,32 +14,28 @@
 			private function init() : void
 			{
 				this.face.mask = this.mymask;
-				//this.face.visible = false;
-				//this.faceBg.visible = false;
+				this.face.visible = false;
+				this.faceBg.visible = false;
 				this.btnZoomOut.visible = false;
-				//this.bottomLine.alpha = 0;
+				this.bottomLine.alpha = 0;
 			}
 			
-			private function onZoomInClick(param1:Event) : void
+			private function onZoomInClick(event:Event) : void
 			{
 				this.btnZoomIn.visible = false;
 				this.btnZoomOut.visible = true;
-				/*this.faceBg.visible = true;
+				this.faceBg.visible = true;
 				this.face.visible = true;
 				this.moveUp.play();
-				this.fadeIn.play();*/
-				this.zoomIn.play();
-				this.moveDown.play();
+				this.fadeIn.play();
 			}
 			
-			private function onZoomOutClick(param1:Event) : void
+			private function onZoomOutClick(event:Event) : void
 			{
 				this.btnZoomIn.visible = true;
 				this.btnZoomOut.visible = false;
-				/*this.moveDown.play();
-				this.fadeOut.play();*/
-				this.zoomOut.play();
-				this.moveUp.play();
+				this.moveDown.play();
+				this.fadeOut.play();
 			}
 		]]>
 	</fx:Script>
@@ -49,13 +43,17 @@
 	<fx:Declarations>
 		<s:Fade id="fadeIn" alphaFrom="0" alphaTo="1" duration="200" target="{bottomLine}"/>
 		<s:Fade id="fadeOut" alphaFrom="1" alphaTo="0" duration="500" target="{bottomLine}"/>
-		<s:Scale id="zoomIn" scaleXFrom="1.3" scaleYFrom="1.3" scaleXTo="2.1" scaleYTo="2.1" duration="240" easer="{easer}" target="{face}"/>
-		<s:Scale id="zoomOut" scaleXFrom="2.1" scaleYFrom="2.1" scaleXTo="1.3" scaleYTo="1.3" duration="240" easer="{easer}" target="{face}"/>
-		<s:Move id="moveDown" xBy="200" target="{face}" duration="300" easer="{easer}"/>
-		<s:Move id="moveUp" xBy="20" target="{face}" duration="300" easer="{easer}"/>
-		<s:Sine id="easer" easeInFraction="0.5"/>
+		<s:Move id="moveUp" yFrom="450" yTo="0" duration="500" targets="{[faceBg, mymask]}" />
+		<s:Move id="moveDown" yFrom="0" yTo="450" duration="500" targets="{[faceBg, mymask]}"/>
 	</fx:Declarations>
 
+	<s:Group id="faceBg" width="300" height="100%">
+		<s:Rect width="300" height="100%">
+			<s:fill>
+				<s:SolidColor color="0xEEEEEE"/>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
 	<s:Group id="mymask" width="300" height="100%">
 		<s:Rect width="300" height="100%">
 			<s:fill>
@@ -67,9 +65,10 @@
 		id="face"
 		width="300"
 		height="100%"
-		scaleX="1.3" scaleY="1.3"
+		scaleX="2"
+		scaleY="2"
 		horizontalCenter="0"
-		verticalCenter="-59"
+		verticalCenter="0"
 		showFace="true"/>
 	<components:IconButton
 		id="btnZoomIn"
@@ -79,7 +78,7 @@
 		right="15"
 		icon="@Embed('/styles/images/control/btn_zoomin_init.png')"
 		iconOver="@Embed('/styles/images/control/btn_zoomin_over.png')"
-		label="{UtilDict.toDisplay('go','Zoom In')}"
+		label="{UtilDict.toDisplay('go', 'Zoom In')}"
 		click="onZoomInClick(event)"/>
 	<components:IconButton
 		id="btnZoomOut"
@@ -89,7 +88,7 @@
 		right="15"
 		icon="@Embed('/styles/images/control/btn_zoomout_init.png')"
 		iconOver="@Embed('/styles/images/control/btn_zoomout_over.png')"
-		label="{UtilDict.toDisplay('go','Zoom Out')}"
+		label="{UtilDict.toDisplay('go', 'Zoom Out')}"
 		click="onZoomOutClick(event)"/>
 	<s:Line id="bottomLine" width="100%" bottom="0">
 		<s:stroke>

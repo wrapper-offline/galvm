@@ -4,31 +4,18 @@ package anifire.models.creator
 
 	public class CCCharacterActionModel
 	{
-
 		public var components:Object;
-
 		public var libraryPaths:Object;
-
 		public var colorCodes:Object;
-
 		public var bodyScale:Object;
-
 		public var headScale:Object;
-
 		public var headPos:Object;
-
 		public var version:Number;
-
 		public var themeId:String;
-
 		public var actionModel:CCActionModel;
-
 		public var propXML:XMLList;
-
 		public var defaultActionId:String;
-
 		public var enabled:Boolean;
-
 		public var freeactionFolderName:String;
 
 		public function CCCharacterActionModel()
@@ -45,43 +32,35 @@ package anifire.models.creator
 			this.enabled = true;
 		}
 
-		public function addComponent(param1:CCBodyComponentModel, param2:String, param3:String) : void
+		public function addComponent(bodyComponent:CCBodyComponentModel, file:String, path:String) : void
 		{
-			var _loc4_:CCCharActionComponentModel = null;
-			var _loc5_:Vector.<CCBodyComponentModel> = null;
-			_loc4_ = new CCCharActionComponentModel();
-			_loc4_.type = param1.type;
-			_loc4_.path = param3;
-			_loc4_.file = param2;
-			_loc4_.x = param1.x;
-			_loc4_.y = param1.y;
-			_loc4_.xscale = param1.xscale;
-			_loc4_.yscale = param1.yscale;
-			_loc4_.offset = param1.offset;
-			_loc4_.rotation = param1.rotation;
-			_loc4_.split = param1.split;
-			_loc4_.theme_id = param1.theme_id;
-			_loc4_.component_id = param1.component_id;
-			_loc4_.folder = param1.folder;
-			if(param1.id)
-			{
-				_loc4_.id = param1.id;
+			var cacm:CCCharActionComponentModel = new CCCharActionComponentModel();
+			cacm.type = bodyComponent.type;
+			cacm.path = path;
+			cacm.file = file;
+			cacm.x = bodyComponent.x;
+			cacm.y = bodyComponent.y;
+			cacm.xscale = bodyComponent.xscale;
+			cacm.yscale = bodyComponent.yscale;
+			cacm.offset = bodyComponent.offset;
+			cacm.rotation = bodyComponent.rotation;
+			cacm.split = bodyComponent.split;
+			cacm.theme_id = bodyComponent.theme_id;
+			cacm.component_id = bodyComponent.component_id;
+			cacm.folder = bodyComponent.folder;
+			if (bodyComponent.id) {
+				cacm.id = bodyComponent.id;
 			}
-			if(CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(_loc4_.type) > -1)
-			{
-				if(!this.components[_loc4_.type])
-				{
-					_loc5_ = this.components[_loc4_.type] = new Vector.<CCBodyComponentModel>();
+			if (CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(cacm.type) > -1) {
+				var _loc5_:Vector.<CCBodyComponentModel>
+				if (!this.components[cacm.type]) {
+					_loc5_ = this.components[cacm.type] = new Vector.<CCBodyComponentModel>();
+				} else {
+					_loc5_ = this.components[cacm.type];
 				}
-				else
-				{
-					_loc5_ = this.components[_loc4_.type];
-				}
-				_loc5_.push(_loc4_);
-			}
-			else
-			{
-				this.components[_loc4_.type] = _loc4_;
+				_loc5_.push(cacm);
+			} else {
+				this.components[cacm.type] = cacm;
 			}
 		}
 
@@ -200,7 +179,7 @@ package anifire.models.creator
 						}
 						break;
 					case "library":
-						this.addLibrary(_loc3_.@type,_loc3_.text());
+						this.addLibrary(_loc3_.@type, _loc3_.text());
 						break;
 					case "bodyscale":
 						this.bodyScale[_loc3_.@type] = _loc3_.text();

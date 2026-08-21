@@ -46,59 +46,56 @@ package anifire.component
 
 		private static const BRIGHTNESS_MAX_VALUE:Number = 1;
 
-		private static var _skinParts:Object = {
-			"greenInput":true,
-			"eyeDropperButton":false,
-			"colorFieldBaseColor":true,
-			"hsbInputArea":true,
-			"blueInput":true,
-			"saturationInput":true,
-			"redInput":true,
-			"hueInput":true,
-			"colorSpaceTypeDropDownList":true,
-			"colorFieldGroup":true,
-			"hexInput":true,
-			"rgbInputArea":true,
-			"brightnessInput":true,
-			"hexInputArea":true,
-			"colorFieldCursor":true,
-			"hueSlider":true
-		};
-
 		protected var _draggingColorField:Boolean;
 
 		protected var _selectedColorSpace:String = "HEX";
 
+		[SkinPart(required="true")]
 		public var colorFieldGroup:Group;
-
+		
+		[SkinPart(required="true")]
 		public var colorFieldCursor:Group;
-
+		
+		[SkinPart(required="true")]
 		public var hueSlider:VSlider;
-
+		
+		[SkinPart(required="true")]
 		public var colorSpaceTypeDropDownList:DropDownList;
-
+		
+		[SkinPart(required="true")]
 		public var colorFieldBaseColor:SolidColor;
-
+		
+		[SkinPart(required="true")]
 		public var hexInputArea:Group;
-
+		
+		[SkinPart(required="true")]
 		public var hexInput:TextInput;
-
+		
+		[SkinPart(required="true")]
 		public var rgbInputArea:Group;
-
+		
+		[SkinPart(required="true")]
 		public var redInput:TextInput;
-
+		
+		[SkinPart(required="true")]
 		public var greenInput:TextInput;
-
+		
+		[SkinPart(required="true")]
 		public var blueInput:TextInput;
-
+		
+		[SkinPart(required="true")]
 		public var hsbInputArea:Group;
-
+		
+		[SkinPart(required="true")]
 		public var hueInput:TextInput;
-
+		
+		[SkinPart(required="true")]
 		public var saturationInput:TextInput;
-
+		
+		[SkinPart(required="true")]
 		public var brightnessInput:TextInput;
-
+		
+		[SkinPart(required="false")]
 		public var eyeDropperButton:Button;
 
 		protected var _currentColor:uint;

@@ -20,87 +20,73 @@
 			private var cid:String;
 			private var thumb:CcComponentThumb;
 			[Bindable]
-			public var isNull:Boolean = false;
+			private var isNull:Boolean = false;
 			protected var _loader:Loader = new Loader();
 			protected var _bitmapData:BitmapData;
 			protected var _displayWidth:Number = 105;
 			protected var _displayHeight:Number = 105;
 			protected var _displayMatrix:Matrix = new Matrix();
 
-			override public function set data(param1:Object) : void
+			override public function set data(value:Object) : void
 			{
-				if(!param1)
-				{
-					super.data = param1;
+				if (!value) {
+					super.data = value;
 					return;
 				}
-				this.cid = param1.key;
-				this.thumb = param1.data;
+				this.cid = value.key;
+				this.thumb = value.data;
 				super.data = this.thumb;
-				if(!this.thumb)
-				{
+				if (!this.thumb) {
 					this.isNull = true;
 					this.nullIcon.visible = true;
-				}
-				else
-				{
+				} else {
 					this.isNull = false;
 					this.nullIcon.visible = false;
 				}
-				if(this.thumb)
-				{
+				if (this.thumb) {
 					this.imageDisplay.source = null;
 					this.updateThumbData();
-				}
-				else
-				{
+				} else {
 					this.imageDisplay.source = null;
 				}
-				if(UtilUser.hasAdminFeatures || LicenseConstants.isThumbnailTestHost())
-				{
+				if (UtilUser.hasAdminFeatures || LicenseConstants.isThumbnailTestHost()) {
 					this.toolTip = this.cid;
 				}
 			}
 			
 			private function updateThumbData() : void
 			{
-				this.thumb.addEventListener(CcComponentLoadEvent.LOAD_THUMBNAIL_IMAGE_DATA_COMPLETE,this.onLoadThumbImage);
+				this.thumb.addEventListener(CcComponentLoadEvent.LOAD_THUMBNAIL_IMAGE_DATA_COMPLETE, this.onLoadThumbImage);
 				this.thumb.loadThumbnailImageData();
 				this._loading.visible = true;
 			}
 			
-			private function onLoadThumbImage(param1:Event) : void
+			private function onLoadThumbImage(event:Event) : void
 			{
-				if(Boolean(this.thumb) && this.thumb.thumbnailImageData is ByteArray)
-				{
-					this._loader.contentLoaderInfo.addEventListener(Event.INIT,this.onImageLoaderInit);
+				if (Boolean(this.thumb) && this.thumb.thumbnailImageData is ByteArray) {
+					this._loader.contentLoaderInfo.addEventListener(Event.INIT, this.onImageLoaderInit);
 					this._loader.loadBytes(this.thumb.thumbnailImageData);
-				}
-				else
-				{
+				} else {
 					this.imageDisplay.source = null;
 				}
 			}
 			
-			protected function onImageLoaderInit(param1:Event = null) : void
+			protected function onImageLoaderInit(event:Event = null) : void
 			{
-				if(this._loader.content is DisplayObject)
-				{
+				if (this._loader.content is DisplayObject) {
 					this.createBitmap(this._loader.content);
-				}
-				else
-				{
+				} else {
 					this.imageDisplay.source = this._loader.content;
 				}
 				this._loading.visible = false;
 			}
 			
-			protected function createBitmap(param1:DisplayObject) : void
+			protected function createBitmap(obj:DisplayObject) : void
 			{
-				this._bitmapData = new BitmapData(this._displayWidth,this._displayHeight,true,16711680);
+				this._bitmapData = new BitmapData(this._displayWidth, this._displayHeight, true, 16711680);
 				this._displayMatrix.a = this._displayWidth / 60;
 				this._displayMatrix.d = this._displayHeight / 60;
-				this._bitmapData.draw(param1,this._displayMatrix,new ColorTransform(),null,null,true);
+				this._bitmapData.draw(obj, this._displayMatrix, new ColorTransform(), null, null, true);
 				this.imageDisplay.source = this._bitmapData;
 			}
 		]]>
@@ -115,11 +101,6 @@
 		<s:State name="selectedAndShowsCaret"/>
 	</s:states>
 
-	<s:Rect top="0" right="0" bottom="0" left="0" radiusX="3" radiusY="3">
-		<s:fill>
-			<s:SolidColor color="0xF3F7FC"/>
-		</s:fill>
-	</s:Rect>
 	<s:Group id="nullIcon" visible="false" horizontalCenter="0" verticalCenter="0">
 		<s:Image source="@Embed('/styles/images/thumbBox/btn_remove_init.png')" visible="true" visible.hovered="false"/>
 		<s:Image source="@Embed('/styles/images/thumbBox/btn_remove_over.png')" visible="false" visible.hovered="true"/>
@@ -136,9 +117,9 @@
 		verticalCenter="0"
 		smoothingQuality="high"
 		smooth="true"/>
-	<s:Rect top="0" right="0" bottom="0" left="0" radiusX="3" radiusY="3" visible="false" visible.hovered="true" visible.selectedAndShowsCaret="true">
+	<s:Rect left="0" right="0" top="0" bottom="0" visible="false" visible.hovered="true" visible.selectedAndShowsCaret="true">
 		<s:stroke>
-			<s:SolidColorStroke color="0x21BBA6" weight="2" alpha="1"/>
+			<s:SolidColorStroke color="0x21BBA6" weight="1" alpha="1"/>
 		</s:stroke>
 	</s:Rect>
 

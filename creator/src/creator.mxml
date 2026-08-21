@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
-			   xmlns:s="library://ns.adobe.com/flex/spark"
-			   xmlns:anifire="anifire.*"
-			   xmlns:component="anifire.component.*"
-			   xmlns:components="anifire.creator.components.*"
-			   width="960" height="600" preinitialize="initApp()" applicationComplete="onApplicationComplete()"
-			   backgroundAlpha="0" backgroundColor="0xEDF2F6" creationPolicy="auto"
-			   implements="anifire.creator.interfaces.ICcCharEditorContainer, anifire.creator.interfaces.ICcMainUiContainer, anifire.creator.interfaces.ICcPreviewAndSaveContainer"
-			   >
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:anifire="anifire.*"
+	xmlns:aeComponent="anifire.component.*"
+	xmlns:crComponents="anifire.creator.components.*"
+	width="960"
+	height="600"
+	preinitialize="initApp()"
+	applicationComplete="onApplicationComplete()"
+	backgroundAlpha="0"
+	backgroundColor="0xFDFDFD"
+	creationPolicy="auto"
+	preloader="anifire.creator.components.CCPreloader"
+	implements="anifire.creator.interfaces.ICcCharEditorContainer, anifire.creator.interfaces.ICcMainUiContainer, anifire.creator.interfaces.ICcPreviewAndSaveContainer">
 
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
-		@namespace aComponents "anifire.components.*";
-		@namespace components "anifire.creator.components.*";
+		@namespace aeComponents "anifire.components.*";
+		@namespace crCompnents "anifire.creator.components.*";
 
 		global
 		{
@@ -60,23 +65,23 @@
 		{
 			skinClass: ClassReference("anifire.creator.skins.DefaultButtonSkin");
 		}
-		components|IconButton
+		crCompnents|IconButton
 		{
 			skinClass: ClassReference("anifire.creator.skins.IconButtonSkin");
 		}
-		aComponents|IconButton.topToolBar
+		aeComponents|IconButton.topToolBar
 		{
 			skinClass: ClassReference("anifire.creator.skins.TopToolBarButtonSkin");
 		}
-		components|MenuItemList
+		crCompnents|MenuItemList
 		{
 			skinClass: ClassReference("anifire.creator.skins.MenuItemListSkin");
 		}
-		components|ColorPicker
+		crCompnents|ColorPicker
 		{
 			skinClass: ClassReference("anifire.creator.skins.FlatColorPickerSkin");
 		}
-		components|ArrowTipContainer
+		crCompnents|ArrowTipContainer
 		{
 			skinClass: ClassReference("anifire.creator.skins.ArrowTipContainerSkin");
 		}
@@ -84,7 +89,7 @@
 		{
 			skinClass: ClassReference("anifire.creator.skins.DefaultDropDownListSkin");
 		}
-		components|ConfirmPopUp
+		crCompnents|ConfirmPopUp
 		{
 			skinClass: ClassReference("anifire.creator.skins.ConfirmPopUpSkin");
 			fontSize: 14;
@@ -93,24 +98,25 @@
 		{
 			skinClass: ClassReference("anifire.creator.skins.ConfirmPanelSkin");
 		}
-		
+
 		@font-face {
-            src: url("../fonts/files/Lato-Regular.ttf");
-            fontFamily: StudioSparkMain;
-            embedAsCFF: true;
-        }
-        @font-face {
-            src: url("../fonts/files/Lato-Italic.ttf");
-            fontStyle: italic;
-            fontFamily: StudioSparkMain;
-            embedAsCFF: true;
-        }
-        @font-face {
-            src: url("../fonts/files/Lato-Bold.ttf");
-            fontWeight: 700;
-            fontFamily: StudioSparkMain;
-            embedAsCFF: true;
-        }
+			src: url("../fonts/files/Lato-Bold.ttf");
+			fontWeight: 700;
+			fontFamily: StudioSparkMain;
+			embedAsCFF: true;
+		}
+		@font-face {
+			src: url("../fonts/files/Lato-Bold.ttf");
+			/* src: url("../fonts/files/Lato-Italic.ttf"); */
+			fontStyle: italic;
+			fontFamily: StudioSparkMain;
+			embedAsCFF: true;
+		}
+		@font-face {
+			src: url("../fonts/files/Lato-Regular.ttf");
+			fontFamily: StudioSparkMain;
+			embedAsCFF: true;
+		}
 	</fx:Style>
 
 	<fx:Script>
@@ -123,50 +129,66 @@
 			import anifire.util.Util;
 			import anifire.util.UtilErrorLogger;
 			import anifire.utils.SecurityUtils;
+			import anifire.constant.ServerConstants;
 
 			private var _ccConsole:CcConsole;
 			private var _componentInit:Boolean;
 			private var _resourceInit:Boolean;
+			protected var pendingStyleSheets:int;
+			protected var localFlashVars:Boolean;
+			protected var skipLocale:Boolean;
+			protected var localClientTheme:Boolean;
+
+			SecurityUtils.init();
 
 			private function initApp() : void
 			{
-				SecurityUtils.init();
-				AppConfigManager.instance;
-				Util.loadClientLocale("go", this.onResourceComplete);
+				if (this.skipLocale) {
+					this.onClientLocaleComplete();
+				} else {
+					Util.loadClientLocale("go", this.onClientLocaleComplete);
+				}
 			}
 
-			private function onResourceComplete(param1:Event = null) : void
+			private function onClientLocaleComplete(event:Event = null) : void
 			{
-				this._resourceInit = true;
-				if (this._componentInit) {
-					this.initConsole();
-				}
+				this.resourceComplete();
+			}
+
+			private function uncaughtErrorHandler(event:UncaughtErrorEvent) : void
+			{
+				UtilErrorLogger.getInstance().fatal("uncaughtErrorHandler: " + new Error().getStackTrace());
 			}
 
 			private function onApplicationComplete() : void
 			{
 				this._componentInit = true;
 				if (this._resourceInit) {
-					this.initConsole();
+					this.initialConsole();
 				}
 			}
 
-			private function initConsole() : void
+			private function resourceComplete(event:Event = null) : void
 			{
+				this._resourceInit = true;
+				if (this._componentInit) {
+					this.initialConsole();
+				}
+			}
+
+			private function initialConsole() : void
+			{
+				var _loc1_:AppConfigManager = AppConfigManager.instance;
+				var _loc2_:String = _loc1_.getValue(ServerConstants.FLASHVAR_SITE_ID);
 				CcConsole.setConfiguration(new GoAnimate());
 				CcConsole.initializeCcConsole(this, this, this);
 				this._ccConsole = CcConsole.getCcConsole();
 				this._ccConsole.addEventListener(CcCoreEvent.LOAD_EVERYTHING_COMPLETE, this.loadComplete);
 			}
 			
-			private function loadComplete(param1:Event) : void
+			private function loadComplete(event:Event) : void
 			{
 				this.setCurrentState("ready");
-			}
-
-			private function uncaughtErrorHandler(param1:UncaughtErrorEvent) : void
-			{
-				UtilErrorLogger.getInstance().fatal("uncaughtErrorHandler: " + new Error().getStackTrace());
 			}
 
 			public function get ui_main_ViewStack() : Group
@@ -298,9 +320,9 @@
 			</s:fill>
 		</s:Rect>
 		<s:Group id="_ce_mainViewStack" width="100%" height="100%">
-			<components:BodyShapeMegaChooser id="_ce_bodyShapeMegaChooser" width="100%" height="100%"/>
+			<crComponents:BodyShapeMegaChooser id="_ce_bodyShapeMegaChooser" width="100%" height="100%" visible="false"/>
 			<s:Group id="_ce_mainEditorComponentsContainer" width="960" height="600" styleName="bgCharEditor">
-				<components:CharPreviewer
+				<crComponents:CharPreviewer
 					id="_ce_charPreviewer"
 					x="609"
 					y="68"
@@ -308,7 +330,7 @@
 					height="315"
 					scaleX="1.3"
 					scaleY="1.3"/>
-				<components:facePreview
+				<crComponents:facePreview
 					id="_ce_facePreviewer"
 					x="654"
 					y="68"
@@ -320,13 +342,13 @@
 							<s:SolidColor color="0xEEEEEE"/>
 						</s:fill>
 					</s:Rect>
-					<components:TypeChooserSpark
+					<crComponents:TypeChooserSpark
 						id="_ce_componentTypeChooser"
 						left="4"
 						top="0"
 						width="640"
 						height="68"/>
-					<components:TopButtons id="_ce_buttonBar" right="0" width="300" height="68"/>
+					<crComponents:TopButtons id="_ce_buttonBar" right="0" width="300" height="68"/>
 					<s:Line width="100%" top="0">
 						<s:stroke>
 							<s:SolidColorStroke color="0xCCCCCC"/>
@@ -338,7 +360,7 @@
 						</s:stroke>
 					</s:Line>
 				</s:Group>
-				<components:CcColorPickers
+				<crComponents:CcColorPickers
 					id="_ce_colorPicker"
 					bottom="10"
 					right="45"
@@ -346,7 +368,7 @@
 					height="62"
 					biggerElementWidth="248"
 					smallerElementWidth="248"/>
-				<components:CcComponentPropertyInspectorSpark
+				<crComponents:CcComponentPropertyInspectorSpark
 					id="_ce_thumbPropertyInspector"
 					bottom="0"
 					right="0"/>
@@ -358,16 +380,16 @@
 					height="532">
 					<s:Rect width="100%" height="100%">
 						<s:fill>
-							<s:SolidColor color="0xEEEEEE"/>
+							<s:SolidColor color="0xEEEEEE" alpha="0"/>
 						</s:fill>
 					</s:Rect>
-					<components:ComponentThumbChooserSpark
+					<crComponents:ComponentThumbChooserSpark
 						id="_ce_componentThumbChooser"
 						biggerHeight="532"
 						smallerHeight="{532 - _ce_selectedDecoration.height}"
 						width="654"
 						height="532"/>
-					<components:ClothesChooser
+					<crComponents:ClothesChooser
 						id="_ce_clothesChooser"
 						y="10"
 						width="100%"
@@ -380,13 +402,13 @@
 						creationPolicy="all"
 						verticalGap="50"/>
 				</s:Group>
-				<components:DecorationPanel
+				<crComponents:DecorationPanel
 					id="_ce_selectedDecoration"
 					left="0"
 					bottom="0"
 					width="654"
 					height="90"/>
-				<components:ScaleChooserSpark
+				<crComponents:ScaleChooserSpark
 					id="_ce_charScaleChooser"
 					bottom="0"
 					right="0"/>
@@ -394,7 +416,7 @@
 		</s:Group>
 		<s:Group id="ccCharPreviewAndSaveScreen" width="100%" height="100%" visible="false">
 			<s:Group id="ps_interactionViewStack" x="0" y="0" width="100%" height="600">
-				<components:CharPreviewer
+				<crComponents:CharPreviewer
 					id="ps_charPreviewer"
 					width="300"
 					height="200"
@@ -404,12 +426,12 @@
 					horizontalCenter="0"
 					verticalCenter="20"/>
 				<s:Group id="ps_charPreviewCanvas" width="100%" height="100%">
-					<components:CharPreviewOption
+					<crComponents:CharPreviewOption
 						id="ps_charPreviewOptionBox"
 						bottom="15"
 						horizontalCenter="0"/>
 					<s:Group top="0" left="0" width="960" height="68">
-						<components:TopButtons id="_ce_buttonBar_preview" right="0" width="300" height="68"/>
+						<crComponents:TopButtons id="_ce_buttonBar_preview" right="0" width="300" height="68"/>
 						<s:Line width="100%" top="0">
 							<s:stroke>
 								<s:SolidColorStroke color="0xCCCCCC"/>
@@ -426,8 +448,8 @@
 		</s:Group>
 	</s:Group>
 
-	<component:EyeDropperScreenOverlay id="eyedropperScreenCap"/>
+	<aeComponent:EyeDropperScreenOverlay id="eyedropperScreenCap"/>
 
-	<components:CCLoadingScreen includeIn="loading"/>
+	<crComponents:CCLoadingScreen includeIn="loading"/>
 
 </s:Application>

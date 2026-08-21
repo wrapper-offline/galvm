@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox
-	xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx"
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:components="anifire.creator.components.*"
 	verticalGap="2">
 
-	<fx:Script>
+	<mx:Script>
 		<![CDATA[
 			import anifire.constant.CcLibConstant;
 			import anifire.creator.events.CcComponentThumbnailMouseEvent;
@@ -18,6 +15,7 @@
 			private var thumbnailWidth:Number;
 			private var thumbnailHeight:Number;
 			private var bgStyleName:String;
+			private var moneyMode:int;
 			public var _componentType:String;
 			public var ccComponentThumbThumbnail:CcComponentThumbThumbnail;
 
@@ -25,86 +23,102 @@
 			{
 				return this._componentType;
 			}
-			
+
 			public function get isNullThumbnail() : Boolean
 			{
 				return this.componentThumb == null ? true : false;
 			}
-			
-			public function initNullThumbnail(param1:CcComponentThumbThumbnail, param2:Number, param3:Number, param4:String, param5:String) : void
+
+			public function showGoBuck(value:Boolean) : void
 			{
-				this.commonInit(param1,param2,param3,null,param4,param5);
+				this.thumbnailDetailContainer.visible = value;
 			}
 			
-			public function init(param1:CcComponentThumbThumbnail, param2:Number, param3:Number, param4:CcComponentThumb, param5:String, param6:int) : void
+			public function initNullThumbnail(tthumb:CcComponentThumbThumbnail, width:Number, height:Number, type:String, bgStyleName:String, moneyMode:int) : void
 			{
-				this.commonInit(param1,param2,param3,param4,param4.type,param5);
+				this.commonInit(tthumb, width, height, null, type, bgStyleName, moneyMode);
 			}
-			
-			private function commonInit(param1:CcComponentThumbThumbnail, param2:Number, param3:Number, param4:CcComponentThumb, param5:String, param6:String) : void
+
+			public function init(tthumb:CcComponentThumbThumbnail, width:Number, height:Number, thumb:CcComponentThumb, bgStyleName:String, moneyMode:int) : void
 			{
-				this.componentThumb = param4;
-				this.thumbnailWidth = param2;
-				this.thumbnailHeight = param3;
-				this._componentType = param5;
-				this.setBgStyleName(param6);
-				this.ccComponentThumbThumbnail = param1;
-				if(this.initialized)
-				{
+				this.commonInit(tthumb, width, height, thumb, thumb.type, bgStyleName, moneyMode);
+			}
+
+			private function commonInit(tthumb:CcComponentThumbThumbnail, width:Number, height:Number, thumb:CcComponentThumb, type:String, bgStyleName:String, moneyMode:int) : void
+			{
+				this.componentThumb = thumb;
+				this.thumbnailWidth = width;
+				this.thumbnailHeight = height;
+				this._componentType = type;
+				this.moneyMode = moneyMode;
+				this.setBgStyleName(bgStyleName);
+				this.ccComponentThumbThumbnail = tthumb;
+				if (this.initialized) {
 					this.uiComponentInit();
-				}
-				else
-				{
-					this.addEventListener(FlexEvent.CREATION_COMPLETE,this.doUiComponentInit);
+				} else {
+					this.addEventListener(FlexEvent.CREATION_COMPLETE, this.doUiComponentInit);
 				}
 			}
-			
-			public function startMouseOutChecking(param1:Stage) : void
+
+			public function startMouseOutChecking(event:Stage) : void
 			{
-				param1.addEventListener(MouseEvent.MOUSE_MOVE,this.onStageMouseMove);
+				event.addEventListener(MouseEvent.MOUSE_MOVE, this.onStageMouseMove);
 			}
-			
-			private function endMouseEndChecking(param1:Stage) : void
+
+			private function endMouseEndChecking(event:Stage) : void
 			{
-				param1.removeEventListener(MouseEvent.MOUSE_MOVE,this.onStageMouseMove);
+				event.removeEventListener(MouseEvent.MOUSE_MOVE, this.onStageMouseMove);
 			}
-			
-			private function onStageMouseMove(param1:MouseEvent) : void
+
+			private function onStageMouseMove(event:MouseEvent) : void
 			{
 				var _loc4_:CcComponentThumbnailMouseEvent = null;
-				var _loc2_:Point = this.globalToLocal(new Point(param1.stageX,param1.stageY));
+				var _loc2_:Point = this.globalToLocal(new Point(event.stageX, event.stageY));
 				var _loc3_:Rectangle = this.getRect(this);
 				if(_loc2_.x < _loc3_.left || _loc2_.x > _loc3_.right || _loc2_.y < _loc3_.top || _loc2_.y > _loc3_.bottom)
 				{
-					_loc4_ = new CcComponentThumbnailMouseEvent(CcComponentThumbnailMouseEvent.MOUSE_REALLY_OUT,this);
+					_loc4_ = new CcComponentThumbnailMouseEvent(CcComponentThumbnailMouseEvent.MOUSE_REALLY_OUT, this);
 					this.dispatchEvent(_loc4_);
-					this.endMouseEndChecking(param1.currentTarget as Stage);
+					this.endMouseEndChecking(event.currentTarget as Stage);
 				}
 			}
-			
-			private function doUiComponentInit(param1:Event) : void
+
+			private function doUiComponentInit(event:Event) : void
 			{
-				(param1.target as IEventDispatcher).removeEventListener(param1.type,this.doUiComponentInit);
+				(event.target as IEventDispatcher).removeEventListener(event.type, this.doUiComponentInit);
 				this.uiComponentInit();
 			}
-			
+
 			private function uiComponentInit() : void
 			{
-				if(this.isNullThumbnail)
-				{
-					this.componentThumbnail.initNullThumbnail(this,this.thumbnailWidth,this.thumbnailHeight,this.componentType);
+				if (this.isNullThumbnail) {
+					this.componentThumbnail.initNullThumbnail(this, this.thumbnailWidth, this.thumbnailHeight, this.componentType);
+				} else {
+					this.componentThumbnail.init(this, this.thumbnailWidth, this.thumbnailHeight, this.componentThumb);
 				}
-				else
-				{
-					this.componentThumbnail.init(this,this.thumbnailWidth,this.thumbnailHeight,this.componentThumb);
+				if (this.moneyMode != CcLibConstant.MONEY_MODE_SCHOOL) {
+					this.thumbnailDetailContainer.width = this.thumbnailWidth;
+					this.thumbnailDetailContainer.height = CcLibConstant.COMPONENT_THUMB_CHOOSER_DETAIL_PART_HEIGHT;
+					if (this.isNullThumbnail) {
+						this.goBuckPoint.text = UtilDict.toDisplay("cc" ,"cc_keyword_free");
+					} else if (this.moneyMode != CcLibConstant.MONEY_MODE_NORMAL) {
+						this.goBuckPoint.text = UtilDict.toDisplay("cc", "cc_keyword_free");
+					} else if (this.componentThumb.money > 0) {
+						this.goBuckPoint.text = this.componentThumb.money.toString();
+					} else if (this.componentThumb.sharingPoint > 0) {
+						this.goBuckPoint.text = this.componentThumb.sharingPoint.toString();
+					} else {
+						this.goBuckPoint.text = UtilDict.toDisplay("cc", "cc_keyword_free");
+					}
+				} else {
+					this.thumbnailDetailContainer.visible = false;
 				}
 			}
-			
-			public function setBgStyleName(param1:String) : void
+
+			public function setBgStyleName(value:String) : void
 			{
-				this.bgStyleName = param1;
-				if(this.componentThumbnail != null)
-				{
+				this.bgStyleName = value;
+				if (this.componentThumbnail != null) {
 					this.componentThumbnail.setBgStyleName(this.bgStyleName);
 				}
 			}
@@ -114,8 +128,11 @@
 				return new Point(this.thumbnailWidth / 2, this.thumbnailHeight / 2);
 			}
 		]]>
-	</fx:Script>
+	</mx:Script>
 
 	<components:CcComponentThumbThumbnail id="componentThumbnail"/>
+	<mx:Canvas id="thumbnailDetailContainer">
+		<mx:Label id="goBuckPoint" x="10" styleName="lblComponentThumbGoPoint"/>
+	</mx:Canvas>
 
 </mx:VBox>

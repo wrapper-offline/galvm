@@ -5,7 +5,6 @@ package anifire.creator.interfaces
 
 	public interface IMenuItemOwner
 	{
-
 		function menuItemClicked(param1:MenuItemModel, param2:Boolean, param3:MouseEvent) : void;
 	}
 }

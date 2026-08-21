@@ -186,7 +186,7 @@ package anifire.creator.components
 			}
 			this.spinnerDiameter = param1;
 			this.spokeColor = getStyle("symbolColor");
-			this.mx_internal::drawSpinner();
+			mx_internal::drawSpinner();
 			if(_loc2_)
 			{
 				this.startRotation();
@@ -366,7 +366,7 @@ package anifire.creator.components
 			{
 				this.currentRotation = 0;
 			}
-			this.mx_internal::drawSpinner();
+			mx_internal::drawSpinner();
 			param1.updateAfterEvent();
 		}
 	}

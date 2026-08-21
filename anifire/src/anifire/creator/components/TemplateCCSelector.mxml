@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox
-	xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx"
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
 	horizontalScrollPolicy="off"
 	verticalScrollPolicy="off"
 	width="500"
 	height="440"
 	initialize="init()">
 
-	<fx:Script>
+	<mx:Script>
 		<![CDATA[
 			import anifire.component.CCThumb;
 			import anifire.creator.core.CcConsole;
@@ -30,35 +27,29 @@
 			{
 				return this._category;
 			}
-			
-			public function set category(param1:String) : void
+			public function set category(value:String) : void
 			{
-				this._category = param1;
+				this._category = value;
 			}
 			
 			private function refreshHighlight() : void
 			{
-				var _loc1_:anifire.creator.components.CCTemplateCharThumb = null;
-				for each(_loc1_ in this.thumbTile.getChildren())
-				{
-					_loc1_.currentState = _loc1_.character.assetId == this._selectedAssetId ? "selected" : "";
+				for each (var child:CCTemplateCharThumb in this.thumbTile.getChildren()) {
+					child.currentState = child.character.assetId == this._selectedAssetId ? "selected" : "";
 				}
 			}
 			
 			private function init() : void
 			{
-				addEventListener(CcTemplateChooserEvent.PREVIEW_CHARACTER_CHANGED,function(param1:CcTemplateChooserEvent):void
+				addEventListener(CcTemplateChooserEvent.PREVIEW_CHARACTER_CHANGED, function (e:CcTemplateChooserEvent) : void
 				{
-					_selectedAssetId = (param1.getData() as CcCharacter).assetId;
-					if(_pageNumDisplayed != _pager.pageNumber || _categoryDisplayed != _category)
-					{
+					_selectedAssetId = (e.getData() as CcCharacter).assetId;
+					if (_pageNumDisplayed != _pager.pageNumber || _categoryDisplayed != _category) {
 						_pageNumDisplayed = _pager.pageNumber;
 						_categoryDisplayed = _category;
-						CcConsole.getCcConsole().refreshTemplateCCSelector(_pager.getView(),"tile");
+						CcConsole.getCcConsole().refreshTemplateCCSelector(_pager.getView(), "tile");
 						thumbTile.removeAllChildren();
-					}
-					else
-					{
+					} else {
 						refreshHighlight();
 					}
 				});
@@ -68,74 +59,68 @@
 			{
 				var self:anifire.creator.components.TemplateCCSelector = this;
 				this._hasHandler = true;
-				CcConsole.getCcConsole().addEventListener(CcCoreEvent.LOAD_CHARACTER_THUMB_COMPLETE,function(param1:CcCoreEvent):void
+				CcConsole.getCcConsole().addEventListener(CcCoreEvent.LOAD_CHARACTER_THUMB_COMPLETE, function (e:CcCoreEvent) : void
 				{
-					var char:CcCharacter = null;
-					var tthumb:anifire.creator.components.CCTemplateCharThumb = null;
-					var e:CcCoreEvent = param1;
 					var data:Object = e.getData();
 					var thumb:CCThumb = data.thumbnail as CCThumb;
-					char = data.char as CcCharacter;
-					if(data.tag != "tile" || !_pager.isItemOnCurrentPage(char) || Boolean(thumbTile.getChildren().some(function(param1:anifire.creator.components.CCTemplateCharThumb, param2:int, param3:Array):Boolean
-					{
-						return param1.character.assetId == char.assetId;
-					})))
-					{
+					var char:CcCharacter = data.char as CcCharacter;
+					if (
+						data.tag != "tile" ||
+						!_pager.isItemOnCurrentPage(char) ||
+						Boolean(thumbTile.getChildren().some(function (thumb:CCTemplateCharThumb, index:int, array:Array) : Boolean {
+							return thumb.character.assetId == char.assetId;
+						}))
+					) {
 						return;
 					}
-					tthumb = new anifire.creator.components.CCTemplateCharThumb();
+					var tthumb:CCTemplateCharThumb = new CCTemplateCharThumb();
 					tthumb.character = char;
 					tthumb.thumbnail = thumb;
-					tthumb.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+					tthumb.addEventListener(MouseEvent.CLICK, function (e:MouseEvent) : void
 					{
-						dispatchEvent(new CcTemplateChooserEvent(CcTemplateChooserEvent.USER_WANT_TO_PREVIEW,tthumb,char,true));
+						dispatchEvent(new CcTemplateChooserEvent(CcTemplateChooserEvent.USER_WANT_TO_PREVIEW, tthumb, char, true));
 					});
-					if(tthumb.character.assetId == _selectedAssetId)
-					{
+					if (tthumb.character.assetId == _selectedAssetId) {
 						tthumb.currentState = "selected";
 					}
-					thumbTile.addChildAt(tthumb,getInsertionIndex(tthumb));
-					if(_pager.getView().length == thumbTile.getChildren().length)
-					{
+					thumbTile.addChildAt(tthumb, getInsertionIndex(tthumb));
+					if (_pager.getView().length == thumbTile.getChildren().length) {
 						refreshHighlight();
 					}
 				});
 			}
 
 			// woah there... INSERTION?!?
-			private function getInsertionIndex(param1:anifire.creator.components.CCTemplateCharThumb) : int
+			// thats a bit sus 😳😳😳
+			private function getInsertionIndex(iitem:CCTemplateCharThumb) : int
 			{
-				var addedChars:Array = null;
-				var iitemIndex:int = 0;
-				var retval:Array = null;
-				var iitem:anifire.creator.components.CCTemplateCharThumb = param1;
-				addedChars = this.thumbTile.getChildren().map(function(param1:anifire.creator.components.CCTemplateCharThumb, param2:int, param3:Array):Object
+				var addedChars:Array = this.thumbTile.getChildren().map(function (obj:CCTemplateCharThumb, index:int, array:Array) : Object
 				{
-					return param1.character;
+					return obj.character;
 				});
-				iitemIndex = 0;
-				var orderings:Array = this._pager.getView().map(function(param1:CcCharacter, param2:int, param3:Array):Object
+				var iitemIndex:int = 0;
+				var orderings:Array = this._pager.getView().map(function (obj:CcCharacter, index:int, array:Array) : Object
 				{
-					if(param1 == iitem.character)
-					{
-						iitemIndex = param2;
+					if (obj == iitem.character) {
+						iitemIndex = index;
 					}
 					return {
-						"item":param1,
-						"index":param2
+						"item": obj, 
+						"index": index
 					};
 				});
-				retval = [];
-				orderings.filter(function(param1:Object, param2:int, param3:Array):Boolean
-				{
-					return addedChars.indexOf(param1.item) >= 0;
-				}).forEach(function(param1:Object, param2:int, param3:Array):void
-				{
-					if(param1.index - iitemIndex > 0)
+				var retval:Array = [];
+				orderings
+					.filter(function (obj:Object, index:int, array:Array) : Boolean
 					{
-						retval.push(param2);
-					}
-				});
+						return addedChars.indexOf(obj.item) >= 0;
+					})
+					.forEach(function (obj:Object, index:int, array:Array) : void
+					{
+						if (obj.index - iitemIndex > 0) {
+							retval.push(index);
+						}
+					});
 				return retval.length == 0 ? (addedChars.length > 0 ? int(addedChars.length) : 0) : int(retval[0]);
 			}
 			
@@ -144,57 +129,53 @@
 				return this._pager;
 			}
 			
-			public function set pager(param1:UtilPager) : void
+			public function set pager(value:UtilPager) : void
 			{
-				this._pager = param1;
-				if(param1 != null)
-				{
+				this._pager = value;
+				if (value != null) {
 					this.thumbTile.removeAllChildren();
-					if(!this._hasHandler)
-					{
+					if (!this._hasHandler) {
 						this.initCreationComplete();
 					}
 					this._pageNumDisplayed = this._pager.pageNumber;
 					this._categoryDisplayed = this._category;
-					CcConsole.getCcConsole().refreshTemplateCCSelector(param1.getView(),"tile");
+					CcConsole.getCcConsole().refreshTemplateCCSelector(value.getView(), "tile");
 				}
 			}
 			
 			private function previous() : void
 			{
-				var _loc1_:CcConsole = CcConsole.getCcConsole();
-				var _loc2_:int = this._pager.pageNumber;
+				var ccConsole:CcConsole = CcConsole.getCcConsole();
+				var pageNum:int = this._pager.pageNumber;
 				this._pager.previous();
-				if(this._pager.pageNumber != _loc2_ || this._categoryDisplayed != this._category)
-				{
+				if (this._pager.pageNumber != pageNum || this._categoryDisplayed != this._category) {
 					this._pageNumDisplayed = this._pager.pageNumber;
 					this._categoryDisplayed = this._category;
-					_loc1_.refreshTemplateCCSelector(this._pager.getView(),"tile");
+					ccConsole.refreshTemplateCCSelector(this._pager.getView(), "tile");
 					this.thumbTile.removeAllChildren();
 				}
 			}
 			
 			private function next() : void
 			{
-				var _loc1_:CcConsole = CcConsole.getCcConsole();
-				var _loc2_:int = this._pager.pageNumber;
+				var ccConsole:CcConsole = CcConsole.getCcConsole();
+				var pageNum:int = this._pager.pageNumber;
 				this._pager.next();
-				if(this._pager.pageNumber != _loc2_ || this._categoryDisplayed != this._category)
-				{
+				if (this._pager.pageNumber != pageNum || this._categoryDisplayed != this._category) {
 					this._pageNumDisplayed = this._pager.pageNumber;
 					this._categoryDisplayed = this._category;
-					_loc1_.refreshTemplateCCSelector(this._pager.getView(),"tile");
+					ccConsole.refreshTemplateCCSelector(this._pager.getView(), "tile");
 					this.thumbTile.removeAllChildren();
 				}
 			}
 		]]>
-	</fx:Script>
+	</mx:Script>
 
 	<mx:HBox verticalAlign="middle" width="100%" height="100%" >
-		<s:Button id="leftBut" buttonMode="true" styleName="btnTemplateThumbChooserLeft" click="previous()" enabled="{_pager.pageNumber &gt; 1}"/>
+		<mx:Button id="leftBut" buttonMode="true" styleName="btnTemplateThumbChooserLeft" click="previous()" enabled="{_pager.pageNumber &gt; 1}"/>
 		<mx:Tile id="thumbTile" minWidth="406" minHeight="402"/>
-		<s:Button id="rightBut" buttonMode="true" styleName="btnTemplateThumbChooserRight" click="next()" enabled="{_pager.pageNumber &lt; _pager.totalPages}"/>
+		<mx:Button id="rightBut" buttonMode="true" styleName="btnTemplateThumbChooserRight" click="next()" enabled="{_pager.pageNumber &lt; _pager.totalPages}"/>
 	</mx:HBox>
-	<s:Label styleName="templateBrowsePageNumber" width="100%" text="{_pager.pageNumber + ' / ' + _pager.totalPages}"/>
+	<mx:Label styleName="templateBrowsePageNumber" width="100%" text="{_pager.pageNumber + ' / ' + _pager.totalPages}"/>
 
 </mx:VBox>

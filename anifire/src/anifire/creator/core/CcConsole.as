@@ -55,130 +55,116 @@ package anifire.creator.core
 
 	public class CcConsole implements IEventDispatcher
 	{
-
 		private static var _cc_console:CcConsole;
-
 		private static var _cfg:IConfiguration;
-
 		private static var _updatePopUp:IFlexDisplayObject;
-
 		private static var _themeId:String = "";
-
 		private static var _configManager:AppConfigManager = AppConfigManager.instance;
-
 		private var _eventDispatcher:EventDispatcher;
-
 		private var _ccCharEditorController:CcCharEditorController;
-
 		private var _ccPreviewAndSaveController:CcPreviewAndSaveController;
-
 		private var _ccChar:CcCharacter;
-
 		private var _themes:UtilHashArray;
-
 		private var _currentThemeId:String;
-
 		private var _ui_mainUiContainer:ICcMainUiContainer;
-
 		private var _moneyMode:int;
-
 		private var _isUserLogined:Boolean;
-
 		private var _userLevel:int;
-
 		private var _original_assetId:String;
-
 		private var _coupon:int = 0;
-
 		private var _upsellHookId:String;
-
 		private var _expectedUserType:Number = -1;
-
 		private var _serverConnector:ServerConnector;
-
 		private var _modeInEdit:Boolean = true;
 
-		public function CcConsole(param1:ICcMainUiContainer, param2:ICcCharEditorContainer, param3:ICcPreviewAndSaveContainer)
+		public function CcConsole(
+			main_ui_container:ICcMainUiContainer,
+			ui_ce_container:ICcCharEditorContainer, 
+			ui_ps_container:ICcPreviewAndSaveContainer
+		)
 		{
 			super();
-			this._ui_mainUiContainer = param1;
+			this._ui_mainUiContainer = main_ui_container;
 			this._eventDispatcher = new EventDispatcher();
 			this._themes = new UtilHashArray();
-			var _loc4_:String = _configManager.getValue(ServerConstants.PARAM_THEME_ID);
-			if(_loc4_ == null || _loc4_.length <= 0)
-			{
-				_loc4_ = "family";
+
+			var themeId:String = _configManager.getValue(ServerConstants.PARAM_THEME_ID);
+			if (themeId == null || themeId.length <= 0) {
+				themeId = "family";
 			}
-			setThemeId(_loc4_);
+			setThemeId(themeId);
+
 			this.originalAssetId = _configManager.getValue("original_asset_id") as String;
-			if(this.originalAssetId == null || this.originalAssetId.length <= 0)
-			{
+			if (this.originalAssetId == null || this.originalAssetId.length <= 0) {
 				this.originalAssetId = null;
 			}
-			var _loc5_:String = _configManager.getValue(ServerConstants.FLASHVAR_IS_USER_LOGIN_MODE) as String;
-			if(_loc5_ == "Y")
-			{
+
+			var isUserLoginParam:String = _configManager.getValue(ServerConstants.FLASHVAR_IS_USER_LOGIN_MODE) as String;
+			if (isUserLoginParam == "Y") {
 				this._isUserLogined = true;
-			}
-			else
-			{
+			} else {
 				this._isUserLogined = false;
 			}
+
 			this.addCallBacks();
-			var _loc6_:String = _configManager.getValue(ServerConstants.FLASHVAR_MONEY_MODE) as String;
-			this.initMoneyMode(_loc6_);
-			var _loc7_:String = _configManager.getValue(ServerConstants.FLASHVAR_IS_ADMIN) as String;
-			if(_loc7_ == "1")
-			{
+
+			var moneyModeParam:String = _configManager.getValue(ServerConstants.FLASHVAR_MONEY_MODE) as String;
+			this.initMoneyMode(moneyModeParam);
+
+			var userLevelParam:String = _configManager.getValue(ServerConstants.FLASHVAR_IS_ADMIN) as String;
+			if (userLevelParam == "1") {
 				this._userLevel = CcLibConstant.USER_LEVEL_SUPER;
-			}
-			else
-			{
+			} else {
 				this._userLevel = CcLibConstant.USER_LEVEL_NORMAL;
 			}
+
 			this._ccCharEditorController = new CcCharEditorController();
 			this.ccCharEditorController.configuration = _cfg;
-			this.ccCharEditorController.initUi(param2);
-			this.ccCharEditorController.addEventListener(CcCoreEvent.USER_WANT_TO_PREVIEW,this.onUserWantToPreview);
-			this.ccCharEditorController.addEventListener(CcCoreEvent.USER_WANT_TO_MODIFY,this.onUserWantToModify);
-			this.ccCharEditorController.addEventListener(CcCoreEvent.USER_WANT_TO_SAVE,this.onUserWantToSave);
+			this.ccCharEditorController.initUi(ui_ce_container);
+			this.ccCharEditorController.addEventListener(CcCoreEvent.USER_WANT_TO_PREVIEW, this.onUserWantToPreview);
+			this.ccCharEditorController.addEventListener(CcCoreEvent.USER_WANT_TO_MODIFY, this.onUserWantToModify);
+			this.ccCharEditorController.addEventListener(CcCoreEvent.USER_WANT_TO_SAVE, this.onUserWantToSave);
+
 			this._ccPreviewAndSaveController = new CcPreviewAndSaveController();
 			this._ccPreviewAndSaveController.configuration = _cfg;
-			this.ccPreviewAndSaveController.initUi(param3);
-			this.ccPreviewAndSaveController.addEventListener(CcCoreEvent.USER_WANT_TO_CANCEL,this.onUserWantToEditAgain);
-			this.ccPreviewAndSaveController.addEventListener(CcCoreEvent.USER_WANT_TO_CONFIRM,this.onUserWantToConfirm);
-			this.ccPreviewAndSaveController.addEventListener(CcCoreEvent.USER_WANT_TO_MODIFY,this.onUserWantToModify);
-			this.ccPreviewAndSaveController.addEventListener(CcCoreEvent.USER_WANT_TO_SAVE,this.onUserWantToSave);
+			this.ccPreviewAndSaveController.initUi(ui_ps_container);
+			this.ccPreviewAndSaveController.addEventListener(CcCoreEvent.USER_WANT_TO_CANCEL, this.onUserWantToEditAgain);
+			this.ccPreviewAndSaveController.addEventListener(CcCoreEvent.USER_WANT_TO_CONFIRM, this.onUserWantToConfirm);
+			this.ccPreviewAndSaveController.addEventListener(CcCoreEvent.USER_WANT_TO_MODIFY, this.onUserWantToModify);
+			this.ccPreviewAndSaveController.addEventListener(CcCoreEvent.USER_WANT_TO_SAVE, this.onUserWantToSave);
+
 			this._serverConnector = ServerConnector.instance;
-			this._serverConnector.addEventListener(StudioEvent.UPGRADE_PENDING,this.onUpgradePending);
-			this._serverConnector.addEventListener(StudioEvent.UPGRADE_COMPLETE,this.onUpgradeComplete);
-			this._serverConnector.addEventListener(StudioEvent.UPGRADE_ERROR,this.onUpgradeError);
+			this._serverConnector.addEventListener(StudioEvent.UPGRADE_PENDING, this.onUpgradePending);
+			this._serverConnector.addEventListener(StudioEvent.UPGRADE_COMPLETE, this.onUpgradeComplete);
+			this._serverConnector.addEventListener(StudioEvent.UPGRADE_ERROR, this.onUpgradeError);
 			this.loadCcThemeList();
 		}
 
-		public static function setThemeId(param1:String) : void
+		public static function setThemeId(value:String) : void
 		{
-			_themeId = param1;
+			_themeId = value;
 		}
 
-		public static function setConfiguration(param1:IConfiguration) : void
+		public static function setConfiguration(value:IConfiguration) : void
 		{
-			_cfg = param1;
+			_cfg = value;
 		}
 
-		public static function initializeCcConsole(param1:ICcMainUiContainer, param2:ICcCharEditorContainer, param3:ICcPreviewAndSaveContainer) : CcConsole
+		public static function initializeCcConsole(
+			main_ui_container:ICcMainUiContainer,
+			ui_ce_container:ICcCharEditorContainer,
+			ui_ps_container:ICcPreviewAndSaveContainer
+		) : CcConsole
 		{
-			if(_cc_console == null)
-			{
-				_cc_console = new CcConsole(param1,param2,param3);
+			if (_cc_console == null) {
+				_cc_console = new CcConsole(main_ui_container, ui_ce_container, ui_ps_container);
 			}
 			return _cc_console;
 		}
 
 		public static function getCcConsole() : CcConsole
 		{
-			if(_cc_console != null)
-			{
+			if (_cc_console != null) {
 				return _cc_console;
 			}
 			throw new Error("CcConsole must be intialized first");
@@ -199,9 +185,9 @@ package anifire.creator.core
 			return this._original_assetId;
 		}
 
-		private function set originalAssetId(param1:String) : void
+		private function set originalAssetId(value:String) : void
 		{
-			this._original_assetId = param1;
+			this._original_assetId = value;
 		}
 
 		private function get isUserLogined() : Boolean
@@ -245,66 +231,58 @@ package anifire.creator.core
 			this._upsellHookId = null;
 		}
 
-		private function initMoneyMode(param1:String) : void
+		private function initMoneyMode(mode:String) : void
 		{
-			if(param1 == "free")
-			{
+			if (mode == "free") {
 				this._moneyMode = CcLibConstant.MONEY_MODE_NORMAL;
 				this._coupon = CcLibConstant.COUPON_VALUE;
-			}
-			else if(param1 == "noneed")
-			{
+			} else if (mode == "noneed") {
 				this._moneyMode = CcLibConstant.MONEY_MODE_DONT_NEED_MONEY;
-			}
-			else if(param1 == "school")
-			{
+			} else if (mode == "school") {
 				this._moneyMode = CcLibConstant.MONEY_MODE_SCHOOL;
-			}
-			else
-			{
+			} else {
 				this._moneyMode = CcLibConstant.MONEY_MODE_NORMAL;
 			}
 		}
 
-		private function onUpgradeComplete(param1:Event) : void
+		private function onUpgradeComplete(event:Event) : void
 		{
 			this.ccCharEditorController.updateTopButtonOnRole();
 			this.ccPreviewAndSaveController.updateTopButtonOnRole();
 		}
 
-		private function onUpgradeError(param1:Event) : void
+		private function onUpgradeError(event:Event) : void
 		{
-			UtilErrorLogger.getInstance().appendCustomError("Failed to refresh user type: " + param1);
+			UtilErrorLogger.getInstance().appendCustomError("Failed to refresh user type: " + event);
 		}
 
-		private function onUpgradePending(param1:Event) : void
+		private function onUpgradePending(event:Event) : void
 		{
-			var _loc2_:ConfirmPopUp = new ConfirmPopUp();
-			_loc2_.message = UtilDict.toDisplay("go","Once you complete your purchase, please save this character.");
-			_loc2_.title = UtilDict.toDisplay("go","Refresh to Unlock Features");
-			_loc2_.confirmText = UtilDict.toDisplay("go","OK");
-			_loc2_.addEventListener(StudioEvent.POPUP_CONFIRM,this.onConfirmAlert);
-			_loc2_.showCancelButton = false;
-			_loc2_.showCloseButton = false;
-			_loc2_.open(FlexGlobals.topLevelApplication as DisplayObjectContainer,true);
+			var popUp:ConfirmPopUp = new ConfirmPopUp();
+			popUp.message = UtilDict.toDisplay("go", "Once you complete your purchase, please save this character.");
+			popUp.title = UtilDict.toDisplay("go", "Refresh to Unlock Features");
+			popUp.confirmText = UtilDict.toDisplay("go", "OK");
+			popUp.addEventListener(StudioEvent.POPUP_CONFIRM, this.onConfirmAlert);
+			popUp.showCancelButton = false;
+			popUp.showCloseButton = false;
+			popUp.open(FlexGlobals.topLevelApplication as DisplayObjectContainer, true);
 		}
 
-		private function onConfirmAlert(param1:Event) : void
+		private function onConfirmAlert(event:Event) : void
 		{
 			ServerConnector.instance.refreshUserType();
 		}
 
 		private function addCallBacks() : void
 		{
-			if(ExternalInterface.available)
-			{
-				ExternalInterface.addCallback("ccUpgradePending",this.onUpgradeActived);
+			if (ExternalInterface.available) {
+				ExternalInterface.addCallback("ccUpgradePending", this.onUpgradeActived);
 			}
 		}
 
 		private function addTheme(param1:CcTheme) : void
 		{
-			this._themes.push(param1.id,param1);
+			this._themes.push(param1.id, param1);
 		}
 
 		private function getTheme(param1:String) : CcTheme
@@ -334,76 +312,71 @@ package anifire.creator.core
 
 		public function getTemplateCCPreMadeChars() : Array
 		{
-			var _loc1_:CcTheme = this.getTheme(this.getCurrentThemeId());
-			return _loc1_.preMadeChars;
+			var theme:CcTheme = this.getTheme(this.getCurrentThemeId());
+			return theme.preMadeChars;
 		}
 
-		public function refreshTemplateCCSelector(param1:Array, param2:String = "default") : void
+		public function refreshTemplateCCSelector(chars:Array, tag:String = "default") : void
 		{
-			var _console:CcConsole = null;
-			var char:CcCharacter = null;
-			var chars:Array = param1;
-			var tag:String = param2;
-			_console = this;
+			var _console:CcConsole = this;
 			var _numCC:int = int(chars.length);
 			var numCCStarted:int = 0;
-			if(chars.length == 0)
-			{
+			if (chars.length == 0) {
 				return;
 			}
-			for each(char in chars)
-			{
-				(function():void
+			for each (var char:CcCharacter in chars) {
+				(function() : void
 				{
-					var _ccChar:* = undefined;
-					var stream:* = undefined;
-					var request:* = undefined;
-					var _ccActionHandler:* = undefined;
-					_ccChar = char;
-					stream = new UtilURLStream();
-					_ccActionHandler = function(param1:Event):void
+					var _ccChar = char;
+					var stream = new UtilURLStream();
+					var _ccActionHandler = function(event:Event):void
 					{
-						stream.removeEventListener(Event.COMPLETE,_ccActionHandler);
+						stream.removeEventListener(Event.COMPLETE, _ccActionHandler);
 						parseCCActionZipEventHandler({
-							"char":_ccChar,
-							"streamEvent":param1,
-							"tag":tag
+							"char": _ccChar, 
+							"streamEvent": event, 
+							"tag": tag
 						});
 					};
-					request = UtilNetwork.getGetCcActionRequest(char.assetId,char.thumbnailActionId + ".zip");
-					stream.addEventListener(Event.COMPLETE,_ccActionHandler);
-					addEventListener(CcCoreEvent.LOAD_CHARACTER_THUMB_COMPLETE,function(param1:CcCoreEvent):void
-					{
-						if(--_numCC <= 0)
+					var request = UtilNetwork.getGetCcActionRequest(char.assetId, char.thumbnailActionId + ".zip");
+					stream.addEventListener(Event.COMPLETE, _ccActionHandler);
+					addEventListener(
+						CcCoreEvent.LOAD_CHARACTER_THUMB_COMPLETE,
+						function (event:CcCoreEvent) : void
 						{
-							_console.dispatchEvent(new CcCoreEvent(CcCoreEvent.LOAD_CHARACTER_THUMB_ALL_COMPLETE,_console,{
-								"tag":tag,
-								"total":chars.length
-							}));
+							if (--_numCC <= 0) {
+								_console.dispatchEvent(new CcCoreEvent(
+									CcCoreEvent.LOAD_CHARACTER_THUMB_ALL_COMPLETE,
+									_console,
+									{
+										"tag": tag, 
+										"total": chars.length
+									}
+								));
+							}
 						}
-					});
+					);
 					stream.load(request);
 				})();
 			}
 		}
 
-		private function onUserWantToStart(param1:Event) : void
+		private function onUserWantToStart(event:Event) : void
 		{
 			this.ccCharEditorController.initTheme(this.getTheme(this.getCurrentThemeId()));
-			this.ccCharEditorController.initMode(this.moneyMode,this.isUserLogined,this.userLevel,this.coupon);
-			this.ccCharEditorController.start(this.ccChar,!this.isCopyingChar());
+			this.ccCharEditorController.initMode(this.moneyMode, this.isUserLogined, this.userLevel, this.coupon);
+			this.ccCharEditorController.start(this.ccChar, !this.isCopyingChar());
 			this.ccPreviewAndSaveController.initTheme(this.getTheme(this.getCurrentThemeId()));
 			this.ccPreviewAndSaveController.initMode();
 			this.ccPreviewAndSaveController.initChar(this.ccChar);
 			this._modeInEdit = true;
-			if(_configManager.getValue(ServerConstants.FLASHVAR_CC_START_PAGE) == "save")
-			{
-				this.onUserWantToPreview(param1);
+			if (_configManager.getValue(ServerConstants.FLASHVAR_CC_START_PAGE) == "save") {
+				this.onUserWantToPreview(event);
 			}
-			this.dispatchEvent(new CcCoreEvent(CcCoreEvent.LOAD_EVERYTHING_COMPLETE,this));
+			this.dispatchEvent(new CcCoreEvent(CcCoreEvent.LOAD_EVERYTHING_COMPLETE, this));
 		}
 
-		private function onUserWantToModify(param1:Event) : void
+		private function onUserWantToModify(event:Event) : void
 		{
 			this._modeInEdit = true;
 			this.ui_mainUiContainer.ui_main_ccCharEditor.visible = true;
@@ -411,7 +384,7 @@ package anifire.creator.core
 			this.ccCharEditorController.proceedToShow();
 		}
 
-		private function onUserWantToPreview(param1:Event) : void
+		private function onUserWantToPreview(event:Event) : void
 		{
 			this._modeInEdit = false;
 			this.ui_mainUiContainer.ui_main_ccCharEditor.visible = false;
@@ -419,53 +392,48 @@ package anifire.creator.core
 			this.ccPreviewAndSaveController.proceedToShow();
 		}
 
-		private function onUserWantToGoToStudio(param1:Event) : void
+		private function onUserWantToGoToStudio(event:Event) : void
 		{
-			var _loc4_:Object = null;
-			if(UtilSite.siteId == UtilSite.YOUTUBE || UtilSite.siteId == UtilSite.SKOLETUBE)
-			{
+			if (UtilSite.siteId == UtilSite.YOUTUBE || UtilSite.siteId == UtilSite.SKOLETUBE) {
 				ExternalLinkManager.instance.navigate(ServerConstants.YOUTUBE_CREATE_MOVIE_PATH);
 				return;
 			}
-			var _loc2_:CcTheme = this.getTheme(this.getCurrentThemeId());
-			var _loc3_:String = ServerConstants.STUDIO_PAGE_PATH;
-			if(_loc2_.studioThemeId)
-			{
-				LicenseConstants.visitStudioByTheme(_loc2_.studioThemeId);
+			var theme:CcTheme = this.getTheme(this.getCurrentThemeId());
+			var path:String = ServerConstants.STUDIO_PAGE_PATH;
+			if (theme.studioThemeId) {
+				LicenseConstants.visitStudioByTheme(theme.studioThemeId);
 				return;
 			}
-			if(param1 is CcCoreEvent)
-			{
-				_loc4_ = (param1 as CcCoreEvent).getData();
-				if(_loc4_ != null && String(_loc4_) != "")
-				{
-					_loc3_ = String(_loc4_);
+			if (event is CcCoreEvent) {
+				var evtData:Object = (event as CcCoreEvent).getData();
+				if (evtData != null && String(evtData) != "") {
+					path = String(evtData);
 				}
 			}
-			ExternalLinkManager.instance.navigateWithSession(_loc3_);
+			ExternalLinkManager.instance.navigateWithSession(path);
 		}
 
-		private function doUpdatePreviewStatus(param1:CcPointUpdateEvent) : void
+		private function doUpdatePreviewStatus(event:CcPointUpdateEvent) : void
 		{
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.doUpdatePreviewStatus);
+			(event.target as IEventDispatcher).removeEventListener(event.type, this.doUpdatePreviewStatus);
 		}
 
-		private function doUpdatePreviewStatusAndConfirm(param1:CcPointUpdateEvent) : void
+		private function doUpdatePreviewStatusAndConfirm(event:CcPointUpdateEvent) : void
 		{
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.doUpdatePreviewStatusAndConfirm);
+			(event.target as IEventDispatcher).removeEventListener(event.type, this.doUpdatePreviewStatusAndConfirm);
 		}
 
-		private function onUserWantToConfirm(param1:Event) : void
+		private function onUserWantToConfirm(event:Event) : void
 		{
-			if(CcLibConstant.IS_BUSINESS_THEME && !UtilUser.hasBusinessFeatures)
+			if (CcLibConstant.IS_BUSINESS_THEME && !UtilUser.hasBusinessFeatures)
 			{
 				this._expectedUserType = UtilUser.PUBLISH_USER;
 			}
-			else if(UtilUser.userType == UtilUser.BASIC_USER)
+			else if (UtilUser.userType == UtilUser.BASIC_USER)
 			{
 				this._expectedUserType = UtilUser.PLUS_USER;
 			}
-			if(this._expectedUserType > -1)
+			if (this._expectedUserType > -1)
 			{
 				this._serverConnector.refreshUserType();
 				return;
@@ -473,278 +441,239 @@ package anifire.creator.core
 			this.onUserWantToSave(null);
 		}
 
-		private function onUserWantToSave(param1:Event) : void
+		private function onUserWantToSave(event:Event) : void
 		{
-			this.addEventListener(CcSaveCharEvent.SAVE_CHAR_COMPLETE,this.doTellUserSaveStatus);
-			this.addEventListener(CcSaveCharEvent.SAVE_CHAR_NOT_ENOUGH_MONEY_POINT,this.doTellUserSaveStatus);
-			this.addEventListener(CcSaveCharEvent.SAVE_CHAR_ERROR_OCCUR,this.doTellUserSaveStatus);
-			if(this._modeInEdit)
-			{
-				this.ccCharEditorController.addEventListener(LoadEmbedMovieEvent.COMPLETE_EVENT,this.doSave);
+			this.addEventListener(CcSaveCharEvent.SAVE_CHAR_COMPLETE, this.doTellUserSaveStatus);
+			this.addEventListener(CcSaveCharEvent.SAVE_CHAR_NOT_ENOUGH_MONEY_POINT, this.doTellUserSaveStatus);
+			this.addEventListener(CcSaveCharEvent.SAVE_CHAR_ERROR_OCCUR, this.doTellUserSaveStatus);
+			if (this._modeInEdit) {
+				this.ccCharEditorController.addEventListener(LoadEmbedMovieEvent.COMPLETE_EVENT, this.doSave);
 				this.ccCharEditorController.resetCCAction();
-			}
-			else
-			{
-				this.ccPreviewAndSaveController.addEventListener(LoadEmbedMovieEvent.COMPLETE_EVENT,this.doSave);
+			} else {
+				this.ccPreviewAndSaveController.addEventListener(LoadEmbedMovieEvent.COMPLETE_EVENT, this.doSave);
 				this.ccPreviewAndSaveController.resetCCAction();
 			}
 		}
 
-		private function doSave(param1:Event) : void
+		private function doSave(event:Event) : void
 		{
 			NativeCursorManager.instance.setBusyCursor();
 			FlexGlobals.topLevelApplication.enabled = false;
-			setTimeout(this.save,5000);
+			setTimeout(this.save, 5000);
 		}
 
-		private function doTellUserSaveStatus(param1:CcSaveCharEvent) : void
+		private function doTellUserSaveStatus(event:CcSaveCharEvent) : void
 		{
-			var isTemplate:Boolean = false;
-			var js:String = null;
-			var event:CcSaveCharEvent = param1;
-			this.removeEventListener(CcSaveCharEvent.SAVE_CHAR_COMPLETE,this.doTellUserSaveStatus);
-			this.removeEventListener(CcSaveCharEvent.SAVE_CHAR_NOT_ENOUGH_MONEY_POINT,this.doTellUserSaveStatus);
-			this.removeEventListener(CcSaveCharEvent.SAVE_CHAR_ERROR_OCCUR,this.doTellUserSaveStatus);
-			if(event.type == CcSaveCharEvent.SAVE_CHAR_COMPLETE)
-			{
-				this.ccPreviewAndSaveController.proceedToSaveComplete(event.gopoint,event.gobuck,event.assetId);
-				try
-				{
-					isTemplate = false;
-					if(this.ccChar.copiedFromTemplate)
-					{
-						try
-						{
+			this.removeEventListener(CcSaveCharEvent.SAVE_CHAR_COMPLETE, this.doTellUserSaveStatus);
+			this.removeEventListener(CcSaveCharEvent.SAVE_CHAR_NOT_ENOUGH_MONEY_POINT, this.doTellUserSaveStatus);
+			this.removeEventListener(CcSaveCharEvent.SAVE_CHAR_ERROR_OCCUR, this.doTellUserSaveStatus);
+			if (event.type == CcSaveCharEvent.SAVE_CHAR_COMPLETE) {
+				this.ccPreviewAndSaveController.proceedToSaveComplete(event.gopoint, event.gobuck, event.assetId);
+				try {
+					var isTemplate:Boolean = false;
+					if (this.ccChar.copiedFromTemplate) {
+						try {
 							isTemplate = !this.ccChar.isTemplateModified();
-						}
-						catch(e2:Error)
-						{
-						}
+						} catch (e2:Error) {}
 					}
-					js = StringUtil.substitute("CCStandaloneBannerAdUI.gaLogTx.logCCPartsNormal({0}, {1}, {2})",event.assetId,JS0N.encode(event.gaTrackModel.parts.filter(function(param1:*, param2:int, param3:Array):Boolean
-					{
-						return (["GoUpper","GoLower","upper_body","lower_body","hair"] as Array).indexOf(param1.ctype) >= 0;
-					})),isTemplate ? this.ccChar.templateId : "0");
+					var js:String = StringUtil.substitute(
+						"CCStandaloneBannerAdUI.gaLogTx.logCCPartsNormal({0}, {1}, {2})",
+						event.assetId,
+						JS0N.encode(event.gaTrackModel.parts.filter(
+							function(obj:*, index:int, array:Array):Boolean
+							{
+								return (["GoUpper", "GoLower", "upper_body", "lower_body", "hair"] as Array).indexOf(obj.ctype) >= 0;
+							}
+						)),
+						isTemplate ? this.ccChar.templateId : "0"
+					);
 					ExternalInterface.call(js);
-				}
-				catch(e:Error)
-				{
-				}
-			}
-			else if(event.type == CcSaveCharEvent.SAVE_CHAR_NOT_ENOUGH_MONEY_POINT)
-			{
-				this.ccPreviewAndSaveController.proceedToSaveNotEnoughMoney(event.gopoint,event.gobuck);
-			}
-			else if(event.type == CcSaveCharEvent.SAVE_CHAR_ERROR_OCCUR)
-			{
+				} catch (e:Error) {}
+			} else if (event.type == CcSaveCharEvent.SAVE_CHAR_NOT_ENOUGH_MONEY_POINT) {
+				this.ccPreviewAndSaveController.proceedToSaveNotEnoughMoney(event.gopoint, event.gobuck);
+			} else if (event.type == CcSaveCharEvent.SAVE_CHAR_ERROR_OCCUR) {
 				this.ccPreviewAndSaveController.proceedToSaveError();
 			}
 		}
 
-		private function onUserWantToEditAgain(param1:Event) : void
-		{
-		}
+		/**
+		 * In older CC builds, this function would have made the editor visible.
+		 */
+		private function onUserWantToEditAgain(event:Event) : void {}
 
 		private function onLoadCcThemeListComplete() : void
 		{
 			this.setCurrentThemeId(_themeId);
-			this.addEventListener(CcCoreEvent.LOAD_THEME_COMPLETE,this.doLoadPreMadeChar);
+			this.addEventListener(CcCoreEvent.LOAD_THEME_COMPLETE, this.doLoadPreMadeChar);
 			this.loadCcTheme(this.getCurrentThemeId());
 		}
 
-		private function loadLatestPreMadeChars(param1:Event) : void
+		private function loadLatestPreMadeChars(e:Event) : void
 		{
-			var preMadeChars:Array;
-			var e:Event = param1;
-			(e.currentTarget as CcTheme).removeEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE,this.loadLatestPreMadeChars);
-			preMadeChars = (e.currentTarget as CcTheme).preMadeChars.slice().filter(function(param1:CcCharacter, param2:int, param3:Array):Boolean
-			{
-				return "professions" == param1.category;
-			});
-			preMadeChars.sortOn("createDateTime",Array.DESCENDING);
-			this.refreshTemplateCCSelector(preMadeChars.slice(0,6),"latest");
+			(e.currentTarget as CcTheme).removeEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE, this.loadLatestPreMadeChars);
+			var preMadeChars:Array = (e.currentTarget as CcTheme).preMadeChars.slice().filter(
+				function (char:CcCharacter, index:int, array:Array) : Boolean
+				{
+					return "professions" == char.category;
+				}
+			);
+			preMadeChars.sortOn("createDateTime", Array.DESCENDING);
+			this.refreshTemplateCCSelector(preMadeChars.slice(0, 6), "latest");
 		}
 
-		private function loadRandomPreMadeChars(param1:Event) : void
+		private function loadRandomPreMadeChars(e:Event) : void
 		{
-			var preMadeChars:Array;
-			var randCharList:Array;
-			var idx:int = 0;
-			var e:Event = param1;
-			(e.currentTarget as CcTheme).removeEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE,this.loadRandomPreMadeChars);
-			preMadeChars = (e.currentTarget as CcTheme).preMadeChars.slice().filter(function(param1:CcCharacter, param2:int, param3:Array):Boolean
-			{
-				return "professions" == param1.category;
-			});
-			randCharList = [];
-			if(preMadeChars.length <= 6)
-			{
-				randCharList = preMadeChars.slice(0,6);
-			}
-			else
-			{
-				while(randCharList.length < 6)
+			(e.currentTarget as CcTheme).removeEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE, this.loadRandomPreMadeChars);
+			var preMadeChars:Array = (e.currentTarget as CcTheme).preMadeChars.slice().filter(
+				function (char:CcCharacter, index:int, array:Array) : Boolean
 				{
-					idx = int(Math.random() * preMadeChars.length);
-					if(randCharList.indexOf(preMadeChars[idx]) < 0)
-					{
+					return "professions" == char.category;
+				}
+			);
+			var randCharList:Array = [];
+			if (preMadeChars.length <= 6) {
+				randCharList = preMadeChars.slice(0, 6);
+			} else {
+				while (randCharList.length < 6) {
+					var idx:int = int(Math.random() * preMadeChars.length);
+					if (randCharList.indexOf(preMadeChars[idx]) < 0) {
 						randCharList.push(preMadeChars[idx]);
 					}
 				}
 			}
-			this.refreshTemplateCCSelector(randCharList,"latest");
+			this.refreshTemplateCCSelector(randCharList, "latest");
 		}
 
-		private function doLoadPreMadeChar(param1:Event) : void
+		private function doLoadPreMadeChar(event:Event) : void
 		{
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.doLoadPreMadeChar);
-			var _loc2_:CcTheme = this.getTheme(this.getCurrentThemeId());
-			if(this.originalAssetId != null)
-			{
-				_loc2_.addEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE,this.doLoadExistingCcChar);
+			(event.target as IEventDispatcher).removeEventListener(event.type, this.doLoadPreMadeChar);
+			var theme:CcTheme = this.getTheme(this.getCurrentThemeId());
+			if (this.originalAssetId != null) {
+				theme.addEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE, this.doLoadExistingCcChar);
+			} else {
+				theme.addEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE, this.doPrepareCcChar);
 			}
-			else
-			{
-				_loc2_.addEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE,this.doPrepareCcChar);
-			}
-			_loc2_.addEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE,this.doEnableUserToStartUseCC);
-			if(_cfg.loadPreMadeCharsEnabled())
-			{
-				_loc2_.addEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE,this.loadLatestPreMadeChars);
-				_loc2_.initCcThemePreMadeChar();
-			}
-			else
-			{
-				_loc2_.dispatchEvent(new CcCoreEvent(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE,this,null));
+			theme.addEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE, this.doEnableUserToStartUseCC);
+			if (_cfg.loadPreMadeCharsEnabled()) {
+				theme.addEventListener(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE, this.loadLatestPreMadeChars);
+				theme.initCcThemePreMadeChar();
+			} else {
+				theme.dispatchEvent(new CcCoreEvent(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE, this, null));
 			}
 		}
 
-		private function doEnableUserToStartUseCC(param1:Event) : void
+		private function doEnableUserToStartUseCC(event:Event) : void
 		{
-			var self:CcConsole = null;
-			var proceedHandler:Function = null;
-			var event:Event = param1;
-			(event.target as IEventDispatcher).removeEventListener(event.type,this.doEnableUserToStartUseCC);
-			self = this;
-			proceedHandler = function(param1:CcCoreEvent):void
+			(event.target as IEventDispatcher).removeEventListener(event.type, this.doEnableUserToStartUseCC);
+			var self:CcConsole = this;
+			var proceedHandler:Function = function (e:CcCoreEvent) : void
 			{
-				self.removeEventListener(CcCoreEvent.LOAD_EXISTING_CHAR_COMPLETE,proceedHandler);
+				self.removeEventListener(CcCoreEvent.LOAD_EXISTING_CHAR_COMPLETE, proceedHandler);
 				onUserWantToStart(event);
 			};
-			if(this.originalAssetId != null)
-			{
-				this.addEventListener(CcCoreEvent.LOAD_EXISTING_CHAR_COMPLETE,proceedHandler);
-			}
-			else
-			{
+			if (this.originalAssetId != null) {
+				this.addEventListener(CcCoreEvent.LOAD_EXISTING_CHAR_COMPLETE, proceedHandler);
+			} else {
 				this.onUserWantToStart(event);
 			}
 		}
 
-		private function doPrepareCcChar(param1:Event) : void
+		private function doPrepareCcChar(event:Event) : void
 		{
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.doPrepareCcChar);
+			(event.target as IEventDispatcher).removeEventListener(event.type, this.doPrepareCcChar);
 			this._ccChar = new CcCharacter();
-			if(_themeId == "cc2" || _themeId == "chibi" || _themeId == "ninja")
-			{
+			if (_themeId == "cc2" || _themeId == "chibi" || _themeId == "ninja") {
 				this._ccChar.ver = 2;
 			}
-			var _loc2_:CcTheme = this.getTheme(this.getCurrentThemeId());
-			var _loc3_:Array = _loc2_.getBodyShapeTypes();
-			var _loc4_:String = _loc3_[int(Math.floor(Math.random() * _loc2_.getBodyShapeTypes().length))] as String;
+			var theme:CcTheme = this.getTheme(this.getCurrentThemeId());
+			var bsTypes:Array = theme.getBodyShapeTypes();
+			var bs:String = bsTypes[int(Math.floor(Math.random() * theme.getBodyShapeTypes().length))] as String;
 		}
 
-		private function doLoadExistingCcChar(param1:Event) : void
+		private function doLoadExistingCcChar(event:Event) : void
 		{
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.doLoadExistingCcChar);
-			this.addEventListener(CcCoreEvent.LOAD_EXISTING_CHAR_COMPLETE,this.doPrepareExistingCcChar);
+			(event.target as IEventDispatcher).removeEventListener(event.type, this.doLoadExistingCcChar);
+			this.addEventListener(CcCoreEvent.LOAD_EXISTING_CHAR_COMPLETE, this.doPrepareExistingCcChar);
 			this.loadExistingCharCompositionXml(_configManager.getValue("original_asset_id") as String);
 		}
 
 		private function prepareExistingCcChar(param1:String) : void
 		{
 			this._ccChar = new CcCharacter();
-			var _loc2_:UtilHashArray = new UtilHashArray();
-			_loc2_.push(this.getCurrentThemeId(),this.getTheme(this.getCurrentThemeId()));
-			this._ccChar.deserialize(new XML(param1),_loc2_);
+			var arr:UtilHashArray = new UtilHashArray();
+			arr.push(this.getCurrentThemeId(), this.getTheme(this.getCurrentThemeId()));
+			this._ccChar.deserialize(new XML(param1), arr);
 		}
 
-		private function doPrepareExistingCcChar(param1:CcCoreEvent) : void
+		private function doPrepareExistingCcChar(event:CcCoreEvent) : void
 		{
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.doPrepareExistingCcChar);
-			this.prepareExistingCcChar(param1.getData() as String);
+			(event.target as IEventDispatcher).removeEventListener(event.type, this.doPrepareExistingCcChar);
+			this.prepareExistingCcChar(event.getData() as String);
 		}
 
 		private function save() : void
 		{
-			var _loc1_:ByteArray = null;
-			var _loc2_:Base64Encoder = null;
-			var _loc3_:ByteArray = null;
-			var _loc4_:Base64Encoder = null;
 			NativeCursorManager.instance.setBusyCursor();
 			AmplitudeAnalyticsManager.instance.log(AmplitudeAnalyticsManager.EVENT_NAME_CREATED_CHARACTER);
-			if(this._modeInEdit)
-			{
-				_loc1_ = this._ccCharEditorController.saveSnapShot();
-				_loc3_ = this._ccCharEditorController.saveSnapShot(true);
+			var face:ByteArray;
+			var faceB64:Base64Encoder;
+			var body:ByteArray;
+			var bodyB64:Base64Encoder;
+			if (this._modeInEdit) {
+				face = this._ccCharEditorController.saveSnapShot();
+				body = this._ccCharEditorController.saveSnapShot(true);
+			} else {
+				face = this._ccPreviewAndSaveController.saveSnapShot();
+				body = this._ccPreviewAndSaveController.saveSnapShot(true);
 			}
-			else
-			{
-				_loc1_ = this._ccPreviewAndSaveController.saveSnapShot();
-				_loc3_ = this._ccPreviewAndSaveController.saveSnapShot(true);
+			faceB64 = new Base64Encoder();
+			faceB64.encodeBytes(face);
+			bodyB64 = new Base64Encoder();
+			bodyB64.encodeBytes(body);
+			var urlLoader:URLLoader = new URLLoader();
+			var request:URLRequest = new URLRequest(CcServerConstant.ACTION_SAVE_CC_CHAR);
+			var variables:URLVariables = new URLVariables();
+			_configManager.appendURLVariables(variables);
+			variables["body"] = this.serialize();
+			variables["title"] = "Untitled";
+			variables["imagedata"] = faceB64.flush();
+			variables["thumbdata"] = bodyB64.flush();
+			if (this.ccChar.assetId != "") {
+				variables["assetId"] = this.ccChar.assetId;
 			}
-			_loc2_ = new Base64Encoder();
-			_loc2_.encodeBytes(_loc1_);
-			_loc4_ = new Base64Encoder();
-			_loc4_.encodeBytes(_loc3_);
-			var _loc5_:URLLoader = new URLLoader();
-			var _loc6_:URLRequest = new URLRequest(CcServerConstant.ACTION_SAVE_CC_CHAR);
-			var _loc7_:URLVariables = new URLVariables();
-			_configManager.appendURLVariables(_loc7_);
-			_loc7_["body"] = this.serialize();
-			_loc7_["title"] = "Untitled";
-			_loc7_["imagedata"] = _loc2_.flush();
-			_loc7_["thumbdata"] = _loc4_.flush();
-			if(this.ccChar.assetId != "")
-			{
-				_loc7_["assetId"] = this.ccChar.assetId;
-			}
-			_loc6_.data = _loc7_;
-			_loc6_.method = URLRequestMethod.POST;
-			_loc5_.dataFormat = URLLoaderDataFormat.TEXT;
-			_loc5_.addEventListener(Event.COMPLETE,this.saveCharacter_completeHandler);
-			_loc5_.addEventListener(IOErrorEvent.IO_ERROR,this.saveCharacter_errorHandler);
-			_loc5_.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.saveCharacter_errorHandler);
-			_loc5_.load(_loc6_);
+			request.data = variables;
+			request.method = URLRequestMethod.POST;
+			urlLoader.dataFormat = URLLoaderDataFormat.TEXT;
+			urlLoader.addEventListener(Event.COMPLETE, this.saveCharacter_completeHandler);
+			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, this.saveCharacter_errorHandler);
+			urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.saveCharacter_errorHandler);
+			urlLoader.load(request);
 		}
 
 		private function saveCharacter_completeHandler(param1:Event) : void
 		{
 			NativeCursorManager.instance.removeBusyCursor();
-			var _loc2_:URLLoader = param1.target as URLLoader;
-			var _loc3_:String = _loc2_.data as String;
-			_loc2_.removeEventListener(Event.COMPLETE,this.saveCharacter_completeHandler);
-			_loc2_.removeEventListener(IOErrorEvent.IO_ERROR,this.saveCharacter_errorHandler);
-			_loc2_.removeEventListener(SecurityErrorEvent.SECURITY_ERROR,this.saveCharacter_errorHandler);
-			var _loc4_:String = _loc3_.slice(0,1);
-			var _loc5_:String = _loc3_.slice(1);
-			if(_loc4_ == "1" && _loc5_ == ServerConstants.ERROR_CODE_LOGGED_OUT)
-			{
+			var loader:URLLoader = param1.target as URLLoader;
+			var response:String = loader.data as String;
+			loader.removeEventListener(Event.COMPLETE, this.saveCharacter_completeHandler);
+			loader.removeEventListener(IOErrorEvent.IO_ERROR, this.saveCharacter_errorHandler);
+			loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this.saveCharacter_errorHandler);
+			var firstChar:String = response.slice(0, 1);
+			var xml:String = response.slice(1);
+			if (firstChar == "1" && xml == ServerConstants.ERROR_CODE_LOGGED_OUT) {
 				this.showLoggedOutPopUp();
-			}
-			else if(ExternalInterface.available)
-			{
+			} else if (ExternalInterface.available) {
 				ExternalInterface.call("characterSaved");
 			}
 		}
 
 		private function saveCharacter_errorHandler(param1:Event) : void
 		{
-			var _loc2_:URLLoader = param1.target as URLLoader;
-			_loc2_.removeEventListener(Event.COMPLETE,this.saveCharacter_completeHandler);
-			_loc2_.removeEventListener(IOErrorEvent.IO_ERROR,this.saveCharacter_errorHandler);
-			_loc2_.removeEventListener(SecurityErrorEvent.SECURITY_ERROR,this.saveCharacter_errorHandler);
-			this.dispatchEvent(new CcSaveCharEvent(CcSaveCharEvent.SAVE_CHAR_ERROR_OCCUR,this));
+			var loader:URLLoader = param1.target as URLLoader;
+			loader.removeEventListener(Event.COMPLETE, this.saveCharacter_completeHandler);
+			loader.removeEventListener(IOErrorEvent.IO_ERROR, this.saveCharacter_errorHandler);
+			loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this.saveCharacter_errorHandler);
+			this.dispatchEvent(new CcSaveCharEvent(CcSaveCharEvent.SAVE_CHAR_ERROR_OCCUR, this));
 		}
 
 		private function showLoggedOutPopUp() : void
@@ -756,8 +685,8 @@ package anifire.creator.core
 			_loc1_.iconType = ConfirmPopUp.CONFIRM_POPUP_NO_ICON;
 			_loc1_.showCancelButton = false;
 			_loc1_.showCloseButton = false;
-			_loc1_.addEventListener(PopUpEvent.CLOSE,this.loggedOutPopUp_closeHandler);
-			_loc1_.open(FlexGlobals.topLevelApplication as DisplayObjectContainer,true);
+			_loc1_.addEventListener(PopUpEvent.CLOSE, this.loggedOutPopUp_closeHandler);
+			_loc1_.open(FlexGlobals.topLevelApplication as DisplayObjectContainer, true);
 		}
 
 		private function loggedOutPopUp_closeHandler(param1:PopUpEvent) : void
@@ -775,14 +704,14 @@ package anifire.creator.core
 			var _loc2_:CcTheme = new CcTheme();
 			_loc2_.id = param1;
 			this.addTheme(_loc2_);
-			_loc2_.addEventListener(CcCoreEvent.LOAD_THEME_COMPLETE,this.onLoadCcThemeComplete);
+			_loc2_.addEventListener(CcCoreEvent.LOAD_THEME_COMPLETE, this.onLoadCcThemeComplete);
 			_loc2_.initCcThemeByLoadThemeFile(param1);
 		}
 
 		private function onLoadCcThemeComplete(param1:Event) : void
 		{
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.onLoadCcThemeComplete);
-			this.dispatchEvent(new CcCoreEvent(CcCoreEvent.LOAD_THEME_COMPLETE,this));
+			(param1.target as IEventDispatcher).removeEventListener(param1.type, this.onLoadCcThemeComplete);
+			this.dispatchEvent(new CcCoreEvent(CcCoreEvent.LOAD_THEME_COMPLETE, this));
 		}
 
 		private function loadExistingCharCompositionXml(param1:String) : void
@@ -797,71 +726,61 @@ package anifire.creator.core
 			_loc2_.data = _loc4_;
 			_loc3_ = new URLLoader();
 			_loc3_.dataFormat = URLLoaderDataFormat.TEXT;
-			_loc3_.addEventListener(Event.COMPLETE,this.onLoadExistingCharCompositionXmlComplete);
+			_loc3_.addEventListener(Event.COMPLETE, this.onLoadExistingCharCompositionXmlComplete);
 			_loc3_.load(_loc2_);
 		}
 
 		private function onLoadExistingCharCompositionXmlComplete(param1:Event) : void
 		{
-			var _loc4_:String = null;
-			var _loc5_:CcCoreEvent = null;
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.onLoadExistingCharCompositionXmlComplete);
+			(param1.target as IEventDispatcher).removeEventListener(param1.type, this.onLoadExistingCharCompositionXmlComplete);
 			var _loc2_:URLLoader = param1.target as URLLoader;
 			var _loc3_:String = _loc2_.data as String;
-			if(_loc3_.charAt(0) == "0")
-			{
-				_loc4_ = _loc3_.substr(1);
-				_loc5_ = new CcCoreEvent(CcCoreEvent.LOAD_EXISTING_CHAR_COMPLETE,this,_loc4_);
+			if (_loc3_.charAt(0) == "0") {
+				var _loc4_:String = _loc3_.substr(1);
+				var _loc5_:CcCoreEvent = new CcCoreEvent(CcCoreEvent.LOAD_EXISTING_CHAR_COMPLETE, this, _loc4_);
 				this.dispatchEvent(_loc5_);
 			}
 		}
 
-		public function parseCCActionZipEventHandler(param1:Object) : void
+		public function parseCCActionZipEventHandler(data:Object) : void
 		{
-			var ccChar:CcCharacter = null;
-			var decryptEngine:UtilCrypto = null;
-			var swfBytes:ByteArray = null;
+			var decryptEngine:UtilCrypto;
 			var j:int = 0;
-			var ccZipEntry:ZipEntry = null;
-			var args:Object = null;
-			var thumb:CCThumb = null;
-			var ccConsole:CcConsole = null;
-			var data:Object = param1;
-			ccChar = data.char as CcCharacter;
+			var ccZipEntry:ZipEntry;
+			var ccChar:CcCharacter = data.char as CcCharacter;
 			var event:Event = data.streamEvent as Event;
 			var stream:URLStream = URLStream(event.target);
-			swfBytes = new ByteArray();
-			stream.readBytes(swfBytes,0,stream.bytesAvailable);
-			try
-			{
-				args = new Object();
-				thumb = new CCThumb();
-				ccConsole = this;
+			var swfBytes:ByteArray = new ByteArray();
+			stream.readBytes(swfBytes, 0, stream.bytesAvailable);
+			try {
+				var args:Object = new Object();
+				var thumb:CCThumb = new CCThumb();
+				var ccConsole:CcConsole = this;
 				thumb.cellWidth = thumb.cellHeight = CcLibConstant.TEMPLATE_CCTHUMB_WIDTH;
 				thumb.initByXml(XML(swfBytes));
-			}
-			catch(e:Error)
-			{
+			} catch (e:Error) {
 				thumb.initByXml(XML(swfBytes));
 			}
-			thumb.addEventListener(LoadEmbedMovieEvent.COMPLETE_EVENT,function(param1:Event):void
+			thumb.addEventListener(LoadEmbedMovieEvent.COMPLETE_EVENT, function (event:Event) : void
 			{
-				ccConsole.dispatchEvent(new CcCoreEvent(CcCoreEvent.LOAD_CHARACTER_THUMB_COMPLETE,this,{
-					"char":ccChar,
-					"thumbnail":thumb,
-					"tag":data.tag
-				}));
+				ccConsole.dispatchEvent(
+					new CcCoreEvent(CcCoreEvent.LOAD_CHARACTER_THUMB_COMPLETE, this, {
+						"char": ccChar, 
+						"thumbnail": thumb, 
+						"tag": data.tag
+					})
+				);
 			});
 		}
 
 		public function addEventListener(param1:String, param2:Function, param3:Boolean = false, param4:int = 0, param5:Boolean = false) : void
 		{
-			this._eventDispatcher.addEventListener(param1,param2,param3,param4,param5);
+			this._eventDispatcher.addEventListener(param1, param2, param3, param4, param5);
 		}
 
-		public function dispatchEvent(param1:Event) : Boolean
+		public function dispatchEvent(event:Event) : Boolean
 		{
-			return this._eventDispatcher.dispatchEvent(param1);
+			return this._eventDispatcher.dispatchEvent(event);
 		}
 
 		public function hasEventListener(param1:String) : Boolean
@@ -871,7 +790,7 @@ package anifire.creator.core
 
 		public function removeEventListener(param1:String, param2:Function, param3:Boolean = false) : void
 		{
-			return this._eventDispatcher.removeEventListener(param1,param2,param3);
+			return this._eventDispatcher.removeEventListener(param1, param2, param3);
 		}
 
 		public function willTrigger(param1:String) : Boolean

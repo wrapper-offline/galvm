@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas
-	xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" clipContent="false">
 
-	<fx:Script>
+	<mx:Script>
 		<![CDATA[
 			import anifire.constant.CcServerConstant;
 			import anifire.creator.events.CcComponentLoadEvent;
@@ -14,12 +11,14 @@
 			import anifire.util.UtilColor;
 			import mx.controls.Label;
 			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
 
 			private const THUMBNAIL_SIZE:Number = 60;
 			public var componentThumb:CcComponentThumb = null;
 			private var targetWidth:Number;
 			private var targetHeight:Number;
 			private var loader:Loader;
+			private var moneyMode:int;
 			private var bgStyleName:String;
 			public var componentThumbDetailThumbnail:CcComponentThumbDetailThumbnail;
 			public var componentType:String;
@@ -28,150 +27,152 @@
 			{
 				return this.componentThumb == null ? true : false;
 			}
-			
-			public function init(param1:CcComponentThumbDetailThumbnail, param2:Number, param3:Number, param4:CcComponentThumb) : void
+
+			public function init(tdthumb:CcComponentThumbDetailThumbnail, width:Number, height:Number, thumb:CcComponentThumb) : void
 			{
-				if(this.thumbnailContainer != null)
-				{
+				if (this.thumbnailContainer != null) {
 					this.thumbnailContainer.removeAllChildren();
 				}
-				this.componentThumb = param4;
+				this.componentThumb = thumb;
 				this.componentType = this.componentThumb.type;
-				this.targetWidth = param2;
-				this.targetHeight = param3;
-				this.componentThumbDetailThumbnail = param1;
+				this.targetWidth = width;
+				this.targetHeight = height;
+				this.componentThumbDetailThumbnail = tdthumb;
+				this.moneyMode = this.moneyMode;
 				this.width = this.targetWidth;
 				this.height = this.targetHeight;
-				this.componentThumb.addEventListener(CcComponentLoadEvent.LOAD_THUMBNAIL_IMAGE_DATA_COMPLETE,this.onThumbnailLoadFromNetwork);
+				this.componentThumb.addEventListener(CcComponentLoadEvent.LOAD_THUMBNAIL_IMAGE_DATA_COMPLETE, this.onThumbnailLoadFromNetwork);
 				this.componentThumb.loadThumbnailImageData();
 			}
-			
-			public function initNullThumbnail(param1:CcComponentThumbDetailThumbnail, param2:Number, param3:Number, param4:String) : void
+
+			public function initNullThumbnail(tdthumb:CcComponentThumbDetailThumbnail, width:Number, height:Number, type:String) : void
 			{
-				if(this.thumbnailContainer != null)
-				{
+				if (this.thumbnailContainer != null) {
 					this.thumbnailContainer.removeAllChildren();
 				}
 				this.componentThumb = null;
-				this.componentType = param4;
-				this.targetWidth = param2;
-				this.targetHeight = param3;
-				this.componentThumbDetailThumbnail = param1;
+				this.componentType = type;
+				this.targetWidth = width;
+				this.targetHeight = height;
+				this.componentThumbDetailThumbnail = tdthumb;
 				this.width = this.targetWidth;
 				this.height = this.targetHeight;
 			}
-			
-			public function setBgStyleName(param1:String) : void
+
+			public function setBgStyleName(bgStyleName:String) : void
 			{
-				this.bgStyleName = param1;
-				if(this.btnThumb != null)
-				{
-					this.btnThumb.styleName = param1;
+				this.bgStyleName = bgStyleName;
+				if (this.btnThumb != null) {
+					this.btnThumb.styleName = bgStyleName;
 				}
 			}
-			
-			private function onNullThumbnailReady(param1:Event) : void
+
+			private function onNullThumbnailReady(event:Event) : void
 			{
-				(param1.target as IEventDispatcher).removeEventListener(param1.type,this.onNullThumbnailReady);
-				var _loc2_:DisplayObject = param1.target as DisplayObject;
-				this.placeThumbnail(_loc2_);
+				(event.target as IEventDispatcher).removeEventListener(event.type, this.onNullThumbnailReady);
+				var obj:DisplayObject = event.target as DisplayObject;
+				this.placeThumbnail(obj);
 			}
-			
-			private function onThumbnailLoadFromNetwork(param1:CcComponentLoadEvent) : void
+
+			private function onThumbnailLoadFromNetwork(event:CcComponentLoadEvent) : void
 			{
-				(param1.target as IEventDispatcher).removeEventListener(param1.type,this.onThumbnailLoadFromNetwork);
+				(event.target as IEventDispatcher).removeEventListener(event.type, this.onThumbnailLoadFromNetwork);
 				this.loader = new Loader();
 				this.loader.mouseChildren = false;
 				this.loader.mouseEnabled = false;
-				this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onThumbImageDataLoadByteComplete);
+				this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onThumbImageDataLoadByteComplete);
 				this.loader.loadBytes(this.componentThumb.thumbnailImageData);
 			}
-			
-			private function onThumbImageDataLoadByteComplete(param1:Event) : void
+
+			private function onThumbImageDataLoadByteComplete(event:Event) : void
 			{
-				(param1.target as IEventDispatcher).removeEventListener(param1.type,this.onThumbImageDataLoadByteComplete);
+				(event.target as IEventDispatcher).removeEventListener(event.type, this.onThumbImageDataLoadByteComplete);
 				this.placeThumbnail(this.loader);
 			}
-			
-			private function placeThumbnail(param1:DisplayObject) : void
+
+			private function placeThumbnail(obj:DisplayObject) : void
 			{
-				var _loc3_:Canvas = null;
-				var _loc4_:Label = null;
-				param1.scaleX = -1;
-				param1.x = 1 * this.THUMBNAIL_SIZE;
-				var _loc2_:UIComponent = new UIComponent();
-				if(CcServerConstant.displayThumbnailId())
-				{
-					_loc3_ = new Canvas();
+				obj.scaleX = -1;
+				obj.x = 1 * this.THUMBNAIL_SIZE;
+				var uic:UIComponent = new UIComponent();
+				if (CcServerConstant.displayThumbnailId()) {
+					var _loc3_:Canvas = new Canvas();
 					_loc3_.styleName = "thumbnailIdBackdrop";
 					_loc3_.width = this.THUMBNAIL_SIZE - 2;
 					_loc3_.x = _loc3_.y = 1;
-					(_loc4_ = new Label()).text = this.componentThumb.componentId.replace(/^.*_/,"");
+					var _loc4_:Label = new Label();
+					_loc4_.text = this.componentThumb.componentId.replace(/^.*_/, "");
 					_loc4_.percentHeight = _loc4_.percentWidth = 100;
 					_loc4_.styleName = "thumbnailId";
 					_loc3_.addChild(_loc4_);
 				}
-				_loc2_.addChild(param1);
-				this.thumbnailContainer.addChild(_loc2_);
-				if(CcServerConstant.displayThumbnailId())
-				{
+				uic.addChild(obj);
+				this.thumbnailContainer.addChild(uic);
+				if (CcServerConstant.displayThumbnailId()) {
 					this.thumbnailContainer.addChild(_loc3_);
 				}
 			}
-			
+
 			private function drawControlBg() : void
 			{
 				this.control.graphics.clear();
-				this.control.graphics.lineStyle(2,16744749);
-				this.control.graphics.beginFill(13421772,1);
-				this.control.graphics.moveTo(0,0);
-				this.control.graphics.lineTo(0,this.height);
-				this.control.graphics.lineTo(this.width,this.height);
-				this.control.graphics.lineTo(this.width,10);
-				this.drawMyCircle(this.control,10,this.width,0);
-				this.control.graphics.lineTo(0,0);
+				this.control.graphics.lineStyle(2, 16744749);
+				this.control.graphics.beginFill(13421772, 1);
+				this.control.graphics.moveTo(0, 0);
+				this.control.graphics.lineTo(0, this.height);
+				this.control.graphics.lineTo(this.width, this.height);
+				this.control.graphics.lineTo(this.width, 10);
+				this.drawMyCircle(this.control, 10, this.width, 0);
+				this.control.graphics.lineTo(0, 0);
 				this.control.graphics.endFill();
 			}
-			
+
 			private function onReleaseDelete() : void
 			{
-				var _loc1_:CcComponentThumbnailMouseEvent = new CcComponentThumbnailMouseEvent(CcComponentThumbnailMouseEvent.DELETE_RELEASED,this);
-				this.dispatchEvent(_loc1_);
+				var evt:CcComponentThumbnailMouseEvent = new CcComponentThumbnailMouseEvent(CcComponentThumbnailMouseEvent.DELETE_RELEASED, this);
+				this.dispatchEvent(evt);
 			}
-			
-			private function drawMyCircle(param1:Sprite, param2:Number, param3:Number, param4:Number) : void
+
+			private function drawMyCircle(spr:Sprite, param2:Number, param3:Number, param4:Number) : void
 			{
-				param1.graphics.curveTo(0.4142 * param2 + param3,param2 + param4,0.7071 * param2 + param3,0.7071 * param2 + param4);
-				param1.graphics.curveTo(param2 + param3,0.4142 * param2 + param4,param2 + param3,param4);
-				param1.graphics.curveTo(param2 + param3,-0.4142 * param2 + param4,0.7071 * param2 + param3,-0.7071 * param2 + param4);
-				param1.graphics.curveTo(0.4142 * param2 + param3,-param2 + param4,param3,-param2 + param4);
-				param1.graphics.curveTo(-0.4142 * param2 + param3,-param2 + param4,-0.7071 * param2 + param3,-0.7071 * param2 + param4);
-				param1.graphics.curveTo(-param2 + param3,-0.4142 * param2 + param4,-param2 + param3,param4);
+				spr.graphics.curveTo(0.4142 * param2 + param3, param2 + param4, 0.7071 * param2 + param3, 0.7071 * param2 + param4);
+				spr.graphics.curveTo(param2 + param3, 0.4142 * param2 + param4, param2 + param3, param4);
+				spr.graphics.curveTo(param2 + param3, -0.4142 * param2 + param4, 0.7071 * param2 + param3, -0.7071 * param2 + param4);
+				spr.graphics.curveTo(0.4142 * param2 + param3, -param2 + param4, param3, -param2 + param4);
+				spr.graphics.curveTo(-0.4142 * param2 + param3, -param2 + param4, -0.7071 * param2 + param3, -0.7071 * param2 + param4);
+				spr.graphics.curveTo(-param2 + param3, -0.4142 * param2 + param4, -param2 + param3, param4);
 			}
-			
+
 			private function onOverDel() : void
 			{
-				UtilColor.setRGB(this.btnDel,16744749);
+				UtilColor.setRGB(this.btnDel, 16744749);
 			}
-			
+
 			private function onOutDel() : void
 			{
 				UtilColor.setRGB(this.btnDel);
 			}
 		]]>
-	</fx:Script>
+	</mx:Script>
 
-	<s:Button id="btnThumb" x="0" y="0" initialize=""/>
-	<mx:Canvas id="control" x="0" y="0" visible="false" clipContent="false" creationComplete="">
-		<s:Button
+	<mx:Button id="btnThumb" x="0" y="0" initialize="
+		this.btnThumb.styleName = this.bgStyleName;
+		this.btnThumb.width = this.targetWidth;
+		this.btnThumb.height = this.targetHeight;"/>
+	<mx:Canvas id="control" x="0" y="0" visible="false" clipContent="false" creationComplete="
+			this.control.width = this.targetWidth;
+			this.control.height = this.targetHeight;
+			this.btnDel.x = this.control.width - this.btnDel.width / 2;
+			this.drawControlBg();">
+		<mx:Button
 			id="btnDel"
 			styleName="btnDelDec"
 			y="-5"
 			width="10"
 			height="10"
-			click=""
-			mouseOver=""
-			mouseOut=""/>
+			click="this.onReleaseDelete()"
+			mouseOver="this.onOverDel()"
+			mouseOut="this.onOutDel()"/>
 	</mx:Canvas>
 	<mx:Canvas id="thumbnailContainer" x="0" y="0" clipContent="false"/>
 

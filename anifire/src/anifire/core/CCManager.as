@@ -16,23 +16,14 @@ package anifire.core
 
 	public class CCManager extends EventDispatcher
 	{
-
 		private var _styleCollection:UtilHashArray;
-
 		private var _cacheCollection:UtilHashArray;
-
 		private var _styleName:Array;
-
 		private var _partName:Array;
-
 		private var _colors:UtilHashSelectedColor;
-
 		private var _leftHandCache:Class;
-
 		private var _rightHandCache:Class;
-
 		private var _propHandStyle:String;
-
 		private var _skinLoadingCount:Number;
 
 		public function CCManager()
@@ -73,7 +64,7 @@ package anifire.core
 
 		public function addColor(param1:String, param2:SelectedColor) : void
 		{
-			this._colors.push(param1,param2);
+			this._colors.push(param1, param2);
 		}
 
 		public function deleteColor(param1:String) : void
@@ -99,12 +90,14 @@ package anifire.core
 		{
 		}
 
-		public function getColorByName(param1:String) : uint
+		/**
+		 * Returns the selected value of a color from its name.
+		 */
+		public function getColorByName(name:String) : uint
 		{
-			var _loc2_:SelectedColor = this._colors.getValueByKey(param1);
-			if(_loc2_ != null)
-			{
-				return _loc2_.dstColor;
+			var color:SelectedColor = this._colors.getValueByKey(name);
+			if (color != null) {
+				return color.dstColor;
 			}
 			return uint.MAX_VALUE;
 		}
@@ -116,7 +109,7 @@ package anifire.core
 
 		public function addStyle(param1:String, param2:LoaderInfo) : void
 		{
-			this._styleCollection.push(param1,param2);
+			this._styleCollection.push(param1, param2);
 		}
 
 		public function removeStyle(param1:String) : void
@@ -139,21 +132,21 @@ package anifire.core
 				{
 					_loc3_.loadBytes(param1["figure"] as ByteArray);
 				}
-				_loc3_.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onLoadPropThumbDone);
+				_loc3_.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onLoadPropThumbDone);
 			}
 		}
 
 		private function onLoadPropThumbDone(param1:Event) : void
 		{
 			var _loc2_:LoaderInfo = LoaderInfo(param1.currentTarget);
-			this._styleCollection.push(AnimeConstants.CLASS_GOPROP,_loc2_);
+			this._styleCollection.push(AnimeConstants.CLASS_GOPROP, _loc2_);
 			this.dispatchEvent(new ByteLoaderEvent(ByteLoaderEvent.LOAD_BYTES_COMPLETE));
 		}
 
 		public function updatePropInfo(param1:LoaderInfo, param2:String) : void
 		{
 			this._propHandStyle = param2;
-			this._styleCollection.push(AnimeConstants.CLASS_GOPROP,param1);
+			this._styleCollection.push(AnimeConstants.CLASS_GOPROP, param1);
 			this.dispatchEvent(new ByteLoaderEvent(ByteLoaderEvent.LOAD_BYTES_COMPLETE));
 		}
 
@@ -189,7 +182,7 @@ package anifire.core
 				if(param2.applicationDomain.hasDefinition(param1))
 				{
 					_loc4_ = param2.applicationDomain.getDefinition(param1) as Class;
-					this._cacheCollection.push(param1,_loc4_);
+					this._cacheCollection.push(param1, _loc4_);
 				}
 				return _loc4_;
 			}
@@ -210,7 +203,7 @@ package anifire.core
 				}
 				if(this.cacheExist(param1) || _loc4_.applicationDomain.hasDefinition(param1))
 				{
-					_loc6_ = this.getClassReferenceBySkinName(param1,_loc4_,param3);
+					_loc6_ = this.getClassReferenceBySkinName(param1, _loc4_, param3);
 					if(_loc6_)
 					{
 						if(param2 == AnimeConstants.CLASS_GOLEFTLOWERHAND)
@@ -248,40 +241,27 @@ package anifire.core
 			return null;
 		}
 
-		protected function changeSkinColor(param1:DisplayObjectContainer) : void
+		protected function changeSkinColor(container:DisplayObjectContainer) : void
 		{
-			var _loc4_:DisplayObject = null;
-			var _loc5_:String = null;
-			var _loc6_:String = null;
-			var _loc7_:uint = 0;
-			var _loc8_:ColorTransform = null;
-			var _loc2_:int = param1.numChildren;
-			var _loc3_:int = 0;
-			while(_loc3_ < _loc2_)
-			{
-				_loc4_ = param1.getChildAt(_loc3_);
-				_loc5_ = _loc4_.name;
-				if((Boolean(_loc5_)) && _loc5_.indexOf("theColor_") != -1)
-				{
-					_loc6_ = _loc5_.substr(9);
-					_loc7_ = this.getColorByName(_loc6_);
-					if(_loc7_ != uint.MAX_VALUE)
-					{
-						_loc8_ = new ColorTransform();
-						_loc8_.color = _loc7_;
-						_loc4_.transform.colorTransform = _loc8_;
+			var num:int = container.numChildren;
+			for (var i:int = 0; i < num; i++) {
+				var obj:DisplayObject = container.getChildAt(i);
+				var objName:String = obj.name;
+				if (objName && objName.indexOf("theColor_") != -1) {
+					var areaName:String = objName.substr(9);
+					var dst:uint = this.getColorByName(areaName);
+					if (dst != uint.MAX_VALUE) {
+						var transform:ColorTransform = new ColorTransform();
+						transform.color = dst;
+						obj.transform.colorTransform = transform;
 					}
 				}
-				if(_loc4_ is DisplayObjectContainer)
-				{
-					this.changeSkinColor(_loc4_ as DisplayObjectContainer);
+				if (obj is DisplayObjectContainer) {
+					this.changeSkinColor(obj as DisplayObjectContainer);
 				}
-				_loc3_++;
 			}
 		}
 
-		public function destroy() : void
-		{
-		}
+		public function destroy() : void {}
 	}
 }

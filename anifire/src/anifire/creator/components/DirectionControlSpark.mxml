@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group
-	xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx"
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:components="anifire.creator.components.*"
 	width="65"
 	height="65">
@@ -12,56 +10,51 @@
 			import anifire.creator.events.CcThumbPropertyEvent;
 			import anifire.creator.models.CcComponent;
 
+			private var _component:CcComponent;
 			private var _timer:Timer;
 			private var _type:String;
 
-			private function onMouseDown(param1:Event) : void
+			private function onMouseDown(event:Event) : void
 			{
-				var _loc2_:CcThumbPropertyEvent = null;
-				this._type = this.getTypeByEventTarget(param1.currentTarget);
-				_loc2_ = new CcThumbPropertyEvent(this._type,this);
-				this.dispatch(_loc2_);
-				this._timer = new Timer(1000,1);
-				this._timer.addEventListener(TimerEvent.TIMER,this.doFirstTimer);
+				this._type = this.getTypeByEventTarget(event.currentTarget);
+				var evt:CcThumbPropertyEvent = new CcThumbPropertyEvent(this._type, this);
+				this.dispatch(evt);
+				this._timer = new Timer(1000, 1);
+				this._timer.addEventListener(TimerEvent.TIMER, this.doFirstTimer);
 				this._timer.start();
 			}
 			
-			private function onMouseUp(param1:Event) : void
+			private function onMouseUp(event:Event) : void
 			{
-				var _loc2_:CcThumbPropertyEvent = null;
-				if(this._timer != null && this._timer.running)
-				{
+				if (this._timer != null && this._timer.running) {
 					this._timer.stop();
-					this._timer.removeEventListener(TimerEvent.TIMER,this.doTimer);
-					_loc2_ = new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_LOCATION_UPDATE,this);
-					this.dispatch(_loc2_);
+					this._timer.removeEventListener(TimerEvent.TIMER, this.doTimer);
+					var evt:CcThumbPropertyEvent = new CcThumbPropertyEvent(CcThumbPropertyEvent.CCPROP_LOCATION_UPDATE, this);
+					this.dispatch(evt);
 				}
 			}
 			
-			private function doFirstTimer(param1:TimerEvent) : void
+			private function doFirstTimer(event:TimerEvent) : void
 			{
 				this._timer.stop();
-				this._timer.removeEventListener(TimerEvent.TIMER,this.doFirstTimer);
+				this._timer.removeEventListener(TimerEvent.TIMER, this.doFirstTimer);
 				this._timer = new Timer(20);
-				this._timer.addEventListener(TimerEvent.TIMER,this.doTimer);
+				this._timer.addEventListener(TimerEvent.TIMER, this.doTimer);
 				this._timer.start();
 			}
 			
-			private function doTimer(param1:TimerEvent) : void
+			private function doTimer(event:TimerEvent) : void
 			{
-				var _loc2_:String = null;
-				var _loc3_:CcThumbPropertyEvent = null;
-				_loc2_ = this._type;
-				_loc3_ = new CcThumbPropertyEvent(_loc2_,this);
-				this.dispatch(_loc3_);
+				var evtType:String = this._type;
+				var evt:CcThumbPropertyEvent = new CcThumbPropertyEvent(evtType, this);
+				this.dispatch(evt);
 			}
 			
-			private function onClick(param1:Event) : void
+			private function onClick(event:Event) : void
 			{
-				var _loc3_:CcThumbPropertyEvent = null;
-				var _loc2_:String = this.getTypeByEventTarget(param1.currentTarget);
-				_loc3_ = new CcThumbPropertyEvent(_loc2_,this);
-				this.dispatch(_loc3_);
+				var evtType:String = this.getTypeByEventTarget(event.currentTarget);
+				var evt:CcThumbPropertyEvent = new CcThumbPropertyEvent(evtType, this);
+				this.dispatch(evt);
 			}
 			
 			public function destroy() : void
@@ -69,29 +62,28 @@
 				this.visible = false;
 			}
 			
-			private function dispatch(param1:Event) : void
+			private function dispatch(event:Event) : void
 			{
-				this.dispatchEvent(param1);
+				this.dispatchEvent(event);
 			}
 			
-			private function getTypeByEventTarget(param1:Object) : String
+			private function getTypeByEventTarget(target:Object) : String
 			{
-				var _loc2_:String = "";
-				switch(param1)
-				{
+				var evtType:String = "";
+				switch (target) {
 					case this.btnUp:
-						_loc2_ = CcThumbPropertyEvent.CCPROP_UP_BUTTON_CLICK;
+						evtType = CcThumbPropertyEvent.CCPROP_UP_BUTTON_CLICK;
 						break;
 					case this.btnDown:
-						_loc2_ = CcThumbPropertyEvent.CCPROP_DOWN_BUTTON_CLICK;
+						evtType = CcThumbPropertyEvent.CCPROP_DOWN_BUTTON_CLICK;
 						break;
 					case this.btnLeft:
-						_loc2_ = CcThumbPropertyEvent.CCPROP_LEFT_BUTTON_CLICK;
+						evtType = CcThumbPropertyEvent.CCPROP_LEFT_BUTTON_CLICK;
 						break;
 					case this.btnRight:
-						_loc2_ = CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK;
+						evtType = CcThumbPropertyEvent.CCPROP_RIGHT_BUTTON_CLICK;
 				}
-				return _loc2_;
+				return evtType;
 			}
 		]]>
 	</fx:Script>

@@ -2,31 +2,37 @@ package anifire.color
 {
 	public class SelectedColor
 	{
-
 		private var _areaName:String = "";
-
 		private var _orgColor:uint;
-
 		private var _dstColor:uint;
 
-		public function SelectedColor(param1:String, param2:uint = 4294967295, param3:uint = 4294967295)
+		public function SelectedColor(areaName:String, orgColor:uint = 4294967295, dstColor:uint = 4294967295)
 		{
 			super();
-			this._areaName = param1;
-			this._orgColor = param2;
-			this._dstColor = param3;
+			this._areaName = areaName;
+			this._orgColor = orgColor;
+			this._dstColor = dstColor;
 		}
 
+		/**
+		 * Color name.
+		 */
 		public function get areaName() : String
 		{
 			return this._areaName;
 		}
 
+		/**
+		 * Original color to be replaced via shader.
+		 */
 		public function get orgColor() : uint
 		{
 			return this._orgColor;
 		}
 
+		/**
+		 * Selected color value.
+		 */
 		public function get dstColor() : uint
 		{
 			return this._dstColor;

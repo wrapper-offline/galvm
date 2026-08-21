@@ -126,7 +126,7 @@
 		verticalCenter="0"
 		smoothingQuality="high"
 		smooth="true"/>
-	<s:Rect top="0" right="0" bottom="0" left="0" visible="false" visible.hovered="true">
+	<s:Rect left="0" right="0" top="0" bottom="0" visible="false" visible.hovered="true">
 		<s:stroke>
 			<s:SolidColorStroke color="0x21BBA6" weight="1" alpha="1"/>
 		</s:stroke>

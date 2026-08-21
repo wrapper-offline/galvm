@@ -3,7 +3,9 @@ package anifire.creator.components
 	import mx.core.mx_internal;
 	import spark.components.supportClasses.SkinnableComponent;
 	import spark.components.Group;
-	
+
+	use namespace mx_internal;
+
 	[DefaultProperty("content")]
 	public class ArrowTipContainer extends SkinnableComponent
 	{
@@ -28,8 +30,7 @@ package anifire.creator.components
 		}
 		public function set tipPosition(param1:String) : void
 		{
-			if(this._tipPosition != param1)
-			{
+			if (this._tipPosition != param1) {
 				this._tipPosition = param1;
 				invalidateSkinState();
 			}
@@ -38,20 +39,16 @@ package anifire.creator.components
 		[Bindable]
 		public function get content() : Array
 		{
-			if(this.contentGroup)
-			{
+			if (this.contentGroup) {
 				return this.contentGroup.mx_internal::getMXMLContent();
 			}
 			return this.contentMXML;
 		}
 		public function set content(param1:Array) : void
 		{
-			if(this.contentGroup)
-			{
+			if (this.contentGroup) {
 				this.contentGroup.mxmlContent = param1;
-			}
-			else
-			{
+			} else {
 				this.contentMXML = param1;
 			}
 		}
@@ -74,8 +71,7 @@ package anifire.creator.components
 		override protected function partAdded(partName:String, instance:Object) : void
 		{
 			super.partAdded(partName, instance);
-			if (instance == this.contentGroup)
-			{
+			if (instance == this.contentGroup) {
 				this.contentGroup.mxmlContent = this.contentMXML;
 				this.contentMXML = null;
 			}
@@ -84,12 +80,10 @@ package anifire.creator.components
 		override protected function partRemoved(partName:String, instance:Object) : void
 		{
 			super.partRemoved(partName, instance);
-			if (instance == this.contentGroup)
-			{
+			if (instance == this.contentGroup) {
 				this.contentMXML = this.contentGroup.mx_internal::getMXMLContent();
 				this.contentGroup.mxmlContent = null;
 			}
 		}
-		
 	}
 }

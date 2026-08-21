@@ -12,8 +12,6 @@ package anifire.creator.components
 	[Event(name="colorCommit", type="anifire.creator.events.ColorPickerDropDownListEvent")]
 	public class ColorPickerDropDownList extends DropDownList
 	{
-		
-		
 		[SkinPart(required="false")]
 		public var colorInputPanel:ColorInputPanel;
 		

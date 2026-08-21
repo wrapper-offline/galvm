@@ -2,10 +2,13 @@ package anifire.creator.utils
 {
 	import anifire.creator.models.CcComponentThumb;
 
+	/**
+	 * The ComponentThumbFilter class stores the filter function for component
+	 * thumbnails.
+	 */
 	public class ComponentThumbFilter
 	{
-
-		private static function _null_func(param1:CcComponentThumb):Boolean
+		private static function _null_func(thumb:CcComponentThumb) : Boolean
 		{
 			return true;
 		}
@@ -21,13 +24,12 @@ package anifire.creator.utils
 			return this._func;
 		}
 
-		public function set filter(param1:Function) : void
+		public function set filter(value:Function) : void
 		{
-			if(param1 == null)
-			{
-				param1 = _null_func;
+			if (value == null) {
+				value = _null_func;
 			}
-			this._func = param1;
+			this._func = value;
 		}
 	}
 }

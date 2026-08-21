@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas
-	xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx"
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
 	verticalScrollPolicy="off"
 	creationComplete="creationCompleteHandler()">
 
-	<fx:Script>
+	<mx:Script>
 		<![CDATA[
 			import anifire.component.CCThumb;
 			import anifire.creator.models.CcCharacter;
@@ -16,40 +13,35 @@
 			private var _thumb:CCThumb = null;
 			private var _char:CcCharacter = null;
 
-			private function toggleGlow(param1:MouseEvent) : void
+			private function toggleGlow(event:MouseEvent) : void
 			{
-				if(param1.type == MouseEvent.ROLL_OVER)
-				{
-					if(this._thumb)
-					{
-						this._thumb.filters = [new flash.filters.GlowFilter(16777215,1,8,8,3)];
+				if (event.type == MouseEvent.ROLL_OVER) {
+					if (this._thumb) {
+						this._thumb.filters = [new flash.filters.GlowFilter(16777215, 1, 8, 8, 3)];
 					}
-				}
-				else if(param1.type == MouseEvent.ROLL_OUT)
-				{
-					if(this._thumb)
-					{
+				} else if (event.type == MouseEvent.ROLL_OUT) {
+					if (this._thumb) {
 						this._thumb.filters = [];
 					}
 				}
 			}
 			
-			public function set thumbnail(param1:CCThumb) : void
+			public function set thumbnail(thumb:CCThumb) : void
 			{
 				this.removeAllChildren();
-				this._thumb = param1;
-				var _loc2_:UIComponent = new UIComponent();
-				_loc2_.addChild(param1);
-				_loc2_.width = param1.thumbWidth;
-				_loc2_.height = param1.thumbHeight;
+				this._thumb = thumb;
+				var uic:UIComponent = new UIComponent();
+				uic.addChild(thumb);
+				uic.width = thumb.thumbWidth;
+				uic.height = thumb.thumbHeight;
 				width = 128;
 				height = 150;
 				buttonMode = true;
 				mouseEnabled = true;
 				useHandCursor = true;
-				_loc2_.x = (width - _loc2_.width) / 2;
-				_loc2_.y = (height - _loc2_.height) / 2;
-				addChild(_loc2_);
+				uic.x = (width - uic.width) / 2;
+				uic.y = (height - uic.height) / 2;
+				addChild(uic);
 			}
 			
 			public function get character() : CcCharacter
@@ -57,19 +49,19 @@
 				return this._char;
 			}
 			
-			public function set character(param1:CcCharacter) : void
+			public function set character(char:CcCharacter) : void
 			{
-				this._char = param1;
+				this._char = char;
 			}
 			
 			public function creationCompleteHandler() : void
 			{
 				setChildIndex(this.raft,0);
-				addEventListener(MouseEvent.ROLL_OVER,this.toggleGlow);
-				addEventListener(MouseEvent.ROLL_OUT,this.toggleGlow);
+				addEventListener(MouseEvent.ROLL_OVER, this.toggleGlow);
+				addEventListener(MouseEvent.ROLL_OUT, this.toggleGlow);
 			}
 		]]>
-	</fx:Script>
+	</mx:Script>
 
 	<mx:Canvas id="raft" styleName="templateCharThumbRaft" x="0" y="115" width="128" height="40"/>
 

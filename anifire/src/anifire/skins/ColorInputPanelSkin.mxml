@@ -38,9 +38,9 @@
 							fillMode="scale"
 							scaleMode="stretch"
 							left="0" right="0" top="0" bottom="0"/>
-					</s:Group> <!--group3-->
+					</s:Group>
 					<s:Group id="maskGroup" left="0" right="0" top="0" bottom="0">
-						<s:Rect left="0" right="0" top="0" bottom="0">
+						<s:Rect left="0" right="0" top="0" bottom="0" radiusX="7" radiusY="7">
 							<s:fill>
 								<s:SolidColor/>
 							</s:fill>

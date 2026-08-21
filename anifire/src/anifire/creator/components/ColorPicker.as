@@ -22,9 +22,7 @@ package anifire.creator.components
 	
 	public class ColorPicker extends ComboBox
 	{
-		
 		public static const TRANSPARENT_COLOR:uint = uint.MAX_VALUE;
-		
 		
 		private var wsp:WebSafePalette;
 		

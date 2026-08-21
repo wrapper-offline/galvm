@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:ItemRenderer
-	xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx"
-	xmlns:components="anifire.creator.components.*"
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:crComponents="anifire.creator.components.*"
 	autoDrawBackground="false"
 	minHeight="0"
 	mouseOver="onMouseOver(event)"
@@ -31,11 +29,11 @@
 			{
 				super.data = param1;
 				this.model = data as MenuItemModel;
-				if(this.model)
-				{
+				if (this.model) {
 					labelDisplay.text = this.model.label;
 					this.displaySeparator = this.model.menuType == MenuItemModel.MENU_TYPE_SEPARATOR;
-					this.displayIndicator = this.model.menuType == MenuItemModel.MENU_TYPE_RADIO || this.model.menuType == MenuItemModel.MENU_TYPE_CHECKBOX;
+					this.displayIndicator = this.model.menuType == MenuItemModel.MENU_TYPE_RADIO ||
+						this.model.menuType == MenuItemModel.MENU_TYPE_CHECKBOX;
 					this.displayOverlay = !this.displaySeparator && this.model.enabled;
 				}
 			}
@@ -45,21 +43,18 @@
 				this.subMenuDisplay.displayPopUp = false;
 			}
 			
-			protected function onMouseOver(param1:MouseEvent) : void
+			protected function onMouseOver(event:MouseEvent) : void
 			{
-				var _loc2_:IMenuItemOwner = owner as IMenuItemOwner;
-				if(!_loc2_)
-				{
-				}
+				var iowner:IMenuItemOwner = owner as IMenuItemOwner;
+				if (!iowner) {}
 				this.subMenuDisplay.displayPopUp = true;
 			}
 			
-			protected function onItemClick(param1:MenuItemEvent) : void
+			protected function onItemClick(event:MenuItemEvent) : void
 			{
-				var _loc2_:IMenuItemOwner = owner as IMenuItemOwner;
-				if(_loc2_)
-				{
-					_loc2_.menuItemClicked(param1.item,true,param1.mouseEvent);
+				var iowner:IMenuItemOwner = owner as IMenuItemOwner;
+				if (iowner) {
+					iowner.menuItemClicked(event.item, true, event.mouseEvent);
 				}
 			}
 			
@@ -69,15 +64,6 @@
 			}
 		]]>
 	</fx:Script>
-
-	<fx:Declarations>
-		<components:MenuItemList
-			id="subMenu"
-			itemClick="onItemClick(event)"
-			includeInLayout="{model.hasSubMenu()}"
-			visible="{model.hasSubMenu()}"
-			dataProvider="{model.subMenu}"/>
-	</fx:Declarations>
 
 	<s:states>
 		<s:State name="normal"/>
@@ -96,20 +82,20 @@
 	</s:Line>
 	<s:HGroup left="5" right="5" top="5" bottom="5" verticalAlign="middle" gap="-4" visible="{!displaySeparator}" includeInLayout="{!displaySeparator}">
 		<s:Group id="selectedIndicator" width="20" height="100%" visible="{model.selected &amp;&amp; model.selectable}" includeInLayout="{displayIndicator}">
-			<s:Path horizontalCenter="0" verticalCenter="0" data="M 0 5 l 4 3 l 4 -8">
+			<s:Path verticalCenter="0" horizontalCenter="0" data="M 0 5 l 4 3 l 4 -8">
 				<s:stroke>
-					<s:SolidColorStroke weight="2" caps="square" color="0x53B6A8"/>
+					<s:SolidColorStroke weight="2" caps="square" color="0x53B6A8" color.hovered="0xFFFFFF"/>
 				</s:stroke>
 			</s:Path>
 		</s:Group>
 		<s:Group width="30" height="100%" visible="{model.icon != null}" includeInLayout="{model.icon != null}">
 			<s:BitmapImage horizontalCenter="0" verticalCenter="0" smooth="true" source="{model.icon}"/>
 		</s:Group>
-		<s:Label id="labelDisplay" width="100%" paddingLeft="10" paddingRight="10" textAlign="left" fontSize="15"/>
+		<s:Label id="labelDisplay" width="100%" paddingLeft="10" paddingRight="10" textAlign="left" fontSize="15" color.hovered="0xFFFFFF"/>
 		<s:Group right="0" top="0" bottom="0" width="20" visible="{model.hasSubMenu()}">
 			<s:Path verticalCenter="-0.5" horizontalCenter="0" data="M 0 0 l 5 4 l -5 4">
 				<s:stroke>
-					<s:SolidColorStroke weight="2" caps="square" color="0x53B6A8"/>
+					<s:SolidColorStroke weight="2" caps="square" color="0x53B6A8" color.hovered="0xFFFFFF"/>
 				</s:stroke>
 			</s:Path>
 		</s:Group>
@@ -121,8 +107,15 @@
 		popUpWidthMatchesAnchorWidth="false"
 		popUpHeightMatchesAnchorHeight="false"
 		displayPopUp="false"
-		popUpPosition="right"
-		popUp="{subMenu}">
+		popUpPosition="right">
+		<s:popUp>
+			<crComponents:MenuItemList
+				id="subMenu"
+				itemClick="onItemClick(event)"
+				includeInLayout="{model.hasSubMenu()}"
+				visible="{model.hasSubMenu()}"
+				dataProvider="{model.subMenu}"/>
+		</s:popUp>
 	</s:PopUpAnchor>
 
 </s:ItemRenderer>

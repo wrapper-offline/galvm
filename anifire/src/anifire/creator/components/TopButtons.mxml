@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group
-	xmlns:fx="http://ns.adobe.com/mxml/2009" 
-	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx"
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:components="anifire.creator.components.*"
 	width="300"
 	height="68"
@@ -32,131 +30,121 @@
 
 			protected function createMenuModel() : void
 			{
-				var _loc3_:MenuItemModel = null;
-				var _loc4_:MenuItemModel = null;
-				var _loc1_:ArrayCollection = new ArrayCollection();
-				if(CcLibConstant.RANDOM_CHAR)
-				{
-					_loc3_ = new MenuItemModel(UtilDict.toDisplay("go","Randomize character"),"random");
-					_loc1_.addItem(_loc3_);
+				var menuItems:ArrayCollection = new ArrayCollection();
+				if (CcLibConstant.RANDOM_CHAR) {
+					var random:MenuItemModel = new MenuItemModel(UtilDict.toDisplay("go", "Randomize character"), "random");
+					menuItems.addItem(random);
 				}
-				var _loc2_:MenuItemModel = new MenuItemModel(UtilDict.toDisplay("go","Reset character"),"reset");
-				_loc1_.addItem(_loc2_);
-				if(CcLibConstant.CHANGE_CHAR_SCALE)
-				{
-					_loc4_ = new MenuItemModel(UtilDict.toDisplay("go","Scaling tool"),"scale");
-					_loc1_.addItem(_loc4_);
+				var reset:MenuItemModel = new MenuItemModel(UtilDict.toDisplay("go", "Reset character"), "reset");
+				menuItems.addItem(reset);
+				if (CcLibConstant.CHANGE_CHAR_SCALE) {
+					var scale:MenuItemModel = new MenuItemModel(UtilDict.toDisplay("go", "Scaling tool"), "scale");
+					menuItems.addItem(scale);
 				}
-				this.extraMenu.dataProvider = _loc1_;
+				this.extraMenu.dataProvider = menuItems;
 				this.refreshRole();
 			}
-			
+
+			/**
+			 * Constructs a subscribe warning.
+			 */
 			public function refreshRole() : void
 			{
-				var _loc1_:String = null;
-				var _loc2_:TextFlow = null;
-				var _loc3_:Array = null;
-				var _loc4_:ParagraphElement = null;
-				var _loc5_:SpanElement = null;
-				var _loc6_:LinkElement = null;
-				var _loc7_:SpanElement = null;
-				var _loc8_:SpanElement = null;
+				var baseText:String = null;
 				this.btnSave.visible = true;
 				this.btnSaveDisabled.visible = false;
-				if(CcLibConstant.IS_BUSINESS_THEME && !UtilUser.hasBusinessFeatures)
-				{
+				if (CcLibConstant.IS_BUSINESS_THEME && !UtilUser.hasBusinessFeatures) {
 					this.btnSave.visible = false;
 					this.btnSaveDisabled.visible = true;
-					_loc1_ = UtilDict.toDisplay("go","To save this character, please {0} to a business plan.");
-				}
-				else if(UtilUser.userType == UtilUser.BASIC_USER)
-				{
+					baseText = UtilDict.toDisplay("go", "To save this character, please {0} to a business plan.");
+				} else if (UtilUser.userType == UtilUser.BASIC_USER) {
 					this.btnSave.visible = false;
 					this.btnSaveDisabled.visible = true;
-					_loc1_ = UtilDict.toDisplay("go","To save this character, please {0} now.");
+					baseText = UtilDict.toDisplay("go", "To save this character, please {0} now.");
 				}
-				if(this.btnSaveDisabled.visible)
-				{
-					_loc2_ = new TextFlow();
-					_loc3_ = _loc1_.split("{0}");
-					_loc4_ = new ParagraphElement();
-					(_loc5_ = new SpanElement()).text = _loc3_[0];
-					_loc4_.addChild(_loc5_);
-					_loc6_ = new LinkElement();
-					(_loc7_ = new SpanElement()).text = UtilDict.toDisplay("go","subscribe");
-					_loc7_.fontFamily = "StudioSparkMain";
-					_loc7_.fontWeight = "bold";
-					_loc7_.color = 1808298;
-					_loc6_.addChild(_loc7_);
-					_loc6_.addEventListener(FlowElementMouseEvent.CLICK,this.onUpgradeLinkClick);
-					_loc4_.addChild(_loc6_);
-					if(_loc3_.length > 1)
-					{
-						(_loc8_ = new SpanElement()).text = _loc3_[1];
-						_loc4_.addChild(_loc8_);
+				if (this.btnSaveDisabled.visible) {
+					var flow:TextFlow = new TextFlow();
+					var texts:Array = baseText.split("{0}");
+					var p:ParagraphElement = new ParagraphElement();
+					var span1:SpanElement = new SpanElement();
+					span1.text = texts[0];
+					p.addChild(span1);
+					var a:LinkElement = new LinkElement();
+					var span2:SpanElement = new SpanElement();
+					span2.text = UtilDict.toDisplay("go", "subscribe");
+					span2.fontFamily = "StudioSparkMain";
+					span2.fontWeight = "bold";
+					span2.color = 1808298;
+					a.addChild(span2);
+					a.addEventListener(FlowElementMouseEvent.CLICK, this.onUpgradeLinkClick);
+					p.addChild(a);
+					if (texts.length > 1) {
+						var _loc8_:SpanElement = new SpanElement();
+						_loc8_.text = texts[1];
+						p.addChild(_loc8_);
 					}
-					_loc2_.addChild(_loc4_);
-					this.warnLabel.textFlow = _loc2_;
+					flow.addChild(p);
+					this.warnLabel.textFlow = flow;
 					this.warnLabel.textFlow.fontFamily = "StudioSparkMain";
-					this.btnSaveDisabled.addEventListener(MouseEvent.MOUSE_OVER,this.displaySubscribe);
-				}
-				else
-				{
+					this.btnSaveDisabled.addEventListener(MouseEvent.MOUSE_OVER, this.displaySubscribe);
+				} else {
 					this.warnLabel.textFlow = null;
-					this.btnSaveDisabled.removeEventListener(MouseEvent.MOUSE_OVER,this.displaySubscribe);
+					this.btnSaveDisabled.removeEventListener(MouseEvent.MOUSE_OVER, this.displaySubscribe);
 				}
 			}
-			
-			override public function set currentState(param1:String) : void
+
+			/**
+			 * sell the user shit
+			 */
+			override public function set currentState(value:String) : void
 			{
-				if(CcLibConstant.IS_BUSINESS_THEME && !UtilUser.hasBusinessFeatures || UtilUser.userType == UtilUser.BASIC_USER)
-				{
-					if(param1 == "preview")
-					{
+				if (
+					CcLibConstant.IS_BUSINESS_THEME &&
+					!UtilUser.hasBusinessFeatures || UtilUser.userType == UtilUser.BASIC_USER
+				) {
+					if (value == "preview") {
 						this.subscribeDisplay.displayPopUp = true;
 					}
 				}
-				if(param1 == "editor")
-				{
+				if (value == "editor") {
 					this.subscribeDisplay.displayPopUp = false;
 				}
-				super.currentState = param1;
+				super.currentState = value;
 			}
-			
-			protected function onUpgradeLinkClick(param1:FlowElementMouseEvent) : void
+
+			protected function onUpgradeLinkClick(event:FlowElementMouseEvent) : void
 			{
-				ExternalLinkManager.instance.navigateWithSession(ServerConstants.BUSINESS_PLAN_PAGE_PATH,"wndbizplan");
+				ExternalLinkManager.instance.navigateWithSession(ServerConstants.BUSINESS_PLAN_PAGE_PATH, "wndbizplan");
 				ServerConnector.instance.onUpsellUpgradePending();
 			}
-			
-			protected function displaySubscribe(param1:Event) : void
+
+			protected function displaySubscribe(event:Event) : void
 			{
 				this.subscribeDisplay.displayPopUp = true;
 			}
-			
+
 			protected function displayMenu() : void
 			{
 				this.extraMenuDisplay.displayPopUp = true;
 			}
-			
-			protected function onExtraMenuButtonClick(param1:MouseEvent) : void
+
+			protected function onExtraMenuButtonClick(event:MouseEvent) : void
 			{
 				this.displayMenu();
 			}
-			
-			protected function onMenuItemClick(param1:MenuItemEvent) : void
+
+			protected function onMenuItemClick(event:MenuItemEvent) : void
 			{
-				var _loc2_:String = param1.item.value;
-				switch(_loc2_)
-				{
+				var _loc2_:String = event.item.value;
+				switch (_loc2_) {
 					case "random":
-						this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.RANDOMIZE_BUTTON_CLICK,this));
+						this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.RANDOMIZE_BUTTON_CLICK, this));
 						break;
 					case "reset":
-						this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.RESET_BUTTON_CLICK,this));
+						this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.RESET_BUTTON_CLICK, this));
 						break;
 					case "scale":
-						this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.SCALE_BUTTON_CLICK,this));
+						this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.SCALE_BUTTON_CLICK, this));
 				}
 			}
 		]]>
@@ -189,7 +177,7 @@
 				icon="@Embed('/styles/images/toolbar/btn_undo_init.png')"
 				iconOver="@Embed('/styles/images/toolbar/btn_undo_over.png')"
 				iconDisabled="@Embed('/styles/images/toolbar/btn_undo_disabled.png')"
-				label="{UtilDict.toDisplay('go','Undo')}"
+				label="{UtilDict.toDisplay('go', 'Undo')}"
 				click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.UNDO_BUTTON_CLICK, this))"/>
 			<components:IconButton
 				id="btnRedo"
@@ -199,7 +187,7 @@
 				icon="@Embed('/styles/images/toolbar/btn_redo_init.png')"
 				iconOver="@Embed('/styles/images/toolbar/btn_redo_over.png')"
 				iconDisabled="@Embed('/styles/images/toolbar/btn_redo_disabled.png')"
-				label="{UtilDict.toDisplay('go','Redo')}"
+				label="{UtilDict.toDisplay('go', 'Redo')}"
 				click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.REDO_BUTTON_CLICK, this))"/>
 			<s:Spacer width="15"/>
 			<components:IconButton
@@ -225,7 +213,7 @@
 				buttonMode="true"
 				styleName="default"
 				width="85"
-				label="{UtilDict.toDisplay('go','PREVIEW')}"
+				label="{UtilDict.toDisplay('go', 'PREVIEW')}"
 				click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.PREVIEW_BUTTON_CLICK, this))"
 				visible.preview="false"
 				includeInLayout.preview="false"/>
@@ -234,7 +222,7 @@
 				buttonMode="true"
 				styleName="default"
 				width="85"
-				label="{UtilDict.toDisplay('go','MODIFY')}"
+				label="{UtilDict.toDisplay('go', 'MODIFY')}"
 				click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.MODIFY_BUTTON_CLICK, this))"
 				visible.editor="false"
 				includeInLayout.editor="false"/>
@@ -256,7 +244,7 @@
 					enabled="true"
 					icon="@Embed('/styles/images/toolbar/btn_save_init.png')"
 					iconOver="@Embed('/styles/images/toolbar/btn_save_over.png')"
-					label="{UtilDict.toDisplay('go','Save')}"
+					label="{UtilDict.toDisplay('go', 'Save')}"
 					click="this.dispatchEvent(new CcButtonBarEvent(CcButtonBarEvent.SAVE_BUTTON_CLICK, this))"/>
 			</s:Group>
 		</s:HGroup>

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
 	xmlns:s="library://ns.adobe.com/flex/spark"
-	xmlns:components="anifire.creator.components.*"
-	width="32"
-	minHeight="110"
+	width="110"
+	minHeight="32"
 	alpha.disabled="0.5">
 
 	<fx:Script>
@@ -28,19 +27,19 @@
 		<s:State name="disabled"/>
 	</s:states>
 
-	<components:PopUpAnchor
+	<s:PopUpAnchor
 		id="popUp"
 		left="0"
 		right="0"
 		top="0"
-		bottom="3"
+		bottom="0"
 		popUpPosition="below"
 		popUpWidthMatchesAnchorWidth="false"
 		displayPopUp.normal="false"
 		displayPopUp.open="true"
 		includeIn="open"
 		itemDestructionPolicy="auto">
-		<components:popUp>
+		<s:popUp>
 			<s:Group id="dropDown" minWidth="{popUp.width}" minHeight="200" maxHeight="400">
 				<s:RectangularDropShadow
 					id="dropShadow"
@@ -71,7 +70,7 @@
 					left="0"
 					top="3"
 					right="0"
-					bottom="0"
+					bottom="3"
 					hasFocusableChildren="false"
 					minViewportInset="1"
 					buttonMode="true">
@@ -88,8 +87,9 @@
 					</s:viewport>
 				</s:Scroller>
 			</s:Group>
-		</components:popUp>
-	</components:PopUpAnchor>
+		</s:popUp>
+	</s:PopUpAnchor>
+
 	<s:Button
 		id="openButton"
 		left="0"
@@ -100,6 +100,7 @@
 		focusEnabled="false"
 		tabEnabled="false"
 		skinClass="anifire.creator.skins.DefaultDropDownListButtonSkin"/>
+
 	<s:HGroup
 		left="0"
 		right="0"
