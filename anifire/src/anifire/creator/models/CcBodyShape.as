@@ -6,35 +6,20 @@ package anifire.creator.models
 
 	public class CcBodyShape
 	{
-
 		public static const XML_NODE_NAME:String = "bodyshape";
-
 		private var _id:String;
-
 		private var _name:String;
-
 		private var _thumbnailActionId:String;
-
 		private var _thumbnailFacialId:String;
-
 		private var _thumbnailPath:String;
-
 		private var _enable:Boolean;
-
 		private var _shapeType:String;
-
 		private var _components:UtilHashArray = new UtilHashArray();
-
 		private var _componentsByType:UtilHashArray = new UtilHashArray();
-
 		private var _actions:UtilHashArray = new UtilHashArray();
-
 		private var _themeId:String;
-
 		private var _bodyType:String;
-
 		private var _defaultCharXml:XMLList;
-
 		private var _libraries:UtilHashArray = new UtilHashArray();
 
 		public function CcBodyShape()
@@ -79,21 +64,16 @@ package anifire.creator.models
 
 		public function getDefaultCharXml() : XML
 		{
-			var _loc1_:AppConfigManager = AppConfigManager.instance;
-			var _loc2_:String = _loc1_.getValue("ft");
-			var _loc3_:Vector.<XML> = new Vector.<XML>();
-			var _loc4_:int = 0;
-			while(_loc4_ < this._defaultCharXml.length())
-			{
-				if(Boolean(_loc2_) && _loc2_ == this._defaultCharXml[_loc4_].child("tag"))
-				{
-					_loc3_.push(this._defaultCharXml[_loc4_]);
+			var config:AppConfigManager = AppConfigManager.instance;
+			var filter:String = config.getValue("ft");
+			var filtered:Vector.<XML> = new Vector.<XML>();
+			for (var i:int = 0; i < this._defaultCharXml.length(); i++) {
+				if (Boolean(filter) && filter == this._defaultCharXml[i].child("tag")) {
+					filtered.push(this._defaultCharXml[i]);
 				}
-				_loc4_++;
 			}
-			if(_loc3_.length > 0)
-			{
-				return _loc3_[0];
+			if (filtered.length > 0) {
+				return filtered[0];
 			}
 			return this._defaultCharXml[0];
 		}
@@ -108,110 +88,99 @@ package anifire.creator.models
 			return this._libraries.length;
 		}
 
-		public function getActionByIndex(param1:int) : CcAction
+		public function getActionByIndex(index:int) : CcAction
 		{
-			return this._actions.getValueByIndex(param1) as CcAction;
+			return this._actions.getValueByIndex(index) as CcAction;
 		}
 
-		public function getActionById(param1:String) : CcAction
+		public function getActionById(id:String) : CcAction
 		{
-			return this._actions.getValueByKey(param1) as CcAction;
+			return this._actions.getValueByKey(id) as CcAction;
 		}
 
-		private function addAction(param1:CcAction) : void
+		private function addAction(action:CcAction) : void
 		{
-			this._actions.push(param1.id,param1);
+			this._actions.push(action.id, action);
 		}
 
-		public function getLibraryByIndex(param1:int) : CcLibrary
+		public function getLibraryByIndex(index:int) : CcLibrary
 		{
-			return this._libraries.getValueByIndex(param1) as CcLibrary;
+			return this._libraries.getValueByIndex(index) as CcLibrary;
 		}
 
-		public function getLibraryById(param1:String) : CcLibrary
+		public function getLibraryById(id:String) : CcLibrary
 		{
-			return this._libraries.getValueByKey(param1) as CcLibrary;
+			return this._libraries.getValueByKey(id) as CcLibrary;
 		}
 
-		private function addLibrary(param1:CcLibrary) : void
+		private function addLibrary(library:CcLibrary) : void
 		{
-			this._libraries.push(param1.type,param1);
+			this._libraries.push(library.type, library);
 		}
 
-		private function addComponentThumb(param1:CcComponentThumb) : void
+		private function addComponentThumb(cptThumb:CcComponentThumb) : void
 		{
-			var _loc3_:CcLibrary = null;
-			this._components.push(param1.internalId,param1);
-			var _loc2_:UtilHashArray = this._componentsByType.getValueByKey(param1.type);
-			if(_loc2_ == null)
-			{
-				_loc2_ = new UtilHashArray();
-				this._componentsByType.push(param1.type,_loc2_);
-				if(CcLibConstant.ALL_LIBRARY_TYPES.indexOf(param1.type) > -1)
-				{
-					_loc3_ = new CcLibrary();
-					_loc3_.type = param1.type;
-					this.addLibrary(_loc3_);
+			this._components.push(cptThumb.internalId, cptThumb);
+			var cptThumbs:UtilHashArray = this._componentsByType.getValueByKey(cptThumb.type);
+			if (cptThumbs == null) {
+				cptThumbs = new UtilHashArray();
+				this._componentsByType.push(cptThumb.type, cptThumbs);
+				if (CcLibConstant.ALL_LIBRARY_TYPES.indexOf(cptThumb.type) > -1) {
+					var library:CcLibrary = new CcLibrary();
+					library.type = cptThumb.type;
+					this.addLibrary(library);
 				}
 			}
-			_loc2_.push(param1.internalId,param1);
+			cptThumbs.push(cptThumb.internalId, cptThumb);
 		}
 
-		public function getComponentThumbByType(param1:String) : UtilHashArray
+		public function getComponentThumbByType(type:String) : UtilHashArray
 		{
-			return this._componentsByType.getValueByKey(param1);
+			return this._componentsByType.getValueByKey(type);
 		}
 
-		public function deserialize(param1:XML, param2:String, param3:CcTheme = null) : void
+		public function deserialize(xml:XML, ccThemeId:String, ccTheme:CcTheme = null) : void
 		{
-			var _loc4_:XML = null;
-			var _loc5_:XML = null;
-			var _loc6_:CcComponentThumb = null;
-			var _loc7_:CcAction = null;
-			this._themeId = param2;
-			this._id = param1.@id;
-			this._name = param1.@name;
-			this._thumbnailActionId = param1.@action_thumb;
-			this._thumbnailFacialId = param1.@facial_thumb;
-			this._thumbnailPath = param1.@thumb_path;
-			this._bodyType = param1.@tag;
-			this._enable = param1.@enable == "N" ? false : true;
-			this._defaultCharXml = param1.child("default_char");
-			for each(_loc5_ in param1.child(CcComponentThumb.XML_NODE_NAME))
-			{
-				_loc6_ = new CcComponentThumb();
-				_loc6_.deSerialize(_loc5_,this.themeId,CcComponentThumb.PARENT_TYPE_BODYSHAPE,this.id);
-				this.addComponentThumb(_loc6_);
+			this._themeId = ccThemeId;
+			this._id = xml.@id;
+			this._name = xml.@name;
+			this._thumbnailActionId = xml.@action_thumb;
+			this._thumbnailFacialId = xml.@facial_thumb;
+			this._thumbnailPath = xml.@thumb_path;
+			this._bodyType = xml.@tag;
+			this._enable = xml.@enable == "N" ? false : true;
+			this._defaultCharXml = xml.child("default_char");
+			var actionPack:XML;
+			var child:XML;
+			var cptThumb:CcComponentThumb;
+			var action:CcAction;
+			for each (child in xml.child(CcComponentThumb.XML_NODE_NAME)) {
+				cptThumb = new CcComponentThumb();
+				cptThumb.deSerialize(child, this.themeId, CcComponentThumb.PARENT_TYPE_BODYSHAPE, this.id);
+				this.addComponentThumb(cptThumb);
 			}
-			for each(_loc5_ in param1.child(CcAction.XML_NODE_NAME))
-			{
-				if(_loc5_.@enable != "N")
-				{
-					_loc7_ = new CcAction();
-					_loc7_.deserialize(_loc5_);
-					this.addAction(_loc7_);
+			for each (child in xml.child(CcAction.XML_NODE_NAME)) {
+				if (child.@enable != "N") {
+					action = new CcAction();
+					action.deserialize(child);
+					this.addAction(action);
 				}
 			}
-			for each(_loc4_ in param1.child(CcAction.PACK_XML_NODE_NAME))
-			{
-				if(_loc4_.@is_premium != "Y" && _loc4_.@enable == "Y")
-				{
-					for each(_loc5_ in _loc4_.child(CcAction.XML_NODE_NAME))
-					{
-						if(!(_loc5_.hasOwnProperty("@group") && _loc5_.@name != "1"))
-						{
-							_loc7_ = new CcAction();
-							_loc7_.deserialize(_loc5_);
-							this.addAction(_loc7_);
+			for each (actionPack in xml.child(CcAction.PACK_XML_NODE_NAME)) {
+				if (actionPack.@is_premium != "Y" && actionPack.@enable == "Y") {
+					for each (child in actionPack.child(CcAction.XML_NODE_NAME)) {
+						if (!(child.hasOwnProperty("@group") && child.@name != "1")) {
+							action = new CcAction();
+							action.deserialize(child);
+							this.addAction(action);
 						}
 					}
 				}
 			}
-			for each(_loc5_ in param1.child(CcLibrary.XML_NODE_NAME))
-			{
-				_loc6_ = new CcComponentThumb();
-				_loc6_.deSerialize(_loc5_,this.themeId,CcComponentThumb.PARENT_TYPE_BODYSHAPE,this.id);
-				this.addComponentThumb(_loc6_);
+			for each (child in xml.child(CcLibrary.XML_NODE_NAME)) {
+				cptThumb = new CcComponentThumb();
+				cptThumb.deSerialize(child, this.themeId, CcComponentThumb.PARENT_TYPE_BODYSHAPE, this.id);
+				this.addComponentThumb(cptThumb);
 			}
 		}
 	}

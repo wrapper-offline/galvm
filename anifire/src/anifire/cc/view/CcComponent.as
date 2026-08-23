@@ -179,12 +179,10 @@ package anifire.cc.view
 			var _loc2_:Object = null;
 			if(Boolean(this._model) && Boolean(this._model.colors))
 			{
-				_loc1_ = 0;
-				while(_loc1_ < this._model.colors.length)
+				for(_loc1_ = 0; _loc1_ < this._model.colors.length; _loc1_++)
 				{
 					_loc2_ = this._model.colors[_loc1_] as Object;
 					this.updateColor(_loc2_);
-					_loc1_++;
 				}
 			}
 		}
@@ -240,27 +238,22 @@ package anifire.cc.view
 			var _loc5_:Array = new Array();
 			var _loc6_:Array = new Array();
 			var _loc7_:UtilHashArray = new UtilHashArray();
-			_loc8_ = 0;
-			while(_loc8_ < this._customColor.length)
+			for(_loc8_ = 0; _loc8_ < this._customColor.length; _loc8_++)
 			{
 				if(SelectedColor(this._customColor.getValueByIndex(_loc8_)).orgColor != uint.MAX_VALUE)
 				{
 					_loc7_.push("0x" + SelectedColor(this._customColor.getValueByIndex(_loc8_)).orgColor.toString(16),SelectedColor(this._customColor.getValueByIndex(_loc8_)).dstColor);
 				}
-				_loc8_++;
 			}
 			_loc7_.insert(0,param1,true);
-			_loc9_ = 0;
-			while(_loc9_ < _loc7_.length)
+			for(_loc9_ = 0; _loc9_ < _loc7_.length; _loc9_++)
 			{
 				if(uint(_loc7_.getKey(_loc9_)) == 0)
 				{
 					_loc7_.remove(_loc9_,1);
 				}
-				_loc9_++;
 			}
-			_loc9_ = 0;
-			while(_loc9_ < _loc7_.length)
+			for(_loc9_ = 0; _loc9_ < _loc7_.length; _loc9_++)
 			{
 				_loc6_.push(uint(_loc7_.getKey(_loc9_)));
 				_loc12_ = uint(_loc7_.getValueByIndex(_loc9_)) >> 16 & 0xFF;
@@ -278,20 +271,17 @@ package anifire.cc.view
 					_loc5_[_loc9_ % 4 * 4 + 1] = _loc13_ / 255;
 					_loc5_[_loc9_ % 4 * 4 + 2] = _loc14_ / 255;
 				}
-				_loc9_++;
 			}
 			_loc3_.data["colorValue0"].value = _loc4_;
 			_loc3_.data["colorValue1"].value = _loc5_;
 			_loc3_.data["colorKey"].value = _loc6_;
 			var _loc10_:Array = UtilPlain.getAllShaderObj(this);
-			var _loc11_:int = 0;
-			while(_loc11_ < _loc10_.length)
+			for(var _loc11_:int = 0; _loc11_ < _loc10_.length; _loc11_++)
 			{
 				DisplayObject(_loc10_[_loc11_]).blendMode = BlendMode.NORMAL;
 				DisplayObject(_loc10_[_loc11_]).blendMode = BlendMode.SHADER;
 				DisplayObject(_loc10_[_loc11_]).visible = true;
 				DisplayObject(_loc10_[_loc11_]).blendShader = _loc3_;
-				_loc11_++;
 			}
 			return _loc2_;
 		}

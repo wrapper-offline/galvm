@@ -6,41 +6,23 @@ package anifire.creator.models
 
 	public class CcComponent
 	{
-
 		public static const XML_NODE_NAME:String = "component";
-
 		public static const XML_TAG_NODE_NAME:String = "tag";
-
 		public static const XML_TEMPLATE_NAME:String = "apply-template";
-
 		public var id:String;
-
 		private var _x:Number = 0;
-
 		private var _y:Number = 0;
-
 		private var _xscale:Number = 1;
-
 		private var _yscale:Number = 1;
-
 		private var _offset:Number = 0;
-
 		private var _rotation:Number = 0;
-
 		private const _max:Number = 100;
-
 		private const _min:Number = -100;
-
 		private const _maxScale:Number = 10;
-
 		private const _minScale:Number = -10;
-
 		private const _maxRotate:Number = 180;
-
 		private const _minRotate:Number = -180;
-
 		private var _split:Boolean = true;
-
 		public var componentThumb:CcComponentThumb;
 
 		public function CcComponent()
@@ -49,160 +31,140 @@ package anifire.creator.models
 			this.id = "ID" + Math.round(Math.random() * 10000);
 		}
 
-		public static function getIdFromXml(param1:XML) : String
+		public static function getIdFromXml(xml:XML) : String
 		{
-			return param1.@id;
+			return xml.@id;
 		}
 
-		public static function getComponentThumbTypeFromXml(param1:XML) : String
+		public static function getComponentThumbTypeFromXml(xml:XML) : String
 		{
-			return param1.@type;
+			return xml.@type;
 		}
 
-		public static function getComponentThemeIdFromXml(param1:XML) : String
+		public static function getComponentThemeIdFromXml(xml:XML) : String
 		{
-			return param1.@theme_id;
+			return xml.@theme_id;
 		}
 
-		public static function getComponentIdFromXml(param1:XML) : String
+		public static function getComponentIdFromXml(xml:XML) : String
 		{
-			return param1.@component_id;
+			return xml.@component_id;
 		}
 
 		public function get split() : Boolean
 		{
-			if(this.componentThumb)
-			{
+			if (this.componentThumb) {
 				return this.componentThumb.split;
 			}
 			return this._split;
 		}
-
-		public function set split(param1:Boolean) : void
+		public function set split(value:Boolean) : void
 		{
-			this._split = param1;
+			this._split = value;
 		}
 
 		public function clone() : CcComponent
 		{
-			var _loc1_:CcComponent = new CcComponent();
-			_loc1_.x = this.x;
-			_loc1_.y = this.y;
-			_loc1_.xscale = this.xscale;
-			_loc1_.yscale = this.yscale;
-			_loc1_.offset = this.offset;
-			_loc1_.rotation = this.rotation;
-			_loc1_.split = this.split;
-			_loc1_.componentThumb = this.componentThumb;
-			_loc1_.id = this.id;
-			return _loc1_;
+			var cloned:CcComponent = new CcComponent();
+			cloned.x = this.x;
+			cloned.y = this.y;
+			cloned.xscale = this.xscale;
+			cloned.yscale = this.yscale;
+			cloned.offset = this.offset;
+			cloned.rotation = this.rotation;
+			cloned.split = this.split;
+			cloned.componentThumb = this.componentThumb;
+			cloned.id = this.id;
+			return cloned;
 		}
 
-		public function set x(param1:Number) : void
+		public function set x(value:Number) : void
 		{
-			this._x = param1;
-			if(this._x > this._max)
-			{
+			this._x = value;
+			if (this._x > this._max) {
 				this._x = this._max;
 			}
-			if(this._x < this._min)
-			{
+			if (this._x < this._min) {
 				this._x = this._min;
 			}
 		}
-
 		public function get x() : Number
 		{
 			return this._x;
 		}
 
-		public function set y(param1:Number) : void
+		public function set y(value:Number) : void
 		{
-			this._y = param1;
-			if(this._y > this._max)
-			{
+			this._y = value;
+			if (this._y > this._max) {
 				this._y = this._max;
 			}
-			if(this._y < this._min)
-			{
+			if (this._y < this._min) {
 				this._y = this._min;
 			}
 		}
-
 		public function get y() : Number
 		{
 			return this._y;
 		}
 
-		public function set xscale(param1:Number) : void
+		public function set xscale(value:Number) : void
 		{
-			this._xscale = param1;
-			if(this._xscale > this._maxScale)
-			{
+			this._xscale = value;
+			if (this._xscale > this._maxScale) {
 				this._xscale = this._maxScale;
 			}
-			if(this._xscale < this._minScale)
-			{
+			if (this._xscale < this._minScale) {
 				this._xscale = this._minScale;
 			}
-			this._xscale = Util.roundNum(this._xscale,2);
+			this._xscale = Util.roundNum(this._xscale, 2);
 		}
-
 		public function get xscale() : Number
 		{
 			return this._xscale;
 		}
 
-		public function set yscale(param1:Number) : void
+		public function set yscale(value:Number) : void
 		{
-			this._yscale = param1;
-			if(this._yscale > this._maxScale)
-			{
+			this._yscale = value;
+			if (this._yscale > this._maxScale) {
 				this._yscale = this._maxScale;
 			}
-			if(this._yscale < this._minScale)
-			{
+			if (this._yscale < this._minScale) {
 				this._yscale = this._minScale;
 			}
-			this._yscale = Util.roundNum(this._yscale,2);
+			this._yscale = Util.roundNum(this._yscale, 2);
 		}
-
 		public function get yscale() : Number
 		{
 			return this._yscale;
 		}
 
-		public function set offset(param1:Number) : void
+		public function set offset(value:Number) : void
 		{
-			this._offset = param1;
-			if(this._offset > this._max)
-			{
+			this._offset = value;
+			if (this._offset > this._max) {
 				this._offset = this._max;
 			}
-			if(this._offset < this._min)
-			{
+			if (this._offset < this._min) {
 				this._offset = this._min;
 			}
 		}
-
 		public function get offset() : Number
 		{
 			return this._offset;
 		}
 
-		public function set rotation(param1:Number) : void
+		public function set rotation(value:Number) : void
 		{
-			this._rotation = param1;
-			if(this._rotation > this._maxRotate)
-			{
+			this._rotation = value;
+			if (this._rotation > this._maxRotate) {
 				this._rotation = this._maxRotate;
 			}
-			if(this._rotation < this._minRotate)
-			{
+			if (this._rotation < this._minRotate) {
 				this._rotation = this._minRotate;
 			}
 		}
-
 		public function get rotation() : Number
 		{
 			return this._rotation;
@@ -213,39 +175,42 @@ package anifire.creator.models
 			return this.componentThumb.componentId;
 		}
 
+		/**
+		 * jesus this is ugly
+		 */
 		public function serialize() : String
 		{
-			var _loc1_:String = CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(this.componentThumb.type) > -1 ? " id=\"" + this.id + "\"" : "";
-			var _loc2_:String = "";
-			if(!this.split)
-			{
-				_loc2_ = " split=\"N\"";
+			var idAttr:String = CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(this.componentThumb.type) > -1 ?
+				" id=\"" + this.id + "\"" :
+				"";
+			var splitAttr:String = "";
+			if (!this.split) {
+				splitAttr = " split=\"N\"";
 			}
-			return "<" + XML_NODE_NAME + _loc1_ + " type=\"" + this.componentThumb.type + "\"" + " component_id=\"" + this.componentThumb.componentId + "\"" + " theme_id=\"" + this.componentThumb.themeId + "\"" + " x=\"" + this.x + "\"" + " y=\"" + this.y + "\"" + " xscale=\"" + this.xscale + "\"" + " yscale=\"" + this.yscale + "\"" + " offset=\"" + this.offset + "\"" + " rotation=\"" + this.rotation + "\"" + _loc2_ + "/>";
+			return "<" + XML_NODE_NAME + idAttr + " type=\"" + this.componentThumb.type + "\"" + " component_id=\"" + this.componentThumb.componentId + "\"" + " theme_id=\"" + this.componentThumb.themeId + "\"" + " x=\"" + this.x + "\"" + " y=\"" + this.y + "\"" + " xscale=\"" + this.xscale + "\"" + " yscale=\"" + this.yscale + "\"" + " offset=\"" + this.offset + "\"" + " rotation=\"" + this.rotation + "\"" + splitAttr + "/>";
 		}
 
-		public function deserialize(param1:XML, param2:UtilHashArray) : void
+		public function deserialize(xml:XML, ccThemes:UtilHashArray) : void
 		{
-			this.id = getIdFromXml(param1);
-			var _loc3_:String = getComponentThemeIdFromXml(param1);
-			var _loc4_:String = getComponentThumbTypeFromXml(param1);
-			var _loc5_:String = getComponentIdFromXml(param1);
-			var _loc6_:CcTheme = param2.getValueByKey(_loc3_) as CcTheme;
-			if(CcLibConstant.ALL_BODY_COMPONENT_TYPES.indexOf(_loc4_) >= 0)
-			{
-				this.componentThumb = _loc6_.getComponentThumbWithinBodyshapeByType(_loc4_).getValueByKey(CcComponentThumb.generateInternalId(_loc4_,_loc5_)) as CcComponentThumb;
+			this.id = getIdFromXml(xml);
+			var themeId:String = getComponentThemeIdFromXml(xml);
+			var type:String = getComponentThumbTypeFromXml(xml);
+			var cptId:String = getComponentIdFromXml(xml);
+			var ccTheme:CcTheme = ccThemes.getValueByKey(themeId) as CcTheme;
+			if (CcLibConstant.ALL_BODY_COMPONENT_TYPES.indexOf(type) >= 0) {
+				this.componentThumb = ccTheme.getComponentThumbWithinBodyshapeByType(type)
+					.getValueByKey(CcComponentThumb.generateInternalId(type, cptId)) as CcComponentThumb;
+			} else {
+				this.componentThumb = ccTheme.getComponentThumbByType(type)
+					.getValueByKey(CcComponentThumb.generateInternalId(type, cptId)) as CcComponentThumb;
 			}
-			else
-			{
-				this.componentThumb = _loc6_.getComponentThumbByType(_loc4_).getValueByKey(CcComponentThumb.generateInternalId(_loc4_,_loc5_)) as CcComponentThumb;
-			}
-			this.x = param1.@x;
-			this.y = param1.@y;
-			this.xscale = param1.@xscale;
-			this.yscale = param1.@yscale;
-			this.offset = param1.@offset;
-			this.rotation = param1.@rotation;
-			this.split = String(param1.@split) == "N" ? false : true;
+			this.x = xml.@x;
+			this.y = xml.@y;
+			this.xscale = xml.@xscale;
+			this.yscale = xml.@yscale;
+			this.offset = xml.@offset;
+			this.rotation = xml.@rotation;
+			this.split = String(xml.@split) == "N" ? false : true;
 		}
 	}
 }

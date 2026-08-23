@@ -5,19 +5,12 @@ package anifire.creator.models
 
 	public class CcLibrary extends EventDispatcher
 	{
-
 		public static const XML_NODE_NAME:String = "library";
-
 		private var _theme_id:String;
-
 		private var _component_id:String;
-
 		private var _type:String;
-
 		private var _imagedata:LoaderInfo;
-
 		private var _money:Number;
-
 		private var _sharingPoint:Number;
 
 		public function CcLibrary()
@@ -29,37 +22,33 @@ package anifire.creator.models
 		{
 			return this._imagedata;
 		}
-
-		public function set imagedata(param1:LoaderInfo) : void
+		public function set imagedata(value:LoaderInfo) : void
 		{
-			this._imagedata = param1;
+			this._imagedata = value;
 		}
 
-		public function set theme_id(param1:String) : void
+		public function set theme_id(value:String) : void
 		{
-			this._theme_id = param1;
+			this._theme_id = value;
 		}
-
 		public function get theme_id() : String
 		{
 			return this._theme_id;
 		}
 
-		public function set component_id(param1:String) : void
+		public function set component_id(value:String) : void
 		{
-			this._component_id = param1;
+			this._component_id = value;
 		}
-
 		public function get component_id() : String
 		{
 			return this._component_id;
 		}
 
-		public function set type(param1:String) : void
+		public function set type(value:String) : void
 		{
-			this._type = param1;
+			this._type = value;
 		}
-
 		public function get type() : String
 		{
 			return this._type;
@@ -69,40 +58,38 @@ package anifire.creator.models
 		{
 			return this._money;
 		}
-
-		public function set money(param1:Number) : void
+		public function set money(value:Number) : void
 		{
-			this._money = param1;
+			this._money = value;
 		}
 
 		public function get sharingPoint() : Number
 		{
 			return this._sharingPoint;
 		}
-
-		public function set sharingPoint(param1:Number) : void
+		public function set sharingPoint(value:Number) : void
 		{
-			this._sharingPoint = param1;
+			this._sharingPoint = value;
 		}
 
 		public function clone() : CcLibrary
 		{
-			var _loc1_:CcLibrary = new CcLibrary();
-			_loc1_.type = this.type;
-			_loc1_.component_id = this.component_id;
-			_loc1_.theme_id = this.theme_id;
-			_loc1_.money = this.money;
-			_loc1_.sharingPoint = this.sharingPoint;
-			return _loc1_;
+			var cloned:CcLibrary = new CcLibrary();
+			cloned.type = this.type;
+			cloned.component_id = this.component_id;
+			cloned.theme_id = this.theme_id;
+			cloned.money = this.money;
+			cloned.sharingPoint = this.sharingPoint;
+			return cloned;
 		}
 
-		public function deserialize(param1:XML) : void
+		public function deserialize(xml:XML) : void
 		{
-			this._component_id = param1.@component_id;
-			this._type = param1.@type;
-			this._theme_id = param1.@theme_id;
-			this._money = param1.@money;
-			this._sharingPoint = param1.@sharing;
+			this._component_id = xml.@component_id;
+			this._type = xml.@type;
+			this._theme_id = xml.@theme_id;
+			this._money = xml.@money;
+			this._sharingPoint = xml.@sharing;
 		}
 
 		public function serialize() : String

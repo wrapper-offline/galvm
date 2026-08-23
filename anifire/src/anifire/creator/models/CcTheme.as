@@ -13,30 +13,20 @@ package anifire.creator.models
 
 	public class CcTheme extends EventDispatcher
 	{
-
 		private var _id:String;
-
 		private var _studioThemeId:String;
-
 		private var _componentThumbs:UtilHashArray = new UtilHashArray();
-
 		private var _componentsByType:UtilHashArray = new UtilHashArray();
-
 		private var _ccColors:UtilHashArray = new UtilHashArray();
-
 		private var _facials:UtilHashArray = new UtilHashArray();
-
 		private var _bodyshapes:UtilHashArray = new UtilHashArray();
-
 		private var _templates:UtilHashArray = new UtilHashArray();
-
 		private var _preMadeChars:Array;
-
 		private var _availableLibrary:Array = new Array();
 
-		public function CcTheme(param1:IEventDispatcher = null)
+		public function CcTheme(target:IEventDispatcher = null)
 		{
-			super(param1);
+			super(target);
 		}
 
 		public function get studioThemeId() : String
@@ -54,50 +44,45 @@ package anifire.creator.models
 			return this._availableLibrary.length;
 		}
 
-		public function getComponentThumbByInternalId(param1:String) : CcComponentThumb
+		public function getComponentThumbByInternalId(id:String) : CcComponentThumb
 		{
-			return this._componentThumbs.getValueByKey(param1);
+			return this._componentThumbs.getValueByKey(id);
 		}
 
-		public function getComponentThumbByType(param1:String) : UtilHashArray
+		public function getComponentThumbByType(type:String) : UtilHashArray
 		{
-			return this._componentsByType.getValueByKey(param1);
+			return this._componentsByType.getValueByKey(type);
 		}
 
-		public function getComponentThumbWithinBodyshapeByType(param1:String) : UtilHashArray
+		public function getComponentThumbWithinBodyshapeByType(type:String) : UtilHashArray
 		{
-			var _loc2_:int = 0;
-			var _loc3_:CcBodyShape = null;
-			var _loc4_:UtilHashArray = new UtilHashArray();
-			_loc2_ = 0;
-			while(_loc2_ < this.getBodyShapeNum())
-			{
-				_loc3_ = this.getBodyShapeByIndex(_loc2_);
-				_loc4_.insert(0,_loc3_.getComponentThumbByType(param1));
-				_loc2_++;
+			var i:int;
+			var bs:CcBodyShape;
+			var cptThumbArr:UtilHashArray = new UtilHashArray();
+			for (i = 0; i < this.getBodyShapeNum(); i++) {
+				bs = this.getBodyShapeByIndex(i);
+				cptThumbArr.insert(0, bs.getComponentThumbByType(type));
 			}
-			return _loc4_;
+			return cptThumbArr;
 		}
 
-		public function addComponentThumb(param1:CcComponentThumb) : void
+		public function addComponentThumb(cptThumb:CcComponentThumb) : void
 		{
-			this._componentThumbs.push(param1.internalId,param1);
-			var _loc2_:UtilHashArray = this._componentsByType.getValueByKey(param1.type);
-			if(_loc2_ == null)
-			{
-				_loc2_ = new UtilHashArray();
-				this._componentsByType.push(param1.type,_loc2_);
-				if(CcLibConstant.ALL_LIBRARY_TYPES.indexOf(param1.type) > -1)
-				{
-					this._availableLibrary.push(param1.type);
+			this._componentThumbs.push(cptThumb.internalId, cptThumb);
+			var cptThumbArr:UtilHashArray = this._componentsByType.getValueByKey(cptThumb.type);
+			if (cptThumbArr == null) {
+				cptThumbArr = new UtilHashArray();
+				this._componentsByType.push(cptThumb.type, cptThumbArr);
+				if (CcLibConstant.ALL_LIBRARY_TYPES.indexOf(cptThumb.type) > -1) {
+					this._availableLibrary.push(cptThumb.type);
 				}
 			}
-			_loc2_.push(param1.internalId,param1);
+			cptThumbArr.push(cptThumb.internalId, cptThumb);
 		}
 
-		private function addBodyShape(param1:CcBodyShape) : void
+		private function addBodyShape(bs:CcBodyShape) : void
 		{
-			this._bodyshapes.push(param1.id,param1);
+			this._bodyshapes.push(bs.id, bs);
 		}
 
 		public function getBodyShapeNum() : Number
@@ -105,50 +90,43 @@ package anifire.creator.models
 			return this._bodyshapes.length;
 		}
 
-		public function getBodyShapeByIndex(param1:int) : CcBodyShape
+		public function getBodyShapeByIndex(index:int) : CcBodyShape
 		{
-			return this._bodyshapes.getValueByIndex(param1) as CcBodyShape;
+			return this._bodyshapes.getValueByIndex(index) as CcBodyShape;
 		}
 
-		public function getBodyShapeByShapeId(param1:String) : CcBodyShape
+		public function getBodyShapeByShapeId(id:String) : CcBodyShape
 		{
-			return this._bodyshapes.getValueByKey(param1) as CcBodyShape;
+			return this._bodyshapes.getValueByKey(id) as CcBodyShape;
 		}
 
 		public function getBodyShapeTypes() : Array
 		{
-			var _loc1_:CcBodyShape = null;
-			var _loc2_:UtilHashArray = new UtilHashArray();
-			var _loc3_:int = 0;
-			while(_loc3_ < this.getBodyShapeNum())
-			{
-				_loc1_ = this.getBodyShapeByIndex(_loc3_);
-				_loc2_.push(_loc1_.bodyType,_loc1_.bodyType);
-				_loc3_++;
+			var bs:CcBodyShape;
+			var bsArray:UtilHashArray = new UtilHashArray();
+			for (var i:int = 0; i < this.getBodyShapeNum(); i++) {
+				bs = this.getBodyShapeByIndex(i);
+				bsArray.push(bs.bodyType, bs.bodyType);
 			}
-			return _loc2_.getArray();
+			return bsArray.getArray();
 		}
 
-		public function getBodyShapesByShapeType(param1:String) : Array
+		public function getBodyShapesByShapeType(bodyType:String) : Array
 		{
-			var _loc3_:CcBodyShape = null;
-			var _loc2_:Array = new Array();
-			var _loc4_:int = 0;
-			while(_loc4_ < this.getBodyShapeNum())
-			{
-				_loc3_ = this.getBodyShapeByIndex(_loc4_);
-				if(_loc3_.bodyType == param1)
-				{
-					_loc2_.push(_loc3_);
+			var bsArray:Array = new Array();
+			var bs:CcBodyShape;
+			for (var i:int = 0; i < this.getBodyShapeNum(); i++) {
+				bs = this.getBodyShapeByIndex(i);
+				if (bs.bodyType == bodyType) {
+					bsArray.push(bs);
 				}
-				_loc4_++;
 			}
-			return _loc2_;
+			return bsArray;
 		}
 
-		private function addFacial(param1:CcFacial) : void
+		private function addFacial(facial:CcFacial) : void
 		{
-			this._facials.push(param1.internalId,param1);
+			this._facials.push(facial.internalId, facial);
 		}
 
 		public function getFacialNum() : Number
@@ -156,39 +134,38 @@ package anifire.creator.models
 			return this._facials.length;
 		}
 
-		public function getFacialByIndex(param1:int) : CcFacial
+		public function getFacialByIndex(index:int) : CcFacial
 		{
-			return this._facials.getValueByIndex(param1) as CcFacial;
+			return this._facials.getValueByIndex(index) as CcFacial;
 		}
 
-		public function getFacialById(param1:String) : CcFacial
+		public function getFacialById(id:String) : CcFacial
 		{
-			return this._facials.getValueByKey(param1) as CcFacial;
+			return this._facials.getValueByKey(id) as CcFacial;
 		}
 
-		private function addTemplate(param1:CcTemplate) : void
+		private function addTemplate(template:CcTemplate) : void
 		{
-			this._templates.push(param1.id,param1);
+			this._templates.push(template.id, template);
 		}
 
-		public function getTemplateById(param1:String) : CcTemplate
+		public function getTemplateById(id:String) : CcTemplate
 		{
-			return this._templates.getValueByKey(param1) as CcTemplate;
+			return this._templates.getValueByKey(id) as CcTemplate;
 		}
 
-		public function set id(param1:String) : void
+		public function set id(value:String) : void
 		{
-			this._id = param1;
+			this._id = value;
 		}
-
 		public function get id() : String
 		{
 			return this._id;
 		}
 
-		private function addColorThumb(param1:CcColorThumb) : void
+		private function addColorThumb(clrThumb:CcColorThumb) : void
 		{
-			this._ccColors.push(param1.internalId,param1);
+			this._ccColors.push(clrThumb.internalId, clrThumb);
 		}
 
 		public function getColorThumbNum() : int
@@ -196,127 +173,112 @@ package anifire.creator.models
 			return this._ccColors.length;
 		}
 
-		public function getColorThumbByIndex(param1:int) : CcColorThumb
+		public function getColorThumbByIndex(index:int) : CcColorThumb
 		{
-			return this._ccColors.getValueByIndex(param1) as CcColorThumb;
+			return this._ccColors.getValueByIndex(index) as CcColorThumb;
 		}
 
-		public function getColorThumbByInternalId(param1:String) : CcColorThumb
+		public function getColorThumbByInternalId(id:String) : CcColorThumb
 		{
-			return this._ccColors.getValueByKey(param1) as CcColorThumb;
+			return this._ccColors.getValueByKey(id) as CcColorThumb;
 		}
 
 		public function getAvailableComponentTypes() : Array
 		{
-			var _loc1_:Array = new Array();
-			return CcLibConstant.USER_CHOOSE_ABLE_BODY_COMPONENT_TYPES.concat(CcLibConstant.USER_CHOOSE_ABLE_HEAD_COMPONENT_TYPES);
+			var unused:Array = new Array();
+			return CcLibConstant.USER_CHOOSE_ABLE_BODY_COMPONENT_TYPES
+				.concat(CcLibConstant.USER_CHOOSE_ABLE_HEAD_COMPONENT_TYPES);
 		}
 
-		public function initCcThemeByLoadThemeFile(param1:String) : void
+		public function initCcThemeByLoadThemeFile(ccThemeId:String) : void
 		{
-			this.id = param1;
-			var _loc2_:URLLoader = new URLLoader();
-			_loc2_.dataFormat = URLLoaderDataFormat.TEXT;
-			var _loc3_:URLRequest = UtilNetwork.getGetCcThemeRequest(param1);
-			_loc2_.addEventListener(Event.COMPLETE,this.onLoadThemeComplete);
-			_loc2_.load(_loc3_);
+			this.id = ccThemeId;
+			var loader:URLLoader = new URLLoader();
+			loader.dataFormat = URLLoaderDataFormat.TEXT;
+			var req:URLRequest = UtilNetwork.getGetCcThemeRequest(ccThemeId);
+			loader.addEventListener(Event.COMPLETE, this.onLoadThemeComplete);
+			loader.load(req);
 		}
 
 		public function initCcThemePreMadeChar() : void
 		{
-			var _loc1_:URLLoader = new URLLoader();
-			_loc1_.dataFormat = URLLoaderDataFormat.TEXT;
-			var _loc2_:URLRequest = UtilNetwork.getGetCcThemePreMadeCharRequest(this.id);
-			_loc1_.addEventListener(Event.COMPLETE,this.onLoadCcThemePreMadeCharComplete);
-			_loc1_.load(_loc2_);
+			var loader:URLLoader = new URLLoader();
+			loader.dataFormat = URLLoaderDataFormat.TEXT;
+			var req:URLRequest = UtilNetwork.getGetCcThemePreMadeCharRequest(this.id);
+			loader.addEventListener(Event.COMPLETE, this.onLoadCcThemePreMadeCharComplete);
+			loader.load(req);
 		}
 
-		private function onLoadCcThemePreMadeCharComplete(param1:Event) : void
+		private function onLoadCcThemePreMadeCharComplete(event:Event) : void
 		{
-			var _loc5_:XML = null;
-			var _loc6_:CcCoreEvent = null;
-			var _loc7_:CcCharacter = null;
-			var _loc8_:UtilHashArray = null;
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.onLoadCcThemePreMadeCharComplete);
-			var _loc2_:URLLoader = param1.target as URLLoader;
-			var _loc3_:String = _loc2_.data as String;
-			_loc3_ = "<?xml version=\"1.0\"?><chars>" + _loc3_ + "</chars>";
-			var _loc4_:XML = new XML(_loc3_);
+			(event.target as IEventDispatcher).removeEventListener(event.type, this.onLoadCcThemePreMadeCharComplete);
+			var loader:URLLoader = event.target as URLLoader;
+			var res:String = loader.data as String;
+			res = "<?xml version=\"1.0\"?><chars>" + res + "</chars>";
+			var chars:XML = new XML(res);
 			this._preMadeChars = new Array();
-			for each(_loc5_ in _loc4_.child(CcCharacter.XML_NODE_NAME))
-			{
-				_loc7_ = new CcCharacter();
-				_loc8_ = new UtilHashArray();
-				_loc8_.push(this.id,this);
-				_loc7_.deserialize(_loc5_,_loc8_);
-				this._preMadeChars.push(_loc7_);
+			for each (var charXml:XML in chars.child(CcCharacter.XML_NODE_NAME)) {
+				var char:CcCharacter = new CcCharacter();
+				var components:UtilHashArray = new UtilHashArray();
+				components.push(this.id, this);
+				char.deserialize(charXml, components);
+				this._preMadeChars.push(char);
 			}
-			_loc6_ = new CcCoreEvent(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE,this);
-			this.dispatchEvent(_loc6_);
+			var evt:CcCoreEvent = new CcCoreEvent(CcCoreEvent.LOAD_PRE_MADE_CHARACTER_COMPLETE, this);
+			this.dispatchEvent(evt);
 		}
 
-		public function initCcThemeByXml(param1:String) : void
+		public function initCcThemeByXml(xmlString:String) : void
 		{
-			var _loc2_:XML = new XML(param1);
-			this.id = _loc2_.@id;
-			this.doHandleLoadedThemeXml(_loc2_);
+			var xml:XML = new XML(xmlString);
+			this.id = xml.@id;
+			this.doHandleLoadedThemeXml(xml);
 		}
 
-		private function onLoadThemeComplete(param1:Event) : void
+		private function onLoadThemeComplete(event:Event) : void
 		{
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.onLoadThemeComplete);
-			var _loc2_:URLLoader = param1.target as URLLoader;
-			var _loc3_:XML = new XML(_loc2_.data as String);
-			this.doHandleLoadedThemeXml(_loc3_);
-			this.dispatchEvent(new CcCoreEvent(CcCoreEvent.LOAD_THEME_COMPLETE,this));
+			(event.target as IEventDispatcher).removeEventListener(event.type, this.onLoadThemeComplete);
+			var loader:URLLoader = event.target as URLLoader;
+			var xml:XML = new XML(loader.data as String);
+			this.doHandleLoadedThemeXml(xml);
+			this.dispatchEvent(new CcCoreEvent(CcCoreEvent.LOAD_THEME_COMPLETE, this));
 		}
 
-		private function doHandleLoadedThemeXml(param1:XML) : void
+		private function doHandleLoadedThemeXml(xml:XML) : void
 		{
-			this.deserialize(param1);
+			this.deserialize(xml);
 		}
 
-		private function deserialize(param1:XML) : void
+		private function deserialize(xml:XML) : void
 		{
-			var _loc2_:XML = null;
-			var _loc3_:CcColorThumb = null;
-			var _loc4_:CcComponentThumb = null;
-			var _loc5_:CcFacial = null;
-			var _loc6_:CcBodyShape = null;
-			var _loc7_:CcTemplate = null;
-			var _loc8_:UtilHashArray = null;
-			this._studioThemeId = param1.@studio_theme_id;
-			for each(_loc2_ in param1.child(CcColorThumb.XML_NODE_NAME))
-			{
-				_loc3_ = new CcColorThumb();
-				_loc3_.deSerialize(_loc2_);
-				this.addColorThumb(_loc3_);
+			var child:XML;
+			this._studioThemeId = xml.@studio_theme_id;
+			for each (child in xml.child(CcColorThumb.XML_NODE_NAME)) {
+				var clrThumb:CcColorThumb = new CcColorThumb();
+				clrThumb.deSerialize(child);
+				this.addColorThumb(clrThumb);
 			}
-			for each(_loc2_ in param1.child(CcComponentThumb.XML_NODE_NAME))
-			{
-				_loc4_ = new CcComponentThumb();
-				_loc4_.deSerialize(_loc2_,this.id,CcComponentThumb.PARENT_TYPE_THEME,this.id);
-				this.addComponentThumb(_loc4_);
+			for each (child in xml.child(CcComponentThumb.XML_NODE_NAME)) {
+				var cptThumb:CcComponentThumb = new CcComponentThumb();
+				cptThumb.deSerialize(child, this.id, CcComponentThumb.PARENT_TYPE_THEME, this.id);
+				this.addComponentThumb(cptThumb);
 			}
-			for each(_loc2_ in param1.child(CcFacial.XML_NODE_NAME))
-			{
-				_loc5_ = new CcFacial();
-				_loc5_.deserialize(_loc2_);
-				this.addFacial(_loc5_);
+			for each (child in xml.child(CcFacial.XML_NODE_NAME)) {
+				var facial:CcFacial = new CcFacial();
+				facial.deserialize(child);
+				this.addFacial(facial);
 			}
-			for each(_loc2_ in param1.child(CcBodyShape.XML_NODE_NAME))
-			{
-				_loc6_ = new CcBodyShape();
-				_loc6_.deserialize(_loc2_,this.id,this);
-				this.addBodyShape(_loc6_);
+			for each (child in xml.child(CcBodyShape.XML_NODE_NAME)) {
+				var bs:CcBodyShape = new CcBodyShape();
+				bs.deserialize(child, this.id, this);
+				this.addBodyShape(bs);
 			}
-			for each(_loc2_ in param1.child(CcTemplate.XML_NODE_NAME))
-			{
-				_loc7_ = new CcTemplate();
-				_loc8_ = new UtilHashArray();
-				_loc8_.push(this.id,this);
-				_loc7_.deserialize(_loc2_,_loc8_);
-				this.addTemplate(_loc7_);
+			for each (child in xml.child(CcTemplate.XML_NODE_NAME)) {
+				var template:CcTemplate = new CcTemplate();
+				var themes:UtilHashArray = new UtilHashArray();
+				themes.push(this.id, this);
+				template.deserialize(child, themes);
+				this.addTemplate(template);
 			}
 		}
 	}

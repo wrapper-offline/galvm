@@ -11,15 +11,10 @@ package anifire.creator.models
 
 	public class CcState extends EventDispatcher
 	{
-
 		public static const XML_NODE_NAME:String = "state";
-
 		public var stateId:String;
-
 		public var filename:String;
-
 		public var imageData:ByteArray = null;
-
 		private var _isLoadingImageData:Boolean = false;
 
 		public function CcState()
@@ -27,39 +22,35 @@ package anifire.creator.models
 			super();
 		}
 
-		public function deserialize(param1:XML) : void
+		public function deserialize(xml:XML) : void
 		{
-			this.stateId = param1.@id;
-			this.filename = param1.@filename;
+			this.stateId = xml.@id;
+			this.filename = xml.@filename;
 		}
 
-		public function loadImageData(param1:URLRequest) : void
+		public function loadImageData(req:URLRequest) : void
 		{
-			var _loc2_:URLLoader = null;
-			if(this.imageData != null)
-			{
+			if (this.imageData != null) {
 				this.dispatchLoadCompleteEvent();
-			}
-			else if(!this._isLoadingImageData)
-			{
-				_loc2_ = new URLLoader();
-				_loc2_.dataFormat = URLLoaderDataFormat.BINARY;
-				_loc2_.addEventListener(Event.COMPLETE,this.onLoadImageDataComplete);
-				_loc2_.load(param1);
+			} else if (!this._isLoadingImageData) {
+				var loader:URLLoader = new URLLoader();
+				loader.dataFormat = URLLoaderDataFormat.BINARY;
+				loader.addEventListener(Event.COMPLETE, this.onLoadImageDataComplete);
+				loader.load(req);
 			}
 		}
 
-		private function onLoadImageDataComplete(param1:Event) : void
+		private function onLoadImageDataComplete(event:Event) : void
 		{
-			(param1.target as IEventDispatcher).removeEventListener(param1.type,this.onLoadImageDataComplete);
-			var _loc2_:URLLoader = param1.target as URLLoader;
-			this.imageData = _loc2_.data as ByteArray;
+			(event.target as IEventDispatcher).removeEventListener(event.type, this.onLoadImageDataComplete);
+			var loader:URLLoader = event.target as URLLoader;
+			this.imageData = loader.data as ByteArray;
 			this.dispatchLoadCompleteEvent();
 		}
 
 		private function dispatchLoadCompleteEvent() : void
 		{
-			this.dispatchEvent(new CcComponentLoadEvent(CcComponentLoadEvent.LOAD_STATE_IMAGE_DATA_COMPLETE,this,this.stateId));
+			this.dispatchEvent(new CcComponentLoadEvent(CcComponentLoadEvent.LOAD_STATE_IMAGE_DATA_COMPLETE, this, this.stateId));
 		}
 	}
 }

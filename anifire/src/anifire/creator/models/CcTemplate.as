@@ -4,9 +4,7 @@ package anifire.creator.models
 
 	public class CcTemplate extends CcCharacter
 	{
-
 		public static const XML_NODE_NAME:String = "template";
-
 		private var _id:String;
 
 		public function CcTemplate()
@@ -18,51 +16,46 @@ package anifire.creator.models
 		{
 			return this._id;
 		}
-
-		public function set id(param1:String) : void
+		public function set id(value:String) : void
 		{
-			this._id = param1;
+			this._id = value;
 		}
 
-		override public function deserialize(param1:XML, param2:UtilHashArray) : void
+		override public function deserialize(xml:XML, ccThemes:UtilHashArray) : void
 		{
-			var _loc3_:XML = null;
-			var _loc4_:CcComponent = null;
-			var _loc5_:CcColor = null;
-			var _loc6_:CcLibrary = null;
-			var _loc7_:String = null;
-			var _loc8_:CcComponentThumb = null;
-			this.id = param1.@id;
+			var child:XML,
+				component:CcComponent,
+				color:CcColor,
+				library:CcLibrary,
+				type:String,
+				cptThumb:CcComponentThumb;
+			this.id = xml.@id;
 			this.removeAllUserChosenComponent();
-			this.currentTheme = param2.getValueByIndex(0) as CcTheme;
-			for each(_loc3_ in param1.child(CcComponent.XML_NODE_NAME))
-			{
-				_loc7_ = CcComponent.getComponentThumbTypeFromXml(_loc3_);
-				_loc4_ = new CcComponent();
-				_loc4_.deserialize(_loc3_,param2);
-				this.addUserChosenComponent(_loc4_);
+			this.currentTheme = ccThemes.getValueByIndex(0) as CcTheme;
+			for each (child in xml.child(CcComponent.XML_NODE_NAME)) {
+				type = CcComponent.getComponentThumbTypeFromXml(child);
+				component = new CcComponent();
+				component.deserialize(child, ccThemes);
+				this.addUserChosenComponent(component);
 			}
 			this.removeAllUserChosenColors();
-			for each(_loc3_ in param1.child(CcColor.XML_NODE_NAME))
-			{
-				_loc5_ = new CcColor();
-				if(_loc5_.deserialize(_loc3_,this.currentTheme,this))
-				{
-					this.addUserChosenColor(_loc5_);
+			for each (child in xml.child(CcColor.XML_NODE_NAME)) {
+				color = new CcColor();
+				if (color.deserialize(child, this.currentTheme, this)) {
+					this.addUserChosenColor(color);
 				}
 			}
 			this.removeAllUserChosenLibraries();
-			for each(_loc3_ in param1.child(CcLibrary.XML_NODE_NAME))
-			{
-				_loc6_ = new CcLibrary();
-				_loc8_ = this.currentTheme.getComponentThumbByInternalId(CcComponentThumb.generateInternalId(_loc3_.@type,_loc3_.@component_id));
-				if(_loc8_)
-				{
-					_loc3_.@money = _loc8_.money;
-					_loc3_.@sharing = _loc8_.sharingPoint;
+			for each (child in xml.child(CcLibrary.XML_NODE_NAME)) {
+				library = new CcLibrary();
+				cptThumb = this.currentTheme
+					.getComponentThumbByInternalId(CcComponentThumb.generateInternalId(child.@type, child.@component_id));
+				if (cptThumb) {
+					child.@money = cptThumb.money;
+					child.@sharing = cptThumb.sharingPoint;
 				}
-				_loc6_.deserialize(_loc3_);
-				this.addUserChosenLibrary(_loc6_);
+				library.deserialize(child);
+				this.addUserChosenLibrary(library);
 			}
 		}
 	}

@@ -7,47 +7,26 @@ package anifire.creator.models
 
 	public class CcCharacter
 	{
-
 		public static const XML_NODE_NAME:String = "cc_char";
-
 		private var _userChosenColors:UtilHashArray = new UtilHashArray();
-
 		private var _userChosenComponents:Array = new Array();
-
 		private var _userChosenLibraries:Array = new Array();
-
 		private var _bodyShape:CcBodyShape;
-
 		private var _assetId:String = "";
-
 		private var _templateId:String = "";
-
 		private var _templateMD5:String = "";
-
 		private var _currentTheme:CcTheme;
-
 		private var _name:String;
-
 		private var _createDateTime:String = "";
-
 		private var _tags:Array = new Array();
-
 		private var _category:String = null;
-
 		private var _headScaleX:Number = 1;
-
 		private var _headScaleY:Number = 1;
-
 		private var _headDX:Number = 0;
-
 		private var _headDY:Number = 0;
-
 		private var _scaleX:Number = 1;
-
 		private var _scaleY:Number = 1;
-
 		private var _ver:Number = 1;
-
 		private var _isRandom:Boolean = false;
 
 		public function CcCharacter()
@@ -55,10 +34,9 @@ package anifire.creator.models
 			super();
 		}
 
-		public static function getComponentScaling(param1:String) : Number
+		public static function getComponentScaling(bodyType:String) : Number
 		{
-			if(param1 == "female")
-			{
+			if (bodyType == "female") {
 				return CcLibConstant.COMPONENT_SCALE_FEMALE;
 			}
 			return CcLibConstant.COMPONENT_SCALE_MALE;
@@ -69,30 +47,23 @@ package anifire.creator.models
 			return this._isRandom;
 		}
 
-		public function set isRandom(param1:Boolean) : void
+		public function set isRandom(value:Boolean) : void
 		{
-			this._isRandom = param1;
+			this._isRandom = value;
 		}
 
 		public function get category() : String
 		{
-			var _loc1_:String = null;
-			var _loc2_:String = null;
-			var _loc3_:int = 0;
-			if(this._category == null)
-			{
-				_loc1_ = "_category_";
+			if (this._category == null) {
+				var catBase:String = "_category_";
 				this._category = "";
-				_loc3_ = 0;
-				while(_loc3_ < this.tags.length)
-				{
-					_loc2_ = this.tags[_loc3_] as String;
-					if(_loc2_.substr(0,_loc1_.length) == _loc1_)
-					{
-						this._category = _loc2_.substr(_loc1_.length);
+				var tag:String;
+				for (var i:int = 0; i < this.tags.length; i++) {
+					tag = this.tags[i] as String;
+					if (tag.substr(0, catBase.length) == catBase) {
+						this._category = tag.substr(catBase.length);
 						break;
 					}
-					_loc3_++;
 				}
 			}
 			return this._category;
@@ -108,11 +79,10 @@ package anifire.creator.models
 			return this._name;
 		}
 
-		public function set currentTheme(param1:CcTheme) : void
+		public function set currentTheme(value:CcTheme) : void
 		{
-			this._currentTheme = param1;
+			this._currentTheme = value;
 		}
-
 		public function get currentTheme() : CcTheme
 		{
 			return this._currentTheme;
@@ -144,14 +114,14 @@ package anifire.creator.models
 			return this._assetId;
 		}
 
-		public function set assetId(param1:String) : void
+		public function set assetId(value:String) : void
 		{
-			this._assetId = param1;
+			this._assetId = value;
 		}
 
-		public function set bodyShape(param1:CcBodyShape) : void
+		public function set bodyShape(value:CcBodyShape) : void
 		{
-			this._bodyShape = param1;
+			this._bodyShape = value;
 		}
 
 		public function get bodyShape() : CcBodyShape
@@ -169,44 +139,40 @@ package anifire.creator.models
 			return this.bodyShape.thumbnailActionId;
 		}
 
-		public function set headScale(param1:Point) : void
+		public function set headScale(value:Point) : void
 		{
-			this._headScaleX = param1.x;
-			this._headScaleY = param1.y;
+			this._headScaleX = value.x;
+			this._headScaleY = value.y;
 		}
-
 		public function get headScale() : Point
 		{
-			return new Point(this._headScaleX,this._headScaleY);
+			return new Point(this._headScaleX, this._headScaleY);
 		}
 
-		public function set bodyScale(param1:Point) : void
+		public function set bodyScale(value:Point) : void
 		{
-			this._scaleX = param1.x;
-			this._scaleY = param1.y;
+			this._scaleX = value.x;
+			this._scaleY = value.y;
 		}
-
 		public function get bodyScale() : Point
 		{
-			return new Point(this._scaleX,this._scaleY);
+			return new Point(this._scaleX, this._scaleY);
 		}
 
-		public function set headShift(param1:Point) : void
+		public function set headShift(value:Point) : void
 		{
-			this._headDX = param1.x;
-			this._headDY = param1.y;
+			this._headDX = value.x;
+			this._headDY = value.y;
 		}
-
 		public function get headShift() : Point
 		{
-			return new Point(this._headDX,this._headDY);
+			return new Point(this._headDX, this._headDY);
 		}
 
-		public function set ver(param1:Number) : void
+		public function set ver(value:Number) : void
 		{
-			this._ver = param1;
+			this._ver = value;
 		}
-
 		public function get ver() : Number
 		{
 			return this._ver;
@@ -214,86 +180,65 @@ package anifire.creator.models
 
 		public function clone() : CcCharacter
 		{
-			var _loc1_:int = 0;
-			var _loc3_:CcColor = null;
-			var _loc4_:CcComponent = null;
-			var _loc5_:CcLibrary = null;
-			var _loc2_:CcCharacter = new CcCharacter();
-			_loc2_.currentTheme = this.currentTheme;
-			_loc2_.assetId = this.assetId;
-			_loc2_.bodyShape = this.bodyShape;
-			_loc2_._name = this._name;
-			_loc2_._tags = this.tags.slice();
-			_loc2_.ver = this._ver;
-			_loc2_._templateId = this._templateId;
-			_loc2_._templateMD5 = this._templateMD5;
-			_loc1_ = 0;
-			while(_loc1_ < this.getUserChosenColorNum())
-			{
-				_loc3_ = this.getUserChosenColorByIndex(_loc1_);
-				_loc2_.addUserChosenColor(_loc3_.clone());
-				_loc1_++;
+			var i:int;
+			var char:CcCharacter = new CcCharacter();
+			char.currentTheme = this.currentTheme;
+			char.assetId = this.assetId;
+			char.bodyShape = this.bodyShape;
+			char._name = this._name;
+			char._tags = this.tags.slice();
+			char.ver = this._ver;
+			char._templateId = this._templateId;
+			char._templateMD5 = this._templateMD5;
+			for (i = 0; i < this.getUserChosenColorNum(); i++) {
+				var color:CcColor = this.getUserChosenColorByIndex(i);
+				char.addUserChosenColor(color.clone());
 			}
-			_loc1_ = 0;
-			while(_loc1_ < this.getUserChosenComponentSize())
-			{
-				_loc4_ = this.getUserChosenComponentByIndex(_loc1_);
-				_loc2_.addUserChosenComponent(_loc4_.clone());
-				_loc1_++;
+			for (i = 0; i < this.getUserChosenComponentSize(); i++) {
+				var component:CcComponent = this.getUserChosenComponentByIndex(i);
+				char.addUserChosenComponent(component.clone());
 			}
-			_loc1_ = 0;
-			while(_loc1_ < this.getUserChosenLibraryNum())
-			{
-				_loc5_ = this.getUserChosenLibraryByIndex(_loc1_);
-				_loc2_.addUserChosenLibrary(_loc5_.clone());
-				_loc1_++;
+			for (i = 0; i < this.getUserChosenLibraryNum(); i++) {
+				var library:CcLibrary = this.getUserChosenLibraryByIndex(i);
+				char.addUserChosenLibrary(library.clone());
 			}
-			_loc2_.bodyScale = this.bodyScale;
-			_loc2_.headScale = this.headScale;
-			_loc2_.headShift = this.headShift;
-			return _loc2_;
+			char.bodyScale = this.bodyScale;
+			char.headScale = this.headScale;
+			char.headShift = this.headShift;
+			return char;
 		}
 
-		public function cloneFromSourceToMe(param1:CcCharacter) : void
+		public function cloneFromSourceToMe(char:CcCharacter) : void
 		{
-			var _loc2_:int = 0;
-			this.currentTheme = param1.currentTheme;
+			var i:int;
+			this.currentTheme = char.currentTheme;
 			this.removeAllUserChosenComponent();
-			_loc2_ = 0;
-			while(_loc2_ < param1.getUserChosenComponentSize())
-			{
-				this.addUserChosenComponent(param1.getUserChosenComponentByIndex(_loc2_));
-				_loc2_++;
+			for (i = 0; i < char.getUserChosenComponentSize(); i++) {
+				this.addUserChosenComponent(char.getUserChosenComponentByIndex(i));
 			}
 			this.removeAllUserChosenColors();
-			_loc2_ = 0;
-			while(_loc2_ < param1.getUserChosenColorNum())
-			{
-				this.addUserChosenColor(param1.getUserChosenColorByIndex(_loc2_));
-				_loc2_++;
+			for (i = 0; i < char.getUserChosenColorNum(); i++) {
+				this.addUserChosenColor(char.getUserChosenColorByIndex(i));
 			}
 			this.removeAllUserChosenLibraries();
-			_loc2_ = 0;
-			while(_loc2_ < param1.getUserChosenLibraryNum())
-			{
-				this.addUserChosenLibrary(param1.getUserChosenLibraryByIndex(_loc2_));
-				_loc2_++;
+			for (i = 0; i < char.getUserChosenLibraryNum(); i++) {
+				this.addUserChosenLibrary(char.getUserChosenLibraryByIndex(i));
 			}
-			this.bodyShape = param1.bodyShape;
-			this.assetId = param1.assetId;
-			this._name = param1._name;
-			this._tags = param1.tags.slice();
-			this._ver = param1.ver;
-			this._templateId = param1._templateId;
-			this._templateMD5 = param1._templateMD5;
-			this.bodyScale = param1.bodyScale;
-			this.headScale = param1.headScale;
-			this.headShift = param1.headShift;
+			this.bodyShape = char.bodyShape;
+			this.assetId = char.assetId;
+			this._name = char._name;
+			this._tags = char.tags.slice();
+			this._ver = char.ver;
+			this._templateId = char._templateId;
+			this._templateMD5 = char._templateMD5;
+			this.bodyScale = char.bodyScale;
+			this.headScale = char.headScale;
+			this.headShift = char.headShift;
 		}
 
-		public function getUserChosenLibraryByIndex(param1:Number) : CcLibrary
+		public function getUserChosenLibraryByIndex(index:Number) : CcLibrary
 		{
-			return this._userChosenLibraries[param1];
+			return this._userChosenLibraries[index];
 		}
 
 		public function getUserChosenLibraryNum() : Number
@@ -303,58 +248,48 @@ package anifire.creator.models
 
 		public function removeAllUserChosenLibraries() : void
 		{
-			this._userChosenLibraries.splice(0,this._userChosenLibraries.length);
+			this._userChosenLibraries.splice(0, this._userChosenLibraries.length);
 		}
 
-		public function addUserChosenLibrary(param1:CcLibrary) : void
+		public function addUserChosenLibrary(library:CcLibrary) : void
 		{
-			this.removeUserChosenLibraryByType(param1.type);
-			this._userChosenLibraries.push(param1);
+			this.removeUserChosenLibraryByType(library.type);
+			this._userChosenLibraries.push(library);
 		}
 
-		public function getUserChosenLibraryByType(param1:String) : CcLibrary
+		public function getUserChosenLibraryByType(type:String) : CcLibrary
 		{
-			var _loc3_:CcLibrary = null;
-			var _loc2_:* = int(this._userChosenLibraries.length - 1);
-			while(_loc2_ >= 0)
-			{
-				_loc3_ = this._userChosenLibraries[_loc2_] as CcLibrary;
-				if(_loc3_.type == param1)
-				{
-					return _loc3_;
+			for (var i:int = this._userChosenLibraries.length - 1; i >= 0; i--) {
+				var library:CcLibrary = this._userChosenLibraries[i] as CcLibrary;
+				if (library.type == type) {
+					return library;
 				}
-				_loc2_--;
 			}
 			return null;
 		}
 
-		public function removeUserChosenLibraryByType(param1:String) : void
+		public function removeUserChosenLibraryByType(type:String) : void
 		{
-			var _loc3_:CcLibrary = null;
-			var _loc2_:* = int(this._userChosenLibraries.length - 1);
-			while(_loc2_ >= 0)
-			{
-				_loc3_ = this._userChosenLibraries[_loc2_] as CcLibrary;
-				if(_loc3_.type == param1)
-				{
-					this._userChosenLibraries.splice(_loc2_,1);
+			for (var i:int = this._userChosenLibraries.length - 1; i >= 0; i--) {
+				var library:CcLibrary = this._userChosenLibraries[i] as CcLibrary;
+				if (library.type == type) {
+					this._userChosenLibraries.splice(i, 1);
 				}
-				_loc2_--;
 			}
 		}
 
-		public function addUserChosenColor(param1:CcColor) : void
+		public function addUserChosenColor(color:CcColor) : void
 		{
-			var _loc2_:String = null;
-			if(param1.ccComponent != null && CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(param1.ccColorThumb.componentType) > -1)
-			{
-				_loc2_ = param1.ccComponent.id + param1.ccColorThumb.internalId;
+			var idx:String;
+			if (
+				color.ccComponent != null &&
+				CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(color.ccColorThumb.componentType) > -1
+			) {
+				idx = color.ccComponent.id + color.ccColorThumb.internalId;
+			} else {
+				idx = color.ccColorThumb.internalId;
 			}
-			else
-			{
-				_loc2_ = param1.ccColorThumb.internalId;
-			}
-			this._userChosenColors.push(_loc2_,param1);
+			this._userChosenColors.push(idx, color);
 		}
 
 		public function getUserChosenColorNum() : Number
@@ -362,47 +297,39 @@ package anifire.creator.models
 			return this._userChosenColors.length;
 		}
 
-		public function getUserChosenColorByColorReference(param1:String) : CcColor
+		public function getUserChosenColorByColorReference(ref:String) : CcColor
 		{
-			var _loc2_:CcColor = null;
-			var _loc3_:int = 0;
-			while(_loc3_ < this._userChosenColors.length)
-			{
-				_loc2_ = this._userChosenColors.getValueByIndex(_loc3_) as CcColor;
-				if(_loc2_.ccColorThumb.colorReference == param1)
-				{
-					return _loc2_;
+			var color:CcColor;
+			for (var i:int = 0; i < this._userChosenColors.length; i++) {
+				color = this._userChosenColors.getValueByIndex(i) as CcColor;
+				if (color.ccColorThumb.colorReference == ref) {
+					return color;
 				}
-				_loc3_++;
 			}
 			return null;
 		}
 
-		public function getUserChosenColorByComponentType(param1:String) : Array
+		public function getUserChosenColorByComponentType(type:String) : Array
 		{
-			var _loc3_:CcColor = null;
-			var _loc2_:Array = new Array();
-			var _loc4_:int = 0;
-			while(_loc4_ < this._userChosenColors.length)
-			{
-				_loc3_ = this._userChosenColors.getValueByIndex(_loc4_) as CcColor;
-				if(_loc3_.ccColorThumb.componentType == param1)
-				{
-					_loc2_.push(_loc3_);
+			var colors:Array = new Array();
+			var color:CcColor;
+			for (var i:int = 0; i < this._userChosenColors.length; i++) {
+				color = this._userChosenColors.getValueByIndex(i) as CcColor;
+				if (color.ccColorThumb.componentType == type) {
+					colors.push(color);
 				}
-				_loc4_++;
 			}
-			return _loc2_;
+			return colors;
 		}
 
-		public function getUserChosenColorByIndex(param1:int) : CcColor
+		public function getUserChosenColorByIndex(index:int) : CcColor
 		{
-			return this._userChosenColors.getValueByIndex(param1);
+			return this._userChosenColors.getValueByIndex(index);
 		}
 
-		public function removeUserChosenColorByIndex(param1:int) : void
+		public function removeUserChosenColorByIndex(index:int) : void
 		{
-			this._userChosenColors.remove(param1,1);
+			this._userChosenColors.remove(index, 1);
 		}
 
 		public function removeAllUserChosenColors() : void
@@ -415,511 +342,396 @@ package anifire.creator.models
 			return this._userChosenComponents.length;
 		}
 
-		public function getUserChosenComponentByIndex(param1:int) : CcComponent
+		public function getUserChosenComponentByIndex(index:int) : CcComponent
 		{
-			return this._userChosenComponents[param1] as CcComponent;
+			return this._userChosenComponents[index] as CcComponent;
 		}
 
-		public function getUserChosenComponentByComponentType(param1:String) : Array
+		public function getUserChosenComponentByComponentType(type:String) : Array
 		{
-			var _loc3_:CcComponent = null;
-			var _loc2_:Array = new Array();
-			var _loc4_:int = 0;
-			while(_loc4_ < this._userChosenComponents.length)
-			{
-				_loc3_ = this._userChosenComponents[_loc4_] as CcComponent;
-				if(_loc3_.componentThumb.type == param1)
-				{
-					_loc2_.push(_loc3_);
+			var components:Array = new Array();
+			var component:CcComponent;
+			for (var i:int = 0; i < this._userChosenComponents.length; i++) {
+				component = this._userChosenComponents[i] as CcComponent;
+				if (component.componentThumb.type == type) {
+					components.push(component);
 				}
-				_loc4_++;
 			}
-			return _loc2_;
+			return components;
 		}
 
-		public function addUserChosenComponent(param1:CcComponent) : void
+		public function addUserChosenComponent(component:CcComponent) : void
 		{
-			if(CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(param1.componentThumb.type) == -1)
-			{
-				this.removeUserChosenComponentByType(param1.componentThumb.type);
+			if (CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(component.componentThumb.type) == -1) {
+				this.removeUserChosenComponentByType(component.componentThumb.type);
 			}
-			this._userChosenComponents.push(param1);
+			this._userChosenComponents.push(component);
 		}
 
-		public function getFacialByFacialId(param1:String) : CcFacial
+		public function getFacialByFacialId(facialId:String) : CcFacial
 		{
-			return this.currentTheme.getFacialById(param1);
+			return this.currentTheme.getFacialById(facialId);
 		}
 
 		public function calculateGobuck() : Number
 		{
-			var _loc1_:CcComponent = null;
-			var _loc2_:CcLibrary = null;
-			var _loc3_:Number = 0;
-			var _loc4_:int = 0;
-			_loc4_ = 0;
-			while(_loc4_ < this.getUserChosenComponentSize())
-			{
-				_loc1_ = this.getUserChosenComponentByIndex(_loc4_);
-				_loc3_ += _loc1_.componentThumb.money;
-				_loc4_++;
+			var component:CcComponent;
+			var library:CcLibrary;
+			var gobux:Number = 0;
+			var i:int = 0;
+			for (i = 0; i < this.getUserChosenComponentSize(); i++) {
+				component = this.getUserChosenComponentByIndex(i);
+				gobux += component.componentThumb.money;
 			}
-			_loc4_ = 0;
-			while(_loc4_ < this.getUserChosenLibraryNum())
-			{
-				_loc2_ = this.getUserChosenLibraryByIndex(_loc4_);
-				_loc3_ += _loc2_.money;
-				_loc4_++;
+			for (i = 0; i < this.getUserChosenLibraryNum(); i++) {
+				library = this.getUserChosenLibraryByIndex(i);
+				gobux += library.money;
 			}
-			return _loc3_;
+			return gobux;
 		}
 
 		public function calculateGoPoint() : Number
 		{
-			var _loc1_:CcComponent = null;
-			var _loc2_:CcLibrary = null;
-			var _loc3_:Number = 0;
-			var _loc4_:int = 0;
-			while(_loc4_ < this.getUserChosenComponentSize())
-			{
-				_loc1_ = this.getUserChosenComponentByIndex(_loc4_);
-				_loc3_ += _loc1_.componentThumb.sharingPoint;
-				_loc4_++;
+			var component:CcComponent;
+			var library:CcLibrary;
+			var pointz:Number = 0;
+			for (var i:int = 0; i < this.getUserChosenComponentSize(); i++) {
+				component = this.getUserChosenComponentByIndex(i);
+				pointz += component.componentThumb.sharingPoint;
 			}
-			_loc4_ = 0;
-			while(_loc4_ < this.getUserChosenLibraryNum())
-			{
-				_loc2_ = this.getUserChosenLibraryByIndex(_loc4_);
-				_loc3_ += _loc2_.sharingPoint;
-				_loc4_++;
+			for (i = 0; i < this.getUserChosenLibraryNum(); i++) {
+				library = this.getUserChosenLibraryByIndex(i);
+				pointz += library.sharingPoint;
 			}
-			return _loc3_;
+			return pointz;
 		}
 
-		private function addBodyShapeThumb() : void
-		{
-		}
+		private function addBodyShapeThumb() : void {}
 
-		public function removeUserChosenComponentByType(param1:String) : void
+		public function removeUserChosenComponentByType(type:String) : void
 		{
-			var _loc4_:CcLibrary = null;
-			var _loc5_:CcComponent = null;
-			var _loc2_:* = int(this._userChosenLibraries.length - 1);
-			while(_loc2_ >= 0)
-			{
-				_loc4_ = this._userChosenLibraries[_loc2_] as CcLibrary;
-				if(_loc4_.type == param1)
-				{
-					this._userChosenLibraries.splice(_loc2_,1);
+			for (var lI:int = this._userChosenLibraries.length - 1; lI >= 0; lI--) {
+				var library:CcLibrary = this._userChosenLibraries[lI] as CcLibrary;
+				if (library.type == type) {
+					this._userChosenLibraries.splice(lI, 1);
 				}
-				_loc2_--;
 			}
-			var _loc3_:* = int(this._userChosenComponents.length - 1);
-			while(_loc3_ >= 0)
-			{
-				_loc5_ = this._userChosenComponents[_loc3_] as CcComponent;
-				if(_loc5_.componentThumb.type == param1)
-				{
-					this._userChosenComponents.splice(_loc3_,1);
+			for (var cI:int = this._userChosenComponents.length - 1; cI >= 0; cI--) {
+				var component:CcComponent = this._userChosenComponents[cI] as CcComponent;
+				if (component.componentThumb.type == type) {
+					this._userChosenComponents.splice(cI, 1);
 				}
-				_loc3_--;
 			}
 		}
 
-		public function removeUserChosenComponentById(param1:String) : void
+		public function removeUserChosenComponentById(componentId:String) : void
 		{
-			var _loc4_:CcComponent = null;
-			var _loc5_:CcColor = null;
-			var _loc2_:* = int(this._userChosenComponents.length - 1);
-			while(_loc2_ >= 0)
-			{
-				_loc4_ = this._userChosenComponents[_loc2_] as CcComponent;
-				if(_loc4_.id == param1)
-				{
-					this._userChosenComponents.splice(_loc2_,1);
+			for (var cptI:int = this._userChosenComponents.length - 1; cptI >= 0; cptI--) {
+				var component:CcComponent = this._userChosenComponents[cptI] as CcComponent;
+				if (component.id == componentId) {
+					this._userChosenComponents.splice(cptI, 1);
 				}
-				_loc2_--;
 			}
-			var _loc3_:* = int(this._userChosenColors.length - 1);
-			while(_loc3_ >= 0)
-			{
-				_loc5_ = this._userChosenColors.getValueByIndex(_loc3_) as CcColor;
-				if(_loc5_.ccComponent != null && _loc5_.ccComponent.id == param1)
-				{
-					this._userChosenColors.remove(_loc3_,1);
+			for (var clrI:int = this._userChosenColors.length - 1; clrI >= 0; clrI--) {
+				var color:CcColor = this._userChosenColors.getValueByIndex(clrI) as CcColor;
+				if (color.ccComponent != null && color.ccComponent.id == componentId) {
+					this._userChosenColors.remove(clrI, 1);
 				}
-				_loc3_--;
 			}
 		}
 
 		public function removeAllUserChosenComponent() : void
 		{
-			this._userChosenComponents.splice(0,this._userChosenComponents.length);
+			this._userChosenComponents.splice(0, this._userChosenComponents.length);
 		}
 
-		public function transformBodyShape(param1:CcBodyShape) : void
+		public function transformBodyShape(bs:CcBodyShape) : void
 		{
-			var _loc2_:CcComponent = null;
-			var _loc3_:CcComponent = null;
-			var _loc4_:String = null;
-			var _loc5_:CcComponentThumb = null;
-			var _loc6_:String = null;
-			var _loc7_:UtilHashArray = null;
-			var _loc8_:CcComponentThumb = null;
-			if(param1.id != this.bodyShape.id)
-			{
-				this._bodyShape = param1;
-				_loc2_ = new CcComponent();
-				_loc2_.componentThumb = CcComponentThumb.createBodyShapeComponentThumb(this.bodyShape);
-				this.addUserChosenComponent(_loc2_);
-				_loc3_ = new CcComponent();
-				_loc4_ = this.ver < 2 ? CcLibConstant.COMPONENT_TYPE_SKELETON : CcLibConstant.COMPONENT_TYPE_FREEACTION;
-				_loc5_ = this.bodyShape.getComponentThumbByType(_loc4_).getValueByIndex(0) as CcComponentThumb;
-				_loc3_.componentThumb = _loc5_;
-				this.addUserChosenComponent(_loc3_);
-				for each(_loc6_ in CcLibConstant.USER_CHOOSE_ABLE_BODY_COMPONENT_TYPES)
-				{
-					if(_loc6_ != CcLibConstant.COMPONENT_TYPE_BODYSHAPE)
-					{
-						if(this.ver == 1)
-						{
-							if(CcLibConstant.ALL_LIBRARY_TYPES.indexOf(_loc6_) > -1)
-							{
+			if (bs.id != this.bodyShape.id) {
+				this._bodyShape = bs;
+				var bsComponent:CcComponent = new CcComponent();
+				bsComponent.componentThumb = CcComponentThumb.createBodyShapeComponentThumb(this.bodyShape);
+				this.addUserChosenComponent(bsComponent);
+				var animComponent:CcComponent = new CcComponent();
+				var typea:String = this.ver < 2 ?
+					CcLibConstant.COMPONENT_TYPE_SKELETON :
+					CcLibConstant.COMPONENT_TYPE_FREEACTION;
+				var animThumb:CcComponentThumb = this.bodyShape.getComponentThumbByType(typea)
+					.getValueByIndex(0) as CcComponentThumb;
+				animComponent.componentThumb = animThumb;
+				this.addUserChosenComponent(animComponent);
+				for each (var type:String in CcLibConstant.USER_CHOOSE_ABLE_BODY_COMPONENT_TYPES) {
+					if (type != CcLibConstant.COMPONENT_TYPE_BODYSHAPE) {
+						if (this.ver == 1) {
+							if (CcLibConstant.ALL_LIBRARY_TYPES.indexOf(type) > -1) {
+								continue;
+							}
+						} else {
+							if (CcLibConstant.ALL_LIBRARY_TYPES.indexOf(type) == -1) {
+								continue;
+							}
+							if (CcLibConstant.HEAD_RELATED_LIBRARY.indexOf(type) > -1) {
 								continue;
 							}
 						}
-						else
-						{
-							if(CcLibConstant.ALL_LIBRARY_TYPES.indexOf(_loc6_) == -1)
-							{
-								continue;
-							}
-							if(CcLibConstant.HEAD_RELATED_LIBRARY.indexOf(_loc6_) > -1)
-							{
-								continue;
-							}
-						}
-						_loc7_ = new UtilHashArray();
-						if(this.bodyShape.getComponentThumbByType(_loc6_))
-						{
-							_loc8_ = this.bodyShape.getComponentThumbByType(_loc6_).getValueByIndex(0) as CcComponentThumb;
-							_loc7_.push(_loc8_.componentId,_loc8_);
-							this.randomlyChooseComponentInArray(_loc7_,this.bodyShape.bodyType);
+						var array:UtilHashArray = new UtilHashArray();
+						if (this.bodyShape.getComponentThumbByType(type)) {
+							var cptThumb:CcComponentThumb = this.bodyShape.getComponentThumbByType(type)
+								.getValueByIndex(0) as CcComponentThumb;
+							array.push(cptThumb.componentId, cptThumb);
+							this.randomlyChooseComponentInArray(array, this.bodyShape.bodyType);
 						}
 					}
 				}
 			}
 		}
 
-		public function randomize(param1:CcTheme, param2:String, param3:CcBodyShape = null) : void
+		public function randomize(ccTheme:CcTheme, bodyType:String, bs:CcBodyShape = null) : void
 		{
-			var _loc4_:int = 0;
-			var _loc5_:Boolean = false;
-			var _loc6_:CcCharacter = null;
-			if(Math.random() > CcLibConstant.PROBABILITY_RANDOM_FROM_PRE_MADE_CHAR)
-			{
-				_loc5_ = true;
-			}
-			else if(Boolean(param1.preMadeChars) && param1.preMadeChars.length <= 0)
-			{
-				_loc5_ = true;
-			}
-			else
-			{
-				_loc5_ = true;
-				if(param1.preMadeChars)
-				{
-					_loc4_ = 0;
-					while(_loc4_ < param1.preMadeChars.length)
-					{
-						_loc6_ = param1.preMadeChars[_loc4_] as CcCharacter;
-						if(_loc6_.bodyShape.bodyType == param2)
-						{
-							_loc5_ = false;
+			var charI:int = 0;
+			var noPremadeChars:Boolean = false;
+			var char:CcCharacter = null;
+			if (Math.random() > CcLibConstant.PROBABILITY_RANDOM_FROM_PRE_MADE_CHAR) {
+				noPremadeChars = true;
+			} else if (Boolean(ccTheme.preMadeChars) && ccTheme.preMadeChars.length <= 0) {
+				noPremadeChars = true;
+			} else {
+				noPremadeChars = true;
+				if (ccTheme.preMadeChars) {
+					for (charI = 0; charI < ccTheme.preMadeChars.length; charI++) {
+						char = ccTheme.preMadeChars[charI] as CcCharacter;
+						if (char.bodyShape.bodyType == bodyType) {
+							noPremadeChars = false;
 							break;
 						}
-						_loc4_++;
 					}
 				}
 			}
-			if(_loc5_)
-			{
-				this.randomizeEverythingRandomlly(param1,param2,param3);
-			}
-			else
-			{
-				this.randomizeFromPreMadeChar(param1,param2);
+			if (noPremadeChars) {
+				this.randomizeEverythingRandomlly(ccTheme, bodyType, bs);
+			} else {
+				this.randomizeFromPreMadeChar(ccTheme, bodyType);
 			}
 			this._isRandom = true;
 		}
 
-		private function randomizeFromPreMadeChar(param1:CcTheme, param2:String) : void
+		private function randomizeFromPreMadeChar(ccTheme:CcTheme, bodyType:String) : void
 		{
-			var _loc4_:CcCharacter = null;
-			var _loc3_:Array = new Array();
-			var _loc5_:int = 0;
-			while(_loc5_ < param1.preMadeChars.length)
-			{
-				_loc4_ = param1.preMadeChars[_loc5_] as CcCharacter;
-				if(_loc4_.bodyShape.bodyType == param2 && CcLibConstant.CHAR_TAG_MATCH_CURR_THEME(_loc4_.tags))
-				{
-					_loc3_.push(_loc4_);
+			var matchingChars:Array = new Array();
+			var char:CcCharacter;
+			for (var i:int = 0; i < ccTheme.preMadeChars.length; i++) {
+				char = ccTheme.preMadeChars[i] as CcCharacter;
+				if (
+					char.bodyShape.bodyType == bodyType &&
+					CcLibConstant.CHAR_TAG_MATCH_CURR_THEME(char.tags)
+				) {
+					matchingChars.push(char);
 				}
-				_loc5_++;
 			}
-			var _loc6_:int = Math.floor(Math.random() * _loc3_.length);
-			_loc4_ = _loc3_[_loc6_] as CcCharacter;
-			_loc4_.markAsTemplate();
-			var _loc7_:UtilHashArray = new UtilHashArray();
-			_loc7_.push(param1.id,param1);
-			this.cloneFromSourceToMe(_loc4_);
+			var rand:int = Math.floor(Math.random() * matchingChars.length);
+			char = matchingChars[rand] as CcCharacter;
+			char.markAsTemplate();
+			var ccThemes:UtilHashArray = new UtilHashArray();
+			ccThemes.push(ccTheme.id, ccTheme);
+			this.cloneFromSourceToMe(char);
 			this.assetId = "";
 		}
 
-		private function randomizeEverythingRandomlly(param1:CcTheme, param2:String, param3:CcBodyShape = null) : void
+		private function randomizeEverythingRandomlly(ccTheme:CcTheme, bodyType:String, bs:CcBodyShape = null) : void
 		{
-			var _loc4_:String = null;
-			var _loc5_:UtilHashArray = null;
-			var _loc6_:CcComponentThumb = null;
-			var _loc7_:CcColorThumb = null;
-			var _loc8_:CcColor = null;
-			var _loc10_:int = 0;
-			var _loc13_:CcComponentThumb = null;
-			var _loc14_:Number = NaN;
-			var _loc9_:Array = param1.getBodyShapesByShapeType(param2);
-			this._currentTheme = param1;
+			var type:String;
+			var cptArray:UtilHashArray;
+			var cptThumb:CcComponentThumb;
+			var clrThumb:CcColorThumb
+			var color:CcColor;
+			var bses:Array = ccTheme.getBodyShapesByShapeType(bodyType);
+			this._currentTheme = ccTheme;
 			this.removeAllUserChosenColors();
 			this.removeAllUserChosenComponent();
 			this.removeAllUserChosenLibraries();
-			_loc10_ = 0;
-			while(_loc10_ < param1.getColorThumbNum())
-			{
-				_loc7_ = param1.getColorThumbByIndex(_loc10_);
-				if(CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(_loc7_.componentType) == -1)
-				{
-					_loc8_ = new CcColor();
-					_loc8_.ccColorThumb = _loc7_;
-					_loc8_.colorValue = _loc7_.colorChoices[Math.floor(Math.random() * _loc7_.colorChoices.length)];
-					this.addUserChosenColor(_loc8_);
+			var clrI:int;
+			for (clrI = 0; clrI < ccTheme.getColorThumbNum(); clrI++) {
+				clrThumb = ccTheme.getColorThumbByIndex(clrI);
+				if (CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(clrThumb.componentType) == -1) {
+					color = new CcColor();
+					color.ccColorThumb = clrThumb;
+					color.colorValue = clrThumb.colorChoices[Math.floor(Math.random() * clrThumb.colorChoices.length)];
+					this.addUserChosenColor(color);
 				}
-				_loc10_++;
 			}
-			if(param3 == null)
-			{
-				this._bodyShape = _loc9_[Math.floor(Math.random() * _loc9_.length)] as CcBodyShape;
+			if (bs == null) {
+				this._bodyShape = bses[Math.floor(Math.random() * bses.length)] as CcBodyShape;
+			} else {
+				this._bodyShape = bs;
 			}
-			else
-			{
-				this._bodyShape = param3;
-			}
-			var _loc11_:CcComponent = new CcComponent();
-			_loc11_.componentThumb = CcComponentThumb.createBodyShapeComponentThumb(this.bodyShape);
-			this.addUserChosenComponent(_loc11_);
-			var _loc12_:CcComponent = new CcComponent();
-			switch(this.ver)
-			{
+			var bsCpt:CcComponent = new CcComponent();
+			bsCpt.componentThumb = CcComponentThumb.createBodyShapeComponentThumb(this.bodyShape);
+			this.addUserChosenComponent(bsCpt);
+			var animCpt:CcComponent = new CcComponent();
+			var animCptThumb:CcComponentThumb;
+			switch (this.ver) {
 				case 2:
-					_loc13_ = this.bodyShape.getComponentThumbByType(CcLibConstant.COMPONENT_TYPE_FREEACTION).getValueByIndex(0) as CcComponentThumb;
+					animCptThumb = this.bodyShape
+						.getComponentThumbByType(CcLibConstant.COMPONENT_TYPE_FREEACTION)
+						.getValueByIndex(0) as CcComponentThumb;
 					break;
 				default:
-					_loc13_ = this.bodyShape.getComponentThumbByType(CcLibConstant.COMPONENT_TYPE_SKELETON).getValueByIndex(0) as CcComponentThumb;
+					animCptThumb = this.bodyShape
+						.getComponentThumbByType(CcLibConstant.COMPONENT_TYPE_SKELETON)
+						.getValueByIndex(0) as CcComponentThumb;
 			}
-			_loc12_.componentThumb = _loc13_;
-			this.addUserChosenComponent(_loc12_);
-			for each(_loc4_ in CcLibConstant.USER_CHOOSE_ABLE_BODY_COMPONENT_TYPES)
-			{
-				_loc14_ = CcLibConstant.GET_COMPONENT_TYPE_OCCURANCE_PROBABILITY(_loc4_);
-				if(Math.random() < _loc14_)
-				{
-					_loc5_ = this.bodyShape.getComponentThumbByType(_loc4_);
-					this.randomlyChooseComponentInArray(_loc5_,this.bodyShape.bodyType);
+			animCpt.componentThumb = animCptThumb;
+			this.addUserChosenComponent(animCpt);
+			var prob:Number;
+			for each (type in CcLibConstant.USER_CHOOSE_ABLE_BODY_COMPONENT_TYPES) {
+				prob = CcLibConstant.GET_COMPONENT_TYPE_OCCURANCE_PROBABILITY(type);
+				if (Math.random() < prob) {
+					cptArray = this.bodyShape.getComponentThumbByType(type);
+					this.randomlyChooseComponentInArray(cptArray, this.bodyShape.bodyType);
 				}
 			}
-			for each(_loc4_ in CcLibConstant.USER_CHOOSE_ABLE_HEAD_COMPONENT_TYPES)
-			{
-				_loc14_ = CcLibConstant.GET_COMPONENT_TYPE_OCCURANCE_PROBABILITY(_loc4_);
-				if(Math.random() < _loc14_)
-				{
-					_loc5_ = param1.getComponentThumbByType(_loc4_);
-					this.randomlyChooseComponentInArray(_loc5_,this.bodyShape.bodyType);
+			for each (type in CcLibConstant.USER_CHOOSE_ABLE_HEAD_COMPONENT_TYPES) {
+				prob = CcLibConstant.GET_COMPONENT_TYPE_OCCURANCE_PROBABILITY(type);
+				if (Math.random() < prob) {
+					cptArray = ccTheme.getComponentThumbByType(type);
+					this.randomlyChooseComponentInArray(cptArray, this.bodyShape.bodyType);
 				}
 			}
 		}
 
-		private function randomlyChooseComponentInArray(param1:UtilHashArray, param2:String) : void
+		private function randomlyChooseComponentInArray(array:UtilHashArray, bodyType:String) : void
 		{
-			var _loc3_:* = 0;
-			var _loc4_:CcComponentThumb = null;
-			var _loc5_:CcComponent = null;
-			var _loc6_:CcColorThumb = null;
-			var _loc7_:CcColor = null;
-			var _loc8_:CcLibrary = null;
-			if(param1 != null && param1.length > 0)
-			{
-				param1 = param1.clone();
-				_loc3_ = int(param1.length - 1);
-				while(_loc3_ >= 0)
-				{
-					_loc4_ = param1.getValueByIndex(_loc3_) as CcComponentThumb;
-					if(!_loc4_.is_randomable || !_loc4_.enable)
-					{
-						param1.remove(_loc3_,1);
+			if (array != null && array.length > 0) {
+				array = array.clone();
+				var i:int;
+				var cptThumb:CcComponentThumb;
+				for (i = array.length - 1; i >= 0; i--) {
+					cptThumb = array.getValueByIndex(i) as CcComponentThumb;
+					if (!cptThumb.is_randomable || !cptThumb.enable) {
+						array.remove(i, 1);
 					}
-					_loc3_--;
 				}
-				_loc4_ = param1.getValueByIndex(Math.random() * param1.length) as CcComponentThumb;
-				_loc5_ = new CcComponent();
-				_loc5_.xscale = _loc5_.yscale = CcCharacter.getComponentScaling(param2);
-				_loc5_.componentThumb = _loc4_;
-				if(CcLibConstant.ALL_LIBRARY_TYPES.indexOf(_loc4_.type) > -1)
-				{
-					_loc8_ = new CcLibrary();
-					_loc8_.type = _loc4_.type;
-					_loc8_.theme_id = _loc4_.themeId;
-					_loc8_.component_id = _loc4_.componentId;
-					_loc8_.money = _loc4_.money;
-					_loc8_.sharingPoint = _loc4_.sharingPoint;
-					this.addUserChosenLibrary(_loc8_);
+				cptThumb = array.getValueByIndex(Math.random() * array.length) as CcComponentThumb;
+				var component:CcComponent = new CcComponent();
+				component.xscale = component.yscale = CcCharacter.getComponentScaling(bodyType);
+				component.componentThumb = cptThumb;
+				var clrThumb:CcColorThumb;
+				var color:CcColor;
+				var library:CcLibrary;
+				if (CcLibConstant.ALL_LIBRARY_TYPES.indexOf(cptThumb.type) > -1) {
+					library = new CcLibrary();
+					library.type = cptThumb.type;
+					library.theme_id = cptThumb.themeId;
+					library.component_id = cptThumb.componentId;
+					library.money = cptThumb.money;
+					library.sharingPoint = cptThumb.sharingPoint;
+					this.addUserChosenLibrary(library);
+				} else {
+					this.addUserChosenComponent(component);
 				}
-				else
-				{
-					this.addUserChosenComponent(_loc5_);
-				}
-				_loc3_ = 0;
-				while(_loc3_ < _loc4_.getMyOwnColorNum())
-				{
-					_loc6_ = _loc4_.getMyOwnColorByIndex(_loc3_);
-					_loc7_ = new CcColor();
-					_loc7_.ccColorThumb = _loc6_;
-					_loc7_.colorValue = _loc6_.defaultColor;
-					this.addUserChosenColor(_loc7_);
-					_loc3_++;
+				for (i = 0; i < cptThumb.getMyOwnColorNum(); i++) {
+					clrThumb = cptThumb.getMyOwnColorByIndex(i);
+					color = new CcColor();
+					color.ccColorThumb = clrThumb;
+					color.colorValue = clrThumb.defaultColor;
+					this.addUserChosenColor(color);
 				}
 			}
 		}
 
 		public function serialize() : String
 		{
-			var _loc1_:int = 0;
-			var _loc2_:String = "<" + XML_NODE_NAME + " xscale=\'" + this._scaleX + "\' yscale=\'" + this._scaleY + "\' hxscale=\'" + this._headScaleX + "\' hyscale=\'" + this._headScaleY + "\' headdx=\'" + this._headDX + "\' headdy=\'" + this._headDY + "\'>";
-			_loc1_ = 0;
-			while(_loc1_ < this.getUserChosenColorNum())
-			{
-				_loc2_ += this.getUserChosenColorByIndex(_loc1_).serialize();
-				_loc1_++;
+			var i:int = 0;
+			var xml:String = "<" + XML_NODE_NAME + " xscale=\'" + this._scaleX + "\' yscale=\'" + this._scaleY + "\' hxscale=\'" + this._headScaleX + "\' hyscale=\'" + this._headScaleY + "\' headdx=\'" + this._headDX + "\' headdy=\'" + this._headDY + "\'>";
+			for (i = 0; i < this.getUserChosenColorNum(); i++) {
+				xml += this.getUserChosenColorByIndex(i).serialize();
 			}
-			_loc1_ = 0;
-			while(_loc1_ < this.getUserChosenComponentSize())
-			{
-				_loc2_ += this.getUserChosenComponentByIndex(_loc1_).serialize();
-				_loc1_++;
+			for (i = 0; i < this.getUserChosenComponentSize(); i++) {
+				xml += this.getUserChosenComponentByIndex(i).serialize();
 			}
-			_loc1_ = 0;
-			while(_loc1_ < this.getUserChosenLibraryNum())
-			{
-				_loc2_ += this.getUserChosenLibraryByIndex(_loc1_).serialize();
-				_loc1_++;
+			for (i = 0; i < this.getUserChosenLibraryNum(); i++) {
+				xml += this.getUserChosenLibraryByIndex(i).serialize();
 			}
-			return _loc2_ + ("</" + XML_NODE_NAME + ">");
+			return xml + ("</" + XML_NODE_NAME + ">");
 		}
 
-		public function deserialize(param1:XML, param2:UtilHashArray) : void
+		public function deserialize(xml:XML, components:UtilHashArray) : void
 		{
-			var _loc3_:XML = null;
-			var _loc4_:CcComponent = null;
-			var _loc5_:CcColor = null;
-			var _loc6_:CcLibrary = null;
-			var _loc7_:String = null;
-			var _loc8_:String = null;
-			var _loc9_:String = null;
-			var _loc10_:String = null;
-			var _loc11_:CcComponent = null;
-			var _loc12_:CcComponentThumb = null;
-			this._assetId = param1.@aid;
-			this._name = param1.@name;
-			this._createDateTime = param1.@create || "";
-			if(param1.@tags != null)
-			{
-				_loc7_ = param1.@tags;
-				this._tags = _loc7_.split(",");
-			}
-			else
-			{
+			var child:XML;
+			var component:CcComponent;
+			var color:CcColor;
+			var library:CcLibrary;
+			this._assetId = xml.@aid;
+			this._name = xml.@name;
+			this._createDateTime = xml.@create || "";
+			if (xml.@tags != null) {
+				var tagString:String = xml.@tags;
+				this._tags = tagString.split(",");
+			} else {
 				this._tags = new Array();
 			}
-			if(param1.@xscale > 0 && param1.@yscale > 0)
-			{
-				this._scaleX = Number(param1.@xscale);
-				this._scaleY = Number(param1.@yscale);
+			if (xml.@xscale > 0 && xml.@yscale > 0) {
+				this._scaleX = Number(xml.@xscale);
+				this._scaleY = Number(xml.@yscale);
 			}
-			if(param1.@hxscale > 0 && param1.@hyscale > 0)
-			{
-				this._headScaleX = Number(param1.@hxscale);
-				this._headScaleY = Number(param1.@hyscale);
+			if (xml.@hxscale > 0 && xml.@hyscale > 0) {
+				this._headScaleX = Number(xml.@hxscale);
+				this._headScaleY = Number(xml.@hyscale);
 			}
-			this._headDX = param1.@headdx != 0 ? Number(param1.@headdx) : 0;
-			this._headDY = param1.@headdy != 0 ? Number(param1.@headdy) : 0;
+			this._headDX = xml.@headdx != 0 ? Number(xml.@headdx) : 0;
+			this._headDY = xml.@headdy != 0 ? Number(xml.@headdy) : 0;
+
 			this.removeAllUserChosenComponent();
-			for each(_loc3_ in param1.child(CcComponent.XML_NODE_NAME))
-			{
-				_loc8_ = CcComponent.getComponentThumbTypeFromXml(_loc3_);
-				if(_loc8_ == CcLibConstant.COMPONENT_TYPE_BODYSHAPE)
-				{
-					_loc9_ = CcComponent.getComponentThemeIdFromXml(_loc3_);
-					_loc10_ = CcComponent.getComponentIdFromXml(_loc3_);
-					this._bodyShape = (param2.getValueByKey(_loc9_) as CcTheme).getBodyShapeByShapeId(_loc10_);
-					this.currentTheme = param2.getValueByKey(_loc9_) as CcTheme;
-					_loc11_ = new CcComponent();
-					_loc11_.componentThumb = CcComponentThumb.createBodyShapeComponentThumb(this.bodyShape);
-					this.addUserChosenComponent(_loc11_);
-				}
-				else
-				{
-					_loc4_ = new CcComponent();
-					_loc4_.deserialize(_loc3_,param2);
-					this.addUserChosenComponent(_loc4_);
+			for each (child in xml.child(CcComponent.XML_NODE_NAME)) {
+				var type:String = CcComponent.getComponentThumbTypeFromXml(child);
+				if (type == CcLibConstant.COMPONENT_TYPE_BODYSHAPE) {
+					var themeId:String = CcComponent.getComponentThemeIdFromXml(child);
+					var cptId:String = CcComponent.getComponentIdFromXml(child);
+					this._bodyShape = (components.getValueByKey(themeId) as CcTheme).getBodyShapeByShapeId(cptId);
+					this.currentTheme = components.getValueByKey(themeId) as CcTheme;
+					var bsCpt:CcComponent = new CcComponent();
+					bsCpt.componentThumb = CcComponentThumb.createBodyShapeComponentThumb(this.bodyShape);
+					this.addUserChosenComponent(bsCpt);
+				} else {
+					component = new CcComponent();
+					component.deserialize(child, components);
+					this.addUserChosenComponent(component);
 				}
 			}
+
 			this.removeAllUserChosenColors();
-			for each(_loc3_ in param1.child(CcColor.XML_NODE_NAME))
-			{
-				_loc5_ = new CcColor();
-				if(_loc5_.deserialize(_loc3_,this.currentTheme,this))
-				{
-					this.addUserChosenColor(_loc5_);
+			for each (child in xml.child(CcColor.XML_NODE_NAME)) {
+				color = new CcColor();
+				if (color.deserialize(child, this.currentTheme, this)) {
+					this.addUserChosenColor(color);
 				}
 			}
+
 			this.removeAllUserChosenLibraries();
-			for each(_loc3_ in param1.child(CcLibrary.XML_NODE_NAME))
-			{
-				_loc6_ = new CcLibrary();
-				_loc12_ = this.currentTheme.getComponentThumbByInternalId(CcComponentThumb.generateInternalId(_loc3_.@type,_loc3_.@component_id));
-				if(_loc12_)
-				{
-					_loc3_.@money = _loc12_.money;
-					_loc3_.@sharing = _loc12_.sharingPoint;
+			for each (child in xml.child(CcLibrary.XML_NODE_NAME)) {
+				library = new CcLibrary();
+				var cptThumb:CcComponentThumb = this.currentTheme.getComponentThumbByInternalId(CcComponentThumb.generateInternalId(child.@type, child.@component_id));
+				if (cptThumb) {
+					child.@money = cptThumb.money;
+					child.@sharing = cptThumb.sharingPoint;
 				}
-				_loc6_.deserialize(_loc3_);
-				this.addUserChosenLibrary(_loc6_);
+				library.deserialize(child);
+				this.addUserChosenLibrary(library);
 			}
-			if(this.getUserChosenLibraryNum() > 0)
-			{
+
+			if (this.getUserChosenLibraryNum() > 0) {
 				this.ver = 2;
-			}
-			else
-			{
+			} else {
 				this.ver = 1;
 			}
 		}
 
 		public function getComponentTypeOrdering() : Array
 		{
-			if(this._ver == 1)
-			{
+			if (this._ver == 1) {
 				return CcLibConstant.COMPONENT_TYPE_CHOOSER_ORDERING_VER1;
 			}
-			if(this._ver == 2)
-			{
+			if (this._ver == 2) {
 				return CcLibConstant.COMPONENT_TYPE_CHOOSER_ORDERING_VER2;
 			}
 			return null;

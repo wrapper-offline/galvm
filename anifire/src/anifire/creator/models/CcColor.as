@@ -6,13 +6,9 @@ package anifire.creator.models
 
 	public class CcColor
 	{
-
 		public static const XML_NODE_NAME:String = "color";
-
 		public var ccColorThumb:CcColorThumb;
-
 		public var colorValue:uint;
-
 		public var ccComponent:CcComponent;
 
 		public function CcColor()
@@ -22,40 +18,37 @@ package anifire.creator.models
 
 		public function clone() : CcColor
 		{
-			var _loc1_:CcColor = new CcColor();
-			_loc1_.ccColorThumb = this.ccColorThumb;
-			_loc1_.colorValue = this.colorValue;
-			_loc1_.ccComponent = this.ccComponent;
-			return _loc1_;
+			var cloned:CcColor = new CcColor();
+			cloned.ccColorThumb = this.ccColorThumb;
+			cloned.colorValue = this.colorValue;
+			cloned.ccComponent = this.ccComponent;
+			return cloned;
 		}
 
 		public function serialize() : String
 		{
-			var _loc1_:String = "";
-			if(!(CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(this.ccColorThumb.componentType) > -1 && this.ccComponent == null))
-			{
-				_loc1_ = "<color" + " r=\"" + UtilXmlInfo.xmlEscape(this.ccColorThumb.colorReference) + "\"" + (this.ccColorThumb.isOriginalColorExist ? " oc=\"" + UtilUnitConvert.uintToColorHexString(this.ccColorThumb.originalColor) + "\"" : "") + (this.ccComponent != null ? " targetComponent=\"" + this.ccComponent.id + "\"" : "") + ">" + UtilUnitConvert.uintToColorHexString(this.colorValue) + "</color>";
+			var xmlString:String = "";
+			if (!(
+				CcLibConstant.ALL_MULTIPLE_COMPONENT_TYPES.indexOf(this.ccColorThumb.componentType) > -1 &&
+				this.ccComponent == null
+			)) {
+				xmlString = "<color" + " r=\"" + UtilXmlInfo.xmlEscape(this.ccColorThumb.colorReference) + "\"" + (this.ccColorThumb.isOriginalColorExist ? " oc=\"" + UtilUnitConvert.uintToColorHexString(this.ccColorThumb.originalColor) + "\"" : "") + (this.ccComponent != null ? " targetComponent=\"" + this.ccComponent.id + "\"" : "") + ">" + UtilUnitConvert.uintToColorHexString(this.colorValue) + "</color>";
 			}
-			return _loc1_;
+			return xmlString;
 		}
 
-		public function deserialize(param1:XML, param2:CcTheme, param3:CcCharacter) : Boolean
+		public function deserialize(xml:XML, ccTheme:CcTheme, char:CcCharacter) : Boolean
 		{
-			this.colorValue = uint(Number(param1.toString()));
-			this.ccColorThumb = param2.getColorThumbByInternalId(CcColorThumb.generateInternalId(param1.@r));
-			var _loc4_:Number = param3.getUserChosenComponentSize();
-			var _loc5_:int = 0;
-			while(_loc5_ < _loc4_)
-			{
-				if(param3.getUserChosenComponentByIndex(_loc5_).id == param1.@targetComponent)
-				{
-					this.ccComponent = param3.getUserChosenComponentByIndex(_loc5_);
+			this.colorValue = uint(Number(xml.toString()));
+			this.ccColorThumb = ccTheme.getColorThumbByInternalId(CcColorThumb.generateInternalId(xml.@r));
+			var numCpts:Number = char.getUserChosenComponentSize();
+			for (var i:int = 0; i < numCpts; i++) {
+				if (char.getUserChosenComponentByIndex(i).id == xml.@targetComponent) {
+					this.ccComponent = char.getUserChosenComponentByIndex(i);
 					break;
 				}
-				_loc5_++;
 			}
-			if(!this.ccColorThumb)
-			{
+			if (!this.ccColorThumb) {
 				return false;
 			}
 			return true;

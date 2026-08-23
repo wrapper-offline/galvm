@@ -103,74 +103,70 @@
 			public function CharPreview() : void
 			{
 				this._customColor = new UtilHashArray();
-				var _loc1_:CustomCharacterMaker = new CustomCharacterMaker();
-				_loc1_.name = this.LOADER;
-				_loc1_.visible = false;
-				_loc1_.scaleX = -1;
+				var ccm:CustomCharacterMaker = new CustomCharacterMaker();
+				ccm.name = this.LOADER;
+				ccm.visible = false;
+				ccm.scaleX = -1;
 				this._orgX = this.width * 0.4;
 				this._orgY = this.height * 0.5;
 				this._tarX = this.width * 0.6;
 				this._tarY = this.height * 0.8;
 				this.myUI = new UIComponent();
-				this.myUI.addChild(_loc1_);
+				this.myUI.addChild(ccm);
 				this._orgRatio = CcLibConstant.DEFAULT_PREVIEW_SCALE;
 				this.addChild(this.myUI);
 				this.charCanvasHeight = this.height;
 			}
 			
-			private function loadCCCharComplete(param1:Event) : void
-			{
-			}
+			private function loadCCCharComplete(event:Event) : void {}
 			
-			public function initByCcChar(param1:CcCharacter, param2:String, param3:String = "") : void
+			public function initByCcChar(char:CcCharacter, actionId:String, facialId:String = "") : void
 			{
-				var _loc9_:CcColor = null;
-				var _loc10_:CcLibrary = null;
-				var _loc11_:ExtraDataLoader = null;
-				var _loc12_:Object = null;
 				if (this._isBuilding != 1) {
 					this._isBuilding = 1;
 					NativeCursorManager.instance.setBusyCursor();
 					CustomCharacterMaker(this.myUI.getChildByName(this.LOADER)).destroy();
-					this._isRandom = param1.isRandom;
-					param1.isRandom = false;
-					CustomCharacterMaker(this.myUI.getChildByName(this.LOADER)).ver = param1.ver;
+					this._isRandom = char.isRandom;
+					char.isRandom = false;
+					CustomCharacterMaker(this.myUI.getChildByName(this.LOADER)).ver = char.ver;
 					CustomCharacterMaker(this.myUI.getChildByName(this.LOADER)).visible = false;
-					var _loc4_:Number = param1.getUserChosenColorNum();
-					var _loc5_:int = 0;
-					while (_loc5_ < _loc4_) {
-						_loc9_ = param1.getUserChosenColorByIndex(_loc5_);
-						CustomCharacterMaker(this.myUI.getChildByName(this.LOADER)).addColor(_loc9_.ccColorThumb.colorReference, _loc9_.ccColorThumb.originalColor, _loc9_.colorValue);
-						_loc5_++;
+					var colorNum:Number = char.getUserChosenColorNum();
+					for (var colorI:int = 0; colorI < colorNum; colorI++) {
+						var color:CcColor = char.getUserChosenColorByIndex(colorI);
+						CustomCharacterMaker(this.myUI.getChildByName(this.LOADER)).addColor(
+							color.ccColorThumb.colorReference,
+							color.ccColorThumb.originalColor,
+							color.colorValue
+						);
 					}
-					var _loc6_:Number = param1.getUserChosenLibraryNum();
-					var _loc7_:UtilLoadMgr;
-					(_loc7_ = new UtilLoadMgr()).setExtraData({
-						"ccChar":param1, 
-						"actionId":param2, 
-						"facialId":param3
+					var libNum:Number = char.getUserChosenLibraryNum();
+					var loadMgr:UtilLoadMgr  = new UtilLoadMgr();
+					loadMgr.setExtraData({
+						"ccChar": char, 
+						"actionId": actionId, 
+						"facialId": facialId
 					});
-					_loc7_.addEventListener(LoadMgrEvent.ALL_COMPLETE, this.onCompleteLibrary);
-					var _loc8_:int = 0;
-					while (_loc8_ < _loc6_) {
-						if ((_loc10_ = param1.getUserChosenLibraryByIndex(_loc8_)) != null) {
-							_loc11_ = new ExtraDataLoader();
-							(_loc12_ = new Object())["library"] = _loc10_;
-							_loc11_.extraData = _loc12_;
-							_loc7_.addEventDispatcher(_loc11_.contentLoaderInfo, Event.COMPLETE);
-							_loc11_.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onLoadLibrary);
-							_loc11_.load(UtilNetwork.getGetCcLibraryFileRequest(_loc10_.theme_id, _loc10_.type, _loc10_.component_id));
+					loadMgr.addEventListener(LoadMgrEvent.ALL_COMPLETE, this.onCompleteLibrary);
+					for (var libI:int = 0; libI < libNum; libI++) {
+						var library:CcLibrary = char.getUserChosenLibraryByIndex(libI);
+						if (library != null) {
+							var edl:ExtraDataLoader = new ExtraDataLoader();
+							var extraData:Object = new Object();
+							extraData["library"] = library;
+							edl.extraData = extraData;
+							loadMgr.addEventDispatcher(edl.contentLoaderInfo, Event.COMPLETE);
+							edl.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onLoadLibrary);
+							edl.load(UtilNetwork.getGetCcLibraryFileRequest(library.theme_id, library.type, library.component_id));
 						}
-						_loc8_++;
 					}
-					_loc7_.commit();
+					loadMgr.commit();
 					return;
 				}
 			}
 			
-			private function onLoadLibrary(param1:Event) : void
+			private function onLoadLibrary(event:Event) : void
 			{
-				var _loc2_:LoaderInfo = LoaderInfo(param1.currentTarget);
+				var _loc2_:LoaderInfo = LoaderInfo(event.currentTarget);
 				var _loc3_:Object = ExtraDataLoader(_loc2_.loader).extraData;
 				var _loc4_:CcLibrary = CcLibrary(_loc3_["library"]);
 				CustomCharacterMaker(this.myUI.getChildByName(this.LOADER)).CCM.addStyle(_loc4_.type, _loc2_);

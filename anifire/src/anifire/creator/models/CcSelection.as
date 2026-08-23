@@ -2,13 +2,9 @@ package anifire.creator.models
 {
 	public class CcSelection
 	{
-
 		public static const XML_NODE_NAME:String = "selection";
-
 		private var _type:String;
-
 		private var _stateId:String;
-
 		private var _facialId:String;
 
 		public function CcSelection()
@@ -31,11 +27,11 @@ package anifire.creator.models
 			return this._facialId;
 		}
 
-		public function deserialize(param1:XML) : void
+		public function deserialize(value:XML) : void
 		{
-			this._type = param1.@type;
-			this._stateId = param1.@state_id;
-			this._facialId = param1.@facial_id;
+			this._type = value.@type;
+			this._stateId = value.@state_id;
+			this._facialId = value.@facial_id;
 		}
 	}
 }

@@ -30,9 +30,9 @@ package anifire.creator.models
 			super();
 		}
 
-		internal static function generateInternalId(param1:String) : String
+		internal static function generateInternalId(ref:String) : String
 		{
-			return param1;
+			return ref;
 		}
 
 		public function parentComponentType() : String
@@ -49,50 +49,45 @@ package anifire.creator.models
 		{
 			return this._colorReference;
 		}
-
-		public function set colorReference(param1:String) : void
+		public function set colorReference(value:String) : void
 		{
-			this._colorReference = param1;
+			this._colorReference = value;
 		}
 
 		public function get originalColor() : uint
 		{
 			return this._originalColor;
 		}
-
-		public function set originalColor(param1:uint) : void
+		public function set originalColor(value:uint) : void
 		{
-			this._originalColor = param1;
+			this._originalColor = value;
 		}
 
 		public function get componentType() : String
 		{
 			return this._componentType;
 		}
-
-		public function set componentType(param1:String) : void
+		public function set componentType(value:String) : void
 		{
-			this._componentType = param1;
+			this._componentType = value;
 		}
 
 		public function get enable() : Boolean
 		{
 			return this._enable;
 		}
-
-		public function set enable(param1:Boolean) : void
+		public function set enable(value:Boolean) : void
 		{
-			this._enable = param1;
+			this._enable = value;
 		}
 
 		public function get defaultColor() : uint
 		{
 			return this._defaultColor;
 		}
-
-		public function set defaultColor(param1:uint) : void
+		public function set defaultColor(value:uint) : void
 		{
-			this._defaultColor = param1;
+			this._defaultColor = value;
 		}
 
 		public function get isOriginalColorExist() : Boolean
@@ -110,42 +105,33 @@ package anifire.creator.models
 			return this._colorChoices;
 		}
 
-		public function deSerialize(param1:XML, param2:String = null) : void
+		public function deSerialize(xml:XML, cptType:String = null) : void
 		{
-			var _loc3_:XML = null;
-			this.colorReference = param1.@r;
-			if(param1.attribute("oc").length() > 0)
-			{
+			this.colorReference = xml.@r;
+			if (xml.attribute("oc").length() > 0) {
 				this._isOriginalColorExist = true;
-				this.originalColor = param1.@oc;
-			}
-			else
-			{
+				this.originalColor = xml.@oc;
+			} else {
 				this._isOriginalColorExist = false;
 			}
-			if(param2 == null)
-			{
-				this.componentType = param1.attribute("component_type").length() > 0 ? param1.@component_type : null;
+			if (cptType == null) {
+				this.componentType = xml.attribute("component_type").length() > 0 ? xml.@component_type : null;
+			} else {
+				this.componentType = cptType;
 			}
-			else
-			{
-				this.componentType = param2;
-			}
-			this.enable = param1.@enable == "N" ? false : true;
-			this.defaultColor = param1.attribute("default");
-			if(param1.attribute("parent_component_type").length() > 0 && param1.attribute("parent_color_r").length() > 0)
-			{
-				this._parentComponentType = param1.@parent_component_type;
-				this._parentComponentColorRef = param1.@parent_color_r;
-			}
-			else
-			{
+			this.enable = xml.@enable == "N" ? false : true;
+			// i'm aware this isn't standard and errors out in the ide,
+			// BUT it's what goanimate did...
+			this.defaultColor = xml.@default;
+			if (xml.attribute("parent_component_type").length() > 0 && xml.attribute("parent_color_r").length() > 0) {
+				this._parentComponentType = xml.@parent_component_type;
+				this._parentComponentColorRef = xml.@parent_color_r;
+			} else {
 				this._parentComponentType = null;
 				this._parentComponentColorRef = null;
 			}
-			for each(_loc3_ in param1.child(XML_CHOICE_NODE_NAME))
-			{
-				this._colorChoices.push(uint(Number(_loc3_.toString())));
+			for each (var choiceXml:XML in xml.child(XML_CHOICE_NODE_NAME)) {
+				this._colorChoices.push(uint(Number(choiceXml.toString())));
 			}
 		}
 	}
