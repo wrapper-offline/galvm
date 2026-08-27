@@ -8,12 +8,14 @@
 			"src"
 		],
 		"library-path": [
-			"../libs/nochump-ziplib-105.swc",
 			"../dist/libs/as3corelib.swc",
-			"../dist/libs/Singularity.swc"
+			"../dist/libs/ColorMatrix.swc",
+			"../dist/libs/Singularity.swc",
+			"../libs/nochump-ziplib-105.swc",
+			"../libs/oggvorbisencoder.swc",
+			"../libs/tweener.swc"
 		],
 		"warnings": false
 	},
-	"type": "lib",
-	"additionalOptions": "-locale en_US"
+	"type": "lib"
 }

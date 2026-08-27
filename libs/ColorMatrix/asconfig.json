@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"output": "../../dist/libs/ColorMatrix.swc",
+		"source-path": [
+			"./"
+		],
+		"include-sources": [
+			"./"
+		],
+		"warnings": false
+	},
+	"type": "lib"
+}
