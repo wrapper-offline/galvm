@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flex-config>
+	<compiler append="true">
+		<library-path append="true">
+			<path-element>./dist/libs/anifire.swc</path-element>
+		</library-path>
+
+		<locale>
+			<locale-element>en_US</locale-element>
+		</locale>
+
+		<fonts>
+			<managers>
+				<manager-class>flash.fonts.CFFFontManager</manager-class>
+			</managers>
+		</fonts>
+	</compiler>
+
+	<verify-digests>false</verify-digests>
+
+	<!-- NOTE: These are not 100% true to the original code. The RSLs defined
+		in it longer pass signature verification, so they have been replaced
+		with their unsigned equivalents.
+	-->
+	<runtime-shared-library-path>
+		<path-element>${flexlib}/libs/apache.swc</path-element>
+		<rsl-url>../../rsls/apache_4.16.1.20171115.swf</rsl-url>
+	</runtime-shared-library-path>
+	<runtime-shared-library-path>
+		<path-element>${flexlib}/libs/framework.swc</path-element>
+		<rsl-url>../../rsls/framework_4.16.1.20171115.swf</rsl-url>
+	</runtime-shared-library-path>
+	<runtime-shared-library-path>
+		<path-element>${flexlib}/libs/textLayout.swc</path-element>
+		<rsl-url>../../rsls/textLayout_4.16.1.20171115.swf</rsl-url>
+	</runtime-shared-library-path>
+	<runtime-shared-library-path>
+		<path-element>${flexlib}/libs/spark.swc</path-element>
+		<rsl-url>../../rsls/spark_4.16.1.20171115.swf</rsl-url>
+	</runtime-shared-library-path>
+	<runtime-shared-library-path>
+		<path-element>${flexlib}/libs/sparkskins.swc</path-element>
+		<rsl-url>../../rsls/sparkskins_4.16.1.20171115.swf</rsl-url>
+	</runtime-shared-library-path>
+	<runtime-shared-library-path>
+		<path-element>${flexlib}/libs/rpc.swc</path-element>
+		<rsl-url>../../rsls/rpc_4.16.1.20171115.swf</rsl-url>
+	</runtime-shared-library-path>
+	<runtime-shared-library-path>
+		<path-element>${flexlib}/libs/mx/mx.swc</path-element>
+		<rsl-url>../../rsls/mx_4.16.1.20171115.swf</rsl-url>
+	</runtime-shared-library-path>
+	<runtime-shared-library-path>
+		<path-element>${flexlib}/libs/charts.swc</path-element>
+		<rsl-url>../../rsls/charts_4.16.1.20171115.swf</rsl-url>
+	</runtime-shared-library-path>
+	<runtime-shared-library-path>
+		<path-element>${flexlib}/libs/spark_dmv.swc</path-element>
+		<rsl-url>../../rsls/spark_dmv_4.16.1.20171115.swf</rsl-url>
+	</runtime-shared-library-path>
+	<runtime-shared-library-path>
+		<path-element>${flexlib}/libs/advancedgrids.swc</path-element>
+		<rsl-url>../../rsls/advancedgrids_4.16.1.20171115.swf</rsl-url>
+	</runtime-shared-library-path>
+	<static-link-runtime-shared-libraries>false</static-link-runtime-shared-libraries>
+
+	<metadata>
+		<title>GoAnimate Studio</title>
+		<description>http://www.goanimate.com/</description>
+		<publisher>GoAnimate</publisher>
+		<creator>GoAnimate Team</creator>
+		<language>EN</language>
+	</metadata>
+</flex-config>

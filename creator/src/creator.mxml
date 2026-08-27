@@ -4,6 +4,7 @@
 	xmlns:anifire="anifire.*"
 	xmlns:aeComponent="anifire.component.*"
 	xmlns:crComponents="anifire.creator.components.*"
+	implements="anifire.creator.interfaces.ICcCharEditorContainer, anifire.creator.interfaces.ICcMainUiContainer, anifire.creator.interfaces.ICcPreviewAndSaveContainer"
 	width="960"
 	height="600"
 	preinitialize="initApp()"
@@ -11,111 +12,90 @@
 	backgroundAlpha="0"
 	backgroundColor="0xFDFDFD"
 	creationPolicy="auto"
+	frameRate="24"
 	preloader="anifire.creator.components.CCPreloader"
-	implements="anifire.creator.interfaces.ICcCharEditorContainer, anifire.creator.interfaces.ICcMainUiContainer, anifire.creator.interfaces.ICcPreviewAndSaveContainer">
+	usePreloader="true">
 
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace aeComponents "anifire.components.*";
 		@namespace crCompnents "anifire.creator.components.*";
 
-		global
-		{
+		global {
 			layoutDirection: "ltr";
 		}
-		s|Application
-		{
+		s|Application {
 			font-size: 13;
 		}
-		s|HScrollBar
-		{
+		s|HScrollBar {
 			skinClass: ClassReference("anifire.creator.skins.DefaultHScrollBarSkin");
 		}
-		s|VScrollBar
-		{
+		s|VScrollBar {
 			skinClass: ClassReference("anifire.creator.skins.DefaultVScrollBarSkin");
 		}
 		s|TextBase,
 		s|SkinnableTextBase,
-		s|RichEditableText
-		{
+		s|RichEditableText {
 			color: #515969;
 			fontStyle: normal;
 			fontFamily: "StudioSparkMain";
 		}
-		s|Label#promptDisplay
-		{
+		s|Label#promptDisplay {
 			color: #CCCCCC;
 			fontStyle: "normal";
 		}
-		s|RichText#errorTextDisplay
-		{
+		s|RichText#errorTextDisplay {
 			fontSize: 11;
 		}
-		s|TextInput
-		{
+		s|TextInput {
 			borderColor: #CACAD4;
 			skinClass: ClassReference("anifire.creator.skins.DefaultTextInputSkin");
 		}
-		s|Button.primary
-		{
+		s|Button.primary {
 			skinClass: ClassReference("anifire.creator.skins.PrimaryButtonSkin");
 		}
-		s|Button.default
-		{
+		s|Button.default {
 			skinClass: ClassReference("anifire.creator.skins.DefaultButtonSkin");
 		}
-		crCompnents|IconButton
-		{
+		crCompnents|IconButton {
 			skinClass: ClassReference("anifire.creator.skins.IconButtonSkin");
 		}
-		aeComponents|IconButton.topToolBar
-		{
+		aeComponents|IconButton.topToolBar {
 			skinClass: ClassReference("anifire.creator.skins.TopToolBarButtonSkin");
 		}
-		crCompnents|MenuItemList
-		{
+		crCompnents|MenuItemList {
 			skinClass: ClassReference("anifire.creator.skins.MenuItemListSkin");
 		}
-		crCompnents|ColorPicker
-		{
+		crCompnents|ColorPicker {
 			skinClass: ClassReference("anifire.creator.skins.FlatColorPickerSkin");
 		}
-		crCompnents|ArrowTipContainer
-		{
+		crCompnents|ArrowTipContainer {
 			skinClass: ClassReference("anifire.creator.skins.ArrowTipContainerSkin");
 		}
-		s|DropDownList
-		{
+		s|DropDownList {
 			skinClass: ClassReference("anifire.creator.skins.DefaultDropDownListSkin");
 		}
-		crCompnents|ConfirmPopUp
-		{
+		crCompnents|ConfirmPopUp {
 			skinClass: ClassReference("anifire.creator.skins.ConfirmPopUpSkin");
 			fontSize: 14;
 		}
-		s|Panel
-		{
+		s|Panel {
 			skinClass: ClassReference("anifire.creator.skins.ConfirmPanelSkin");
 		}
-
+		
 		@font-face {
-			src: url("../fonts/files/Lato-Bold.ttf");
+			src: url("../fonts/Lato-Bold.ttf");
 			fontWeight: 700;
 			fontFamily: StudioSparkMain;
-			embedAsCFF: true;
 		}
 		@font-face {
-			src: url("../fonts/files/Lato-Bold.ttf");
-			/* src: url("../fonts/files/Lato-Italic.ttf"); */
+			src: url("../fonts/Lato-Regular.ttf");
+			fontFamily: StudioSparkMain;
+		}
+		@font-face {
+			src: url("../fonts/Lato-Black.ttf");
 			fontStyle: italic;
 			fontFamily: StudioSparkMain;
-			embedAsCFF: true;
-		}
-		@font-face {
-			src: url("../fonts/files/Lato-Regular.ttf");
-			fontFamily: StudioSparkMain;
-			embedAsCFF: true;
 		}
 	</fx:Style>
 
@@ -168,7 +148,7 @@
 				}
 			}
 
-			private function resourceComplete(event:Event = null) : void
+			private function resourceComplete() : void
 			{
 				this._resourceInit = true;
 				if (this._componentInit) {
@@ -319,8 +299,10 @@
 				<s:SolidColor color="0xEEEEEE"/>
 			</s:fill>
 		</s:Rect>
+
 		<s:Group id="_ce_mainViewStack" width="100%" height="100%">
 			<crComponents:BodyShapeMegaChooser id="_ce_bodyShapeMegaChooser" width="100%" height="100%" visible="false"/>
+
 			<s:Group id="_ce_mainEditorComponentsContainer" width="960" height="600" styleName="bgCharEditor">
 				<crComponents:CharPreviewer
 					id="_ce_charPreviewer"
@@ -330,12 +312,14 @@
 					height="315"
 					scaleX="1.3"
 					scaleY="1.3"/>
+
 				<crComponents:facePreview
 					id="_ce_facePreviewer"
 					x="654"
 					y="68"
 					width="300"
 					height="430"/>
+
 				<s:Group id="_topControl" top="0" left="0" width="960" height="68">
 					<s:Rect width="100%" height="100%">
 						<s:fill>
@@ -360,6 +344,7 @@
 						</s:stroke>
 					</s:Line>
 				</s:Group>
+
 				<crComponents:CcColorPickers
 					id="_ce_colorPicker"
 					bottom="10"
@@ -368,10 +353,12 @@
 					height="62"
 					biggerElementWidth="248"
 					smallerElementWidth="248"/>
+
 				<crComponents:CcComponentPropertyInspectorSpark
 					id="_ce_thumbPropertyInspector"
 					bottom="0"
 					right="0"/>
+
 				<s:Group
 					id="_ce_componentChooserViewStack"
 					top="68"
@@ -414,6 +401,7 @@
 					right="0"/>
 			</s:Group>
 		</s:Group>
+
 		<s:Group id="ccCharPreviewAndSaveScreen" width="100%" height="100%" visible="false">
 			<s:Group id="ps_interactionViewStack" x="0" y="0" width="100%" height="600">
 				<crComponents:CharPreviewer
@@ -425,11 +413,13 @@
 					clipContent="false"
 					horizontalCenter="0"
 					verticalCenter="20"/>
+
 				<s:Group id="ps_charPreviewCanvas" width="100%" height="100%">
 					<crComponents:CharPreviewOption
 						id="ps_charPreviewOptionBox"
 						bottom="15"
 						horizontalCenter="0"/>
+
 					<s:Group top="0" left="0" width="960" height="68">
 						<crComponents:TopButtons id="_ce_buttonBar_preview" right="0" width="300" height="68"/>
 						<s:Line width="100%" top="0">
