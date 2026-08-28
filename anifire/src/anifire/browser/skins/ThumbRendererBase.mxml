@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		autoDrawBackground="false"
+		mouseDown="mouseDownHandler(event)"
+		mouseMove="mouseMoveHandler(event)"
+		mouseUp="mouseUpHandler(event)"
+		mouseOut="mouseOutHandler(event)" toolTip="{_toolTipContent}">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.managers.AppConfigManager;
+			import anifire.util.UtilSite;
+			import mx.core.DragSource;
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.DragManager;
+
+			protected var _isMouseDown:Boolean = false;
+			protected var _dragSource:DragSource;
+			protected var _dragProxy:IFlexDisplayObject;
+			[Bindable]
+			protected var _toolTipContent:String;
+
+			protected function shouldStartDrag(param1:MouseEvent) : Boolean
+			{
+				return true;
+			}
+			
+			protected function createDragProxy() : IFlexDisplayObject
+			{
+				return null;
+			}
+			
+			protected function createDragSource(param1:IFlexDisplayObject, param2:MouseEvent) : DragSource
+			{
+				return new DragSource();
+			}
+			
+			protected function updateConsoleDragSource() : void
+			{
+			}
+			
+			protected function clearDrag() : void
+			{
+				this._dragProxy = null;
+				this._dragSource = null;
+				this._isMouseDown = false;
+			}
+			
+			protected function allowPublish() : Boolean
+			{
+				var _loc1_:AppConfigManager = null;
+				var _loc2_:String = null;
+				if(UtilSite.siteId == UtilSite.SKOLETUBE || UtilSite.siteId == UtilSite.SCHOOL)
+				{
+					_loc1_ = AppConfigManager.instance;
+					_loc2_ = _loc1_.getValue("role");
+					return _loc2_ == "teacher";
+				}
+				return false;
+			}
+			
+			private function mouseDownHandler(param1:MouseEvent) : void
+			{
+				if(this.shouldStartDrag(param1))
+				{
+					this._dragProxy = this.createDragProxy();
+					this._dragSource = this.createDragSource(this._dragProxy,param1);
+					this._isMouseDown = true;
+				}
+			}
+			
+			private function mouseMoveHandler(param1:MouseEvent) : void
+			{
+				if(this._isMouseDown && Boolean(this._dragSource))
+				{
+					DragManager.doDrag(this,this._dragSource,param1,this._dragProxy);
+				}
+			}
+			
+			private function mouseUpHandler(param1:MouseEvent) : void
+			{
+				if(this._isMouseDown)
+				{
+					this.updateConsoleDragSource();
+					this.clearDrag();
+				}
+			}
+			
+			private function mouseOutHandler(param1:MouseEvent) : void
+			{
+				this.clearDrag();
+			}
+		]]>
+	</fx:Script>
+
+</s:ItemRenderer>

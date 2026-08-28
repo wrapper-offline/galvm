@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Metadata>
+		[HostComponent("anifire.browser.components.PageNavigation")]
+	</fx:Metadata>
+
+	<mx:HBox verticalAlign="middle">
+		<s:Button id="btnFirst" skinClass="anifire.browser.skins.PageNavigationButtonSkin" label="&lt;&lt;" enabled="false" buttonMode="true"/>
+		<s:Button id="btnPrev" skinClass="anifire.browser.skins.PageNavigationButtonSkin" label="&lt;" enabled="false" buttonMode="true"/>
+		<s:Label text="Page"/>
+		<s:TextInput id="currentPageTextInput" textAlign="center" restrict="0-9" maxChars="3" widthInChars="3" text="{hostComponent.currentPage}"/>
+		<s:Label text="of {hostComponent.totalPage}"/>
+		<s:Button id="btnNext" skinClass="anifire.browser.skins.PageNavigationButtonSkin" label="&gt;" enabled="false" buttonMode="true"/>
+		<s:Button id="btnLast" skinClass="anifire.browser.skins.PageNavigationButtonSkin" label="&gt;&gt;" enabled="false" buttonMode="true"/>
+	</mx:HBox>
+
+</s:Skin>

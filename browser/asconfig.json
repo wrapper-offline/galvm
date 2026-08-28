@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"output": "../dist/bin/browser.swf",
+		"accessible": true,
+		"source-path": [
+			"src"
+		],
+		"load-config": ["../build-config.xml"]
+	},
+	"files": [
+		"src/browser.mxml"
+	]
+}

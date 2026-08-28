@@ -84,16 +84,16 @@
 		}
 		
 		@font-face {
-			src: url("../fonts/Lato-Bold.ttf");
+			src: url("../../anifire/src/styles/fonts/Lato-Bold.ttf");
 			fontWeight: 700;
 			fontFamily: StudioSparkMain;
 		}
 		@font-face {
-			src: url("../fonts/Lato-Regular.ttf");
+			src: url("../../anifire/src/styles/fonts/Lato-Regular.ttf");
 			fontFamily: StudioSparkMain;
 		}
 		@font-face {
-			src: url("../fonts/Lato-Black.ttf");
+			src: url("../../anifire/src/styles/fonts/Lato-Black.ttf");
 			fontStyle: italic;
 			fontFamily: StudioSparkMain;
 		}
@@ -158,8 +158,8 @@
 
 			private function initialConsole() : void
 			{
-				var _loc1_:AppConfigManager = AppConfigManager.instance;
-				var _loc2_:String = _loc1_.getValue(ServerConstants.FLASHVAR_SITE_ID);
+				var config:AppConfigManager = AppConfigManager.instance;
+				var siteIdParam:String = config.getValue(ServerConstants.FLASHVAR_SITE_ID);
 				CcConsole.setConfiguration(new GoAnimate());
 				CcConsole.initializeCcConsole(this, this, this);
 				this._ccConsole = CcConsole.getCcConsole();

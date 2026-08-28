@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	blendMode="normal"
+	minHeight="32"
+	alpha.disabledStates="0.5">
+
+	<fx:Metadata>
+		[HostComponent("spark.components.TextInput")]
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexVersion;
+
+			private static const exclusions:Array = ["background","textDisplay","promptDisplay","border"];
+			private static const exclusions_4_0:Array = ["background","textDisplay","promptDisplay"];
+			private static const contentFill:Array = ["bgFill"];
+			private static const focusExclusions:Array = ["textDisplay"];
+			private var paddingChanged:Boolean;
+
+			override public function get colorizeExclusions() : Array
+			{
+				if(FlexVersion.compatibilityVersion < FlexVersion.VERSION_4_5)
+				{
+					return exclusions_4_0;
+				}
+				return exclusions;
+			}
+			
+			override public function get contentItems() : Array
+			{
+				return contentFill;
+			}
+			
+			override protected function commitProperties() : void
+			{
+				super.commitProperties();
+				if(this.paddingChanged)
+				{
+					this.updatePadding();
+					this.paddingChanged = false;
+				}
+			}
+			
+			override protected function initializationComplete() : void
+			{
+				useChromeColor = true;
+				super.initializationComplete();
+			}
+			
+			override protected function updateDisplayList(param1:Number, param2:Number) : void
+			{
+				if(getStyle("borderVisible") == true)
+				{
+					this.border.visible = true;
+					this.shadow.visible = true;
+					this.background.left = this.background.top = this.background.right = this.background.bottom = 1;
+					this.textDisplay.left = this.textDisplay.top = this.textDisplay.right = this.textDisplay.bottom = 1;
+					if(this.promptDisplay)
+					{
+						this.promptDisplay.setLayoutBoundsSize(param1 - 2,param2 - 2);
+						this.promptDisplay.setLayoutBoundsPosition(1,1);
+					}
+				}
+				else
+				{
+					this.border.visible = false;
+					this.shadow.visible = false;
+					this.background.left = this.background.top = this.background.right = this.background.bottom = 0;
+					this.textDisplay.left = this.textDisplay.top = this.textDisplay.right = this.textDisplay.bottom = 0;
+					if(this.promptDisplay)
+					{
+						this.promptDisplay.setLayoutBoundsSize(param1,param2);
+						this.promptDisplay.setLayoutBoundsPosition(0,0);
+					}
+				}
+				this.borderStroke.color = getStyle("borderColor");
+				this.borderStroke.alpha = getStyle("borderAlpha");
+				super.updateDisplayList(param1,param2);
+			}
+			
+			private function updatePadding() : void
+			{
+				var _loc1_:Number = NaN;
+				if(!this.textDisplay)
+				{
+					return;
+				}
+				_loc1_ = Number(getStyle("paddingLeft"));
+				if(this.textDisplay.getStyle("paddingLeft") != _loc1_)
+				{
+					this.textDisplay.setStyle("paddingLeft",_loc1_);
+				}
+				_loc1_ = Number(getStyle("paddingTop"));
+				if(this.textDisplay.getStyle("paddingTop") != _loc1_)
+				{
+					this.textDisplay.setStyle("paddingTop",_loc1_);
+				}
+				_loc1_ = Number(getStyle("paddingRight"));
+				if(this.textDisplay.getStyle("paddingRight") != _loc1_)
+				{
+					this.textDisplay.setStyle("paddingRight",_loc1_);
+				}
+				_loc1_ = Number(getStyle("paddingBottom"));
+				if(this.textDisplay.getStyle("paddingBottom") != _loc1_)
+				{
+					this.textDisplay.setStyle("paddingBottom",_loc1_);
+				}
+				if(!this.promptDisplay)
+				{
+					return;
+				}
+				_loc1_ = Number(getStyle("paddingLeft"));
+				if(this.promptDisplay.getStyle("paddingLeft") != _loc1_)
+				{
+					this.promptDisplay.setStyle("paddingLeft",_loc1_);
+				}
+				_loc1_ = Number(getStyle("paddingTop"));
+				if(this.promptDisplay.getStyle("paddingTop") != _loc1_)
+				{
+					this.promptDisplay.setStyle("paddingTop",_loc1_);
+				}
+				_loc1_ = Number(getStyle("paddingRight"));
+				if(this.promptDisplay.getStyle("paddingRight") != _loc1_)
+				{
+					this.promptDisplay.setStyle("paddingRight",_loc1_);
+				}
+				_loc1_ = Number(getStyle("paddingBottom"));
+				if(this.promptDisplay.getStyle("paddingBottom") != _loc1_)
+				{
+					this.promptDisplay.setStyle("paddingBottom",_loc1_);
+				}
+			}
+			
+			override public function styleChanged(param1:String) : void
+			{
+				var _loc2_:Boolean = !param1 || param1 == "styleName";
+				super.styleChanged(param1);
+				if(_loc2_ || param1.indexOf("padding") == 0)
+				{
+					this.paddingChanged = true;
+					invalidateProperties();
+				}
+			}
+			
+			override public function get focusSkinExclusions() : Array
+			{
+				return focusExclusions;
+			}
+		]]>
+	</fx:Script>
+
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="disabled" stateGroups="disabledStates"/>
+		<s:State name="normalWithPrompt"/>
+		<s:State name="disabledWithPrompt" stateGroups="disabledStates"/>
+	</s:states>
+
+	<s:Rect id="border" left="0" right="0" top="0" bottom="0" radiusX="3">
+		<s:stroke>
+			<s:SolidColorStroke id="borderStroke" weight="1"/>
+		</s:stroke>
+	</s:Rect>
+	<s:Rect id="background" left="1" right="1" top="1" bottom="1" radiusX="2">
+		<s:fill>
+			<s:SolidColor id="bgFill" color="0xFFFFFF"/>
+		</s:fill>
+	</s:Rect>
+	<s:Rect id="shadow" left="1" top="1" right="1" height="1" radiusX="2">
+		<s:fill>
+			<s:SolidColor color="0x000000" alpha="0.12"/>
+		</s:fill>
+	</s:Rect>
+	<s:HGroup width="100%" height="100%" verticalAlign="baseline" paddingLeft="3" paddingRight="3" paddingTop="4" paddingBottom="2">
+		<s:RichEditableText id="textDisplay" width="100%" widthInChars="10"/>
+	</s:HGroup>
+	<s:Label
+		id="promptDisplay"
+		includeIn="normalWithPrompt, disabledWithPrompt"
+		maxDisplayedLines="1"
+		mouseEnabled="false"
+		mouseChildren="false"
+		includeInLayout="false"
+		verticalAlign="middle"/>
+
+</s:SparkSkin>

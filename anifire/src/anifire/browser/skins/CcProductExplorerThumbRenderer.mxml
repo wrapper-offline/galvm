@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bSkins:ThumbRendererBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		xmlns:bSkins="anifire.browser.skins.*"
+		width="195"
+		height="170">
+	
+	<fx:Script>
+		<![CDATA[
+			import anifire.browser.core.CharThumb;
+			import anifire.browser.models.ThumbModel;
+			import anifire.constant.ServerConstants;
+			import anifire.managers.AppConfigManager;
+			import anifire.managers.ExternalLinkManager;
+			import anifire.util.UtilDict;
+			import anifire.util.UtilUser;
+			import spark.filters.ColorMatrixFilter;
+
+			protected static var _lockFilter:ColorMatrixFilter;
+			private static var _configManager:AppConfigManager = AppConfigManager.instance;
+			protected var _model:ThumbModel;
+			protected var _dataSource:CharThumb;
+			protected var _colorSetId:String = "";
+			[Bindable]
+			protected var _copyable:Boolean;
+			[Bindable]
+			protected var _locked:Boolean;
+
+			public static function get lockFilter() : ColorMatrixFilter
+			{
+				var _loc1_:Array = null;
+				if(!_lockFilter)
+				{
+					_loc1_ = [1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0.3,0];
+					_lockFilter = new ColorMatrixFilter(_loc1_);
+				}
+				return _lockFilter;
+			}
+
+			override public function set data(param1:Object) : void
+			{
+				super.data = param1;
+				this._model = data as ThumbModel;
+				if(this._model)
+				{
+					this._dataSource = this._model.thumb as CharThumb;
+					this._colorSetId = this._model.colorSetId;
+					if(this._model.isPlaceHolder)
+					{
+						this.imageDisplay.model = null;
+						this._locked = false;
+						_toolTipContent = UtilDict.toDisplay("go","Create your own characters");
+					}
+					else
+					{
+						this.imageDisplay.model = this._model;
+					}
+				}
+				else
+				{
+					this._dataSource = null;
+					this._colorSetId = "";
+					this.imageDisplay.model = null;
+				}
+				if(this._dataSource)
+				{
+					this.updateThumbData();
+				}
+			}
+			
+			override protected function shouldStartDrag(param1:MouseEvent) : Boolean
+			{
+				return false;
+			}
+			
+			protected function updateThumbData() : void
+			{
+				_toolTipContent = this._dataSource.name;
+				if(UtilUser.hasAdminFeatures)
+				{
+					_toolTipContent = this._dataSource.toString();
+				}
+				this._locked = this._model.locked;
+				this._copyable = true;
+			}
+			
+			protected function copyButtonHandler(param1:MouseEvent) : void
+			{
+				var _loc2_:String = this._dataSource.ccThemeId;
+				var _loc3_:String = !!this._dataSource.encryptId ? this._dataSource.encryptId : this._dataSource.id;
+				var _loc4_:String;
+				if(ServerConstants.IS_WIX)
+				{
+					_loc4_ = ServerConstants.HOST_PATH + "charactercreator/create/" + _loc2_ + "/" + _loc3_;
+				}
+				else
+				{
+					_loc4_ = ServerConstants.CC_PAGE_PATH;
+					if(_loc2_)
+					{
+						_loc4_ += "/" + _loc2_ + "/copy/" + _loc3_;
+					}
+				}
+				ExternalLinkManager.instance.navigateWithSession(_loc4_);
+			}
+		]]>
+	</fx:Script>
+	
+	<bSkins:states>
+		<s:State name="normal"/>
+		<s:State name="hovered"/>
+		<s:State name="dragging"/>
+	</bSkins:states>
+	
+	<s:Rect left="0" right="0" top="0" bottom="0">
+		<s:stroke>
+			<s:SolidColorStroke color="0xCCCCCC" alpha.normal="0"/>
+		</s:stroke>
+	</s:Rect>
+	<bSkins:CharacterThumbSparkImage mouseEnabled="false" mouseChildren="false" left="7" right="7" top="7" bottom="7" id="imageDisplay"/>
+	<s:BitmapImage bottom="3" right="3" id="lockIcon" visible="{_locked}"/>
+	<s:Button
+		itemCreationPolicy="deferred"
+		includeIn="hovered"
+		bottom="10"
+		horizontalCenter="0"
+		label="Make a copy"
+		buttonMode="true"
+		width="125"
+		height="35"
+		fontSize="13"
+		color="0xFFFFFF"
+		fontWeight="bold"
+		skinClass="anifire.browser.skins.CopyCcButtonSkin"
+		icon="@Embed('../images/makeACopyIcon.png')"
+		mouseDown="copyButtonHandler(event)"
+		id="copyButton"
+		visible="{_copyable}"/>
+	
+</bSkins:ThumbRendererBase>

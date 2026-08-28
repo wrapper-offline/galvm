@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:bComponents="anifire.browser.components.*"
+	xmlns:bSkins="anifire.browser.skins.*">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.browser.core.CharThumb;
+			import anifire.browser.core.Theme;
+			import anifire.browser.events.ProductGroupCollectionEvent;
+			import anifire.browser.models.CharacterExplorerCollection;
+			import anifire.browser.models.ThumbModel;
+			import anifire.managers.AppConfigManager;
+			import anifire.util.UtilDict;
+			import spark.events.IndexChangeEvent;
+			
+			private static var _configManager:AppConfigManager = AppConfigManager.instance;
+			private var _themeId:String;
+			private var _theme:Theme;
+			[Bindable]
+			protected var _themeCharacterCollection:CharacterExplorerCollection;
+			private var _characterCollectionLookup:Object = {};
+			[Bindable]
+			private var _loadingThemeCC:Boolean = true;
+			
+			public function initUI() : void
+			{
+				navCustomChars.label = UtilDict.toDisplay("browser", "tab_customcharacters_label");
+				navStockChars.label = UtilDict.toDisplay("browser", "tab_stockcharacters_label");
+				this._themeId = _configManager.getValue("themeId");
+				this.bodyTypeSelector.themeId = this._themeId;
+				this.customerCharaterExplorer.themeId = this._themeId;
+				this.stockCharaterExplorer.themeId = this._themeId;
+				this.categoryList.visible = true;
+				this.loadStockCharacters();
+			}
+			
+			private function loadStockCharacters() : void
+			{
+				var studioThemeId:String = this._themeId;
+				switch (this._themeId) {
+					case "family":
+						studioThemeId = "custom";
+						break;
+					case "cc2":
+						studioThemeId = "action";
+				}
+				this._theme = new Theme();
+				this._theme.addEventListener(Event.COMPLETE, this.onLoadThemeComplete);
+				this._theme.initThemeByLoadThemeFile(studioThemeId);
+			}
+
+			private function onLoadThemeComplete(event:Event) : void
+			{
+				this.onShowThemeCharacter();
+			}
+			
+			private function onShowThemeCharacter() : void
+			{
+				var theme:Theme = this._theme;
+				var storedCharList:CharacterExplorerCollection = this._characterCollectionLookup[theme.id];
+				// known chars of the current theme are not the previously displayed chars OR we haven't stored this theme's chars
+				var storedCharsAndNotCurrent:Boolean = storedCharList != this._themeCharacterCollection || !storedCharList;
+				this._themeCharacterCollection = storedCharList;
+				// check if we have not stored this theme's char list
+				if (!this._themeCharacterCollection)
+				{
+					// store the character list
+					this._themeCharacterCollection = new CharacterExplorerCollection(theme);
+					this._characterCollectionLookup[theme.id] = this._themeCharacterCollection;
+					// add all the character thumbnails
+					var totalChars:int = theme.charThumbs.length;
+					var index:int = 0;
+					while (index < totalChars)
+					{
+						var character:CharThumb = theme.charThumbs.getValueByIndex(index) as CharThumb;
+						if (character.enable)
+						{
+							var thumbnail:ThumbModel = new ThumbModel(character, character.firstColorSetId);
+							thumbnail.isStoreCharacter = true;
+							this._themeCharacterCollection.addProduct(thumbnail);
+						}
+						index++;
+					}
+					this._themeCharacterCollection.sortByCategoryName();
+					if (Boolean(theme.ccThemeId) && this._themeCharacterCollection.nextUserCharacterPage == 0)
+					{
+						this._themeCharacterCollection.addEventListener(ProductGroupCollectionEvent.THEME_CHAR_COMPLETE, this.onUserCCLoaded);
+						this._themeCharacterCollection.loadNextPage();
+						return;
+					}
+				}
+				if (storedCharsAndNotCurrent)
+				{
+					this.customerCharaterExplorer.displayNaturally();
+					this.stockCharaterExplorer.displayNaturally();
+				}
+			}
+			
+			private function onUserCCLoaded(event:Event) : void
+			{
+				this._loadingThemeCC = false;
+				this._themeCharacterCollection.removeEventListener(ProductGroupCollectionEvent.THEME_CHAR_COMPLETE, this.onUserCCLoaded);
+				this.customerCharaterExplorer.displayNaturally();
+				this.stockCharaterExplorer.displayNaturally();
+				this.customerCharaterExplorer.selectCustomCollection();
+			}
+			
+			private function onCategoryListChange(event:IndexChangeEvent) : void
+			{
+				this.stockCharaterExplorer.selectCategoryIndex(event.newIndex);
+			}
+		]]>
+	</fx:Script>
+
+	<s:VGroup width="100%" height="100%" horizontalAlign="left">
+		<s:TabBar height="40" width="100%" skinClass="anifire.browser.skins.CcBrowserTabBarSkin" dataProvider="{viewstack}"/>
+
+		<mx:ViewStack id="viewstack" width="100%" height="100%" creationPolicy="all" paddingTop="10">
+			<s:NavigatorContent id="navCustomChars" width="100%" height="100%">
+				<fx:Array>
+					<s:VGroup width="100%" height="100%">
+						<bComponents:CcBodyTypeSelector id="bodyTypeSelector" width="100%"/>
+						<s:Group width="100%" height="100%">
+							<bComponents:CcProductExplorer id="customerCharaterExplorer" width="100%" height="100%" categoryListWidth="96" visible="{!_loadingThemeCC}" productProvider="{_themeCharacterCollection}" productRenderer="anifire.browser.skins.CcProductExplorerThumbRenderer" skinClass="anifire.browser.skins.CcProductExplorerSkin"/>
+							<s:Group width="100%" height="300" visible="{_loadingThemeCC}">
+								<bSkins:BusyIndicator verticalCenter="0" horizontalCenter="0" width="80" height="80" symbolColor="0x000000"/>
+							</s:Group>
+						</s:Group>
+					</s:VGroup>
+				</fx:Array>
+			</s:NavigatorContent>
+			<s:NavigatorContent id="navStockChars" width="100%" height="100%">
+				<fx:Array>
+					<s:Group width="100%" height="100%">
+						<bComponents:CcProductExplorer id="stockCharaterExplorer" width="100%" height="100%" categoryListWidth="96" productProvider="{_themeCharacterCollection}" productRenderer="anifire.browser.skins.CcProductExplorerThumbRenderer" skinClass="anifire.browser.skins.CcProductExplorerSkin"/>
+					</s:Group>
+				</fx:Array>
+			</s:NavigatorContent>
+		</mx:ViewStack>
+	</s:VGroup>
+
+	<s:DropDownList
+		id="categoryList"
+		left="350"
+		top="15"
+		change="onCategoryListChange(event)"
+		dataProvider="{_themeCharacterCollection}"
+		skinClass="anifire.browser.skins.CategoryDropDownListSkin"/>
+
+</s:Group>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		mouseEnabled="false" mouseChildren="false">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.browser.core.Thumb;
+			import anifire.browser.events.CoreEvent;
+			import anifire.browser.models.ThumbModel;
+			import anifire.util.UtilColor;
+			import anifire.util.UtilHashSelectedColor;
+
+			protected var _loading:Boolean = false;
+			protected var _processing:Boolean = false;
+			public var autoLoadImage:Boolean = true;
+			public var showTransition:Boolean = true;
+			protected var _model:ThumbModel;
+			protected var _product:Thumb;
+
+			[Bindable]
+			public function get model() : ThumbModel
+			{
+				return this._model;
+			}
+			
+			public function set model(param1:ThumbModel) : void
+			{
+				if(this._model != param1)
+				{
+					if(this._model)
+					{
+						this.cancelLoading();
+						this.cancelProcessing();
+						this.removeImage();
+					}
+					this._model = param1;
+					if(this._model)
+					{
+						this._product = this.model.thumb;
+						currentState = "loading";
+						this.loadProductImage();
+					}
+					else
+					{
+						currentState = "normal";
+					}
+				}
+			}
+			
+			protected function loadProductImage() : void
+			{
+				this._loading = true;
+				this._product.addEventListener(CoreEvent.LOAD_THUMB_COMPLETE,this.onLoadingComplete);
+				if(this.autoLoadImage)
+				{
+					this._product.loadImageData();
+				}
+			}
+			
+			protected function onLoadingComplete(param1:Event = null) : void
+			{
+				this.cancelLoading();
+				currentState = "processing";
+				this.processProductImage();
+			}
+			
+			protected function cancelLoading() : void
+			{
+				if(this._loading)
+				{
+					this._product.removeEventListener(CoreEvent.LOAD_THUMB_COMPLETE,this.onLoadingComplete);
+					this._loading = false;
+				}
+			}
+			
+			protected function processProductImage() : void
+			{
+			}
+			
+			protected function cancelProcessing() : void
+			{
+			}
+			
+			protected function displayImage() : void
+			{
+				currentState = "ready";
+				if(this.showTransition)
+				{
+					this.fadeIn.play();
+				}
+			}
+			
+			protected function removeImage() : void
+			{
+			}
+			
+			protected function updateThumbColor(param1:DisplayObject) : void
+			{
+				var _loc2_:UtilHashSelectedColor = null;
+				var _loc3_:int = 0;
+				if(this._model.colorSetId != "")
+				{
+					_loc2_ = this._product.getColorSetById(this._model.colorSetId);
+					if(_loc2_.length > 0)
+					{
+						_loc3_ = 0;
+						while(_loc3_ < _loc2_.length)
+						{
+							UtilColor.setAssetPartColor(param1,_loc2_.getKey(_loc3_),_loc2_.getValueByIndex(_loc3_).dstColor);
+							_loc3_++;
+						}
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<s:Fade alphaFrom="0" alphaTo="1" duration="500" id="fadeIn" target="{this}"/>
+	</fx:Declarations>
+
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="loading" stateGroups="['busyStates']"/>
+		<s:State name="processing" stateGroups="['busyStates']"/>
+		<s:State name="ready"/>
+	</s:states>
+</s:Group>

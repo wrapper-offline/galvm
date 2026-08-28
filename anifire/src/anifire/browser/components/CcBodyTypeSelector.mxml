@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Script>
+		<![CDATA[
+			import anifire.constant.ServerConstants;
+			import anifire.constant.ThemeConstants;
+			import anifire.managers.ExternalLinkManager;
+
+			[Bindable]
+			private var _showManType:Boolean;
+			[Bindable]
+			private var _showWomanType:Boolean;
+			[Bindable]
+			private var _showBoyType:Boolean;
+			[Bindable]
+			private var _showGirlType:Boolean;
+			[Bindable]
+			private var _showHeavyType:Boolean;
+			[Bindable]
+			private var _showMuscleType:Boolean;
+			[Bindable]
+			private var _showHeavyManType:Boolean;
+			[Bindable]
+			private var _showHeavyWomanType:Boolean;
+			private var _supportBodyType:Boolean;
+			private var _themeId:String;
+
+			protected function onCloseClick(event:MouseEvent) : void
+			{
+				this.currentState = "normal";
+			}
+
+			protected function getCreateCharacterUrl() : String
+			{
+				var _loc1_:* = null;
+				if(ServerConstants.IS_WIX)
+				{
+					_loc1_ = ServerConstants.HOST_PATH + "charactercreator/create/" + this._themeId;
+				}
+				else
+				{
+					_loc1_ = ServerConstants.CC_PAGE_PATH + "/" + this._themeId + "/new_char";
+				}
+				return _loc1_;
+			}
+
+			protected function onAddClick(event:MouseEvent) : void
+			{
+				var _loc2_:String = null;
+				if(this._supportBodyType)
+				{
+					this.currentState = "expanded";
+				}
+				else if(this._themeId)
+				{
+					_loc2_ = this.getCreateCharacterUrl();
+					ExternalLinkManager.instance.navigateWithSession(_loc2_);
+				}
+			}
+
+			// todo have this not fucking hardcoded
+			public function set themeId(id:String) : void
+			{
+				if (this._themeId != id)
+				{
+					this._themeId = id;
+					switch (id)
+					{
+						case ThemeConstants.BUSINESS_THEME_ID:
+							this._supportBodyType = true;
+							this._showManType = true;
+							this._showWomanType = true;
+							this._showBoyType = true;
+							this._showGirlType = true;
+							this._showHeavyManType = true;
+							this._showHeavyWomanType = true;
+							break;
+						case ThemeConstants.WHITEBOARD_THEME_ID:
+							this._supportBodyType = true;
+							this._showManType = true;
+							this._showWomanType = true;
+							this._showBoyType = true;
+							this._showGirlType = true;
+							break;
+						case ThemeConstants.FAMILY_THEME_ID:
+							this._supportBodyType = true;
+							this._showManType = true;
+							this._showWomanType = true;
+							this._showHeavyType = true;
+							this._showMuscleType = true;
+							break;
+						case ThemeConstants.ANIME_THEME_ID:
+						case ThemeConstants.NINJAANIME_THEME_ID:
+							this._supportBodyType = true;
+							this._showManType = true;
+							this._showWomanType = true;
+					}
+				}
+			}
+			
+			protected function onBodyTypeButtonClick(e:MouseEvent) : void
+			{
+				var path:String = this.getCreateCharacterUrl();
+				var params:URLVariables = new URLVariables();
+				var bs:String;
+				switch (e.target)
+				{
+					case this.manType:
+						if(this._themeId == ThemeConstants.FAMILY_THEME_ID)
+						{
+							bs = "adam";
+						}
+						else if(this._themeId == ThemeConstants.BUSINESS_THEME_ID || this._themeId == ThemeConstants.WHITEBOARD_THEME_ID)
+						{
+							bs = "man";
+						}
+						else
+						{
+							bs = "guy";
+						}
+						break;
+					case this.womanType:
+						if(this._themeId == ThemeConstants.FAMILY_THEME_ID)
+						{
+							bs = "eve";
+						}
+						else if(this._themeId == ThemeConstants.BUSINESS_THEME_ID || this._themeId == ThemeConstants.WHITEBOARD_THEME_ID)
+						{
+							bs = "woman";
+						}
+						else
+						{
+							bs = "girl";
+						}
+						break;
+					case this.heavyType:
+						bs = "bob";
+						break;
+					case this.muscleType:
+						bs = "rocky";
+						break;
+					case this.boyType:
+						bs = "boy";
+						break;
+					case this.girlType:
+						bs = "girl";
+						break;
+					case this.heavyManType:
+						bs = "heavy_man";
+						break;
+					case this.heavyWomanType:
+						bs = "heavy_woman";
+				}
+				params["type"] = bs;
+				ExternalLinkManager.instance.navigateWithVariables(path, params, false);
+			}
+		]]>
+	</fx:Script>
+
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="expanded"/>
+	</s:states>
+
+	<s:Button
+		id="normalOption"
+		buttonMode="true"
+		width="100%"
+		height="58"
+		height.expanded="108"
+		visible.expanded="false"
+		skinClass="anifire.browser.skins.CreateCcButtonSkin"
+		click="onAddClick(event)"/>
+	<s:Group id="expandedOption" width="100%" height="58" height.expanded="108" clipAndEnableScrolling="true" visible="false" visible.expanded="true">
+		<s:Group width="100%" height="100%">
+			<s:Rect width="100%" height="100%">
+				<s:stroke>
+					<s:SolidColorStroke color="0x96A2B4"/>
+				</s:stroke>
+			</s:Rect>
+			<s:BitmapImage source="@Embed('../images/bodyTypeBg.png')" smooth="true" top="4" bottom="4" left="4" right="4"/>
+		</s:Group>
+		<s:Group horizontalCenter="0" verticalCenter="0">
+			<s:layout>
+				<s:HorizontalLayout gap="35"/>
+			</s:layout>
+			<s:Button
+				buttonMode="true"
+				visible="{_showManType}"
+				includeInLayout="{_showManType}"
+				skinClass="anifire.browser.skins.AddManBodyTypeButtonSkin"
+				click="onBodyTypeButtonClick(event)"
+				id="manType"/>
+			<s:Button
+				buttonMode="true"
+				visible="{_showWomanType}"
+				includeInLayout="{_showWomanType}"
+				skinClass="anifire.browser.skins.AddWomanBodyTypeButtonSkin"
+				click="onBodyTypeButtonClick(event)"
+				id="womanType"/>
+			<s:Button
+				buttonMode="true"
+				visible="{_showHeavyType}"
+				includeInLayout="{_showHeavyType}"
+				skinClass="anifire.browser.skins.AddHeavyBodyTypeButtonSkin"
+				click="onBodyTypeButtonClick(event)"
+				id="heavyType"/>
+			<s:Button
+				buttonMode="true"
+				visible="{_showMuscleType}"
+				includeInLayout="{_showMuscleType}"
+				skinClass="anifire.browser.skins.AddMuscleManBodyTypeButtonSkin"
+				click="onBodyTypeButtonClick(event)"
+				id="muscleType"/>
+			<s:Button
+				buttonMode="true"
+				visible="{_showBoyType}"
+				includeInLayout="{_showBoyType}"
+				skinClass="anifire.browser.skins.AddBoyBodyTypeButtonSkin"
+				click="onBodyTypeButtonClick(event)"
+				id="boyType"/>
+			<s:Button
+				buttonMode="true"
+				visible="{_showGirlType}"
+				includeInLayout="{_showGirlType}"
+				skinClass="anifire.browser.skins.AddGirlBodyTypeButtonSkin"
+				click="onBodyTypeButtonClick(event)"
+				id="girlType"/>
+			<s:Button
+				buttonMode="true"
+				visible="{_showHeavyManType}"
+				includeInLayout="{_showHeavyManType}"
+				skinClass="anifire.browser.skins.AddHeavyManBodyTypeButtonSkin"
+				click="onBodyTypeButtonClick(event)"
+				id="heavyManType"/>
+			<s:Button
+				buttonMode="true"
+				visible="{_showHeavyWomanType}"
+				includeInLayout="{_showHeavyWomanType}"
+				skinClass="anifire.browser.skins.AddHeavyWomanBodyTypeButtonSkin"
+				click="onBodyTypeButtonClick(event)"
+				id="heavyWomanType"/>
+		</s:Group>
+		<s:Button buttonMode="true" top="10" right="10" skinClass="anifire.browser.skins.CloseButtonSkin" click="onCloseClick(event)"/>
+	</s:Group>
+
+</s:Group>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:brComponents="anifire.browser.components.*"
+	minWidth="955"
+	minHeight="600"
+	applicationComplete="init()"
+	backgroundColor="0xEEEEEE">
+
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace brComponents "anifire.browser.components.*";
+
+		global {
+			modalTransparency: 0.7;
+			modalTransparencyColor: #000000;
+		}
+		s|Application {
+			font-size: 13;
+		}
+		s|TextBase,
+		s|SkinnableTextBase,
+		s|RichEditableText {
+			fontLookup: embeddedCFF;
+			color: #515969;
+			fontStyle: "normal";
+			fontFamily: "StudioSparkMain";
+		}
+		s|Label#promptDisplay {
+			color: #CCCCCC;
+			fontStyle: "normal";
+		}
+		s|TextInput {
+			borderColor: #CACAD4;
+			skinClass: ClassReference("anifire.browser.skins.DefaultTextInputSkin");
+		}
+		brComponents|ArrowTipContainer {
+			skinClass: ClassReference("anifire.browser.skins.ArrowTipContainerSkin");
+		}
+		
+		@font-face {
+			src: url("../../anifire/src/styles/fonts/Lato-Black.ttf");
+			fontStyle: italic;
+			fontFamily: StudioSparkMain;
+		}
+		@font-face {
+			src: url("../../anifire/src/styles/fonts/Lato-Regular.ttf");
+			fontFamily: StudioSparkMain;
+		}
+		@font-face {
+			src: url("../../anifire/src/styles/fonts/Lato-Bold.ttf");
+			fontWeight: 700;
+			fontFamily: StudioSparkMain;
+		}
+	</fx:Style>
+
+	<fx:Script>
+		<![CDATA[
+			protected function init() : void
+			{
+				this.ccBrowser.initUI();
+			}
+		]]>
+	</fx:Script>
+
+	<s:Scroller width="100%" height="100%">
+		<s:Group width="100%" height="100%" clipAndEnableScrolling="true">
+			<brComponents:CcBrowser width="960" height="1200" horizontalCenter="0" id="ccBrowser"/>
+		</s:Group>
+	</s:Scroller>	
+
+</s:Application>
